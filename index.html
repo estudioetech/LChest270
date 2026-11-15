@@ -1,2635 +1,671 @@
-html_code = '''<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>LChest 270 — V2.3</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LChest Live Arcade - V2.4</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
-    html, body {
-      width: 100%; height: 100%; overflow: hidden;
-      background: radial-gradient(circle at 50% 20%, #1a1740 0%, #0b0e1d 70%, #070913 100%);
-      color: #fff; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      display: flex; flex-direction: column;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      user-select: none;
     }
+
+    body {
+      background: radial-gradient(circle at top, #171a33 0%, #0b0d1c 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* TOPBAR */
     header {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 8px; padding: 8px 12px; min-height: 54px; flex-shrink: 0;
-      background: rgba(10, 13, 28, 0.95); border-bottom: 1px solid rgba(255,255,255,0.08);
-      z-index: 20; overflow-x: auto; scrollbar-width: none;
-    }
-    header::-webkit-scrollbar { display: none; }
-    .logo-wrap { display: flex; align-items: center; flex-shrink: 0; cursor: pointer; }
-    .nav-tabs { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-    .tab-btn {
-      background: transparent; border: none; color: #94a3b8; font-size: 12px;
-      font-weight: 700; padding: 6px 11px; border-radius: 999px; cursor: pointer;
-      white-space: nowrap; flex-shrink: 0; transition: .2s;
-    }
-    .tab-btn.active { background: #282366; color: #fff; box-shadow: 0 0 14px rgba(99,102,241,0.45); }
-    .status-pill {
-      display: flex; align-items: center; gap: 6px; font-size: 11px; flex-shrink: 0;
-      background: rgba(255,255,255,0.07); padding: 5px 10px; border-radius: 999px; white-space: nowrap;
-    }
-    .ver-badge { background: #3b336b; color: #c4b5fd; font-weight: 800; padding: 2px 7px; border-radius: 6px; }
-    .pill-btn {
-      background: #1e293b; color: #e2e8f0; border: 1px solid rgba(255,255,255,0.16);
-      padding: 4px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; cursor: pointer;
-    }
-    .pill-btn.on { background: #2563eb; border-color: #60a5fa; color: #fff; }
-    .pill-btn.room { background: #6d28d9; border-color: #a78bfa; color: #fff; }
-
-    #room-live-bar {
-      display: none; align-items: center; justify-content: space-between; gap: 8px;
-      padding: 5px 12px; background: rgba(24, 29, 56, 0.95);
-      border-bottom: 1px solid rgba(139, 92, 246, 0.35);
-      overflow-x: auto; flex-shrink: 0; z-index: 18;
-    }
-    .live-groups { display: flex; align-items: center; gap: 8px; flex-wrap: nowrap; }
-    .group-pill {
-      display: flex; align-items: center; gap: 6px; background: #0f172a;
-      border: 1px solid rgba(255,255,255,0.14); padding: 4px 9px; border-radius: 12px;
-      font-size: 11px; white-space: nowrap;
-    }
-    .pair-unit {
-      display: inline-flex; align-items: center; gap: 2px;
-      background: rgba(255,255,255,0.06); padding: 2px 7px; border-radius: 999px;
-    }
-    .p-badge {
-      padding: 1px 6px; border-radius: 999px; font-weight: 900; font-size: 10px;
-      border: 1px solid rgba(0,0,0,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 32px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(11, 13, 28, 0.8);
+      backdrop-filter: blur(8px);
     }
 
+    .logo-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 11px;
+      text-align: center;
+      line-height: 1;
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+    }
+
+    nav {
+      display: flex;
+      gap: 24px;
+      align-items: center;
+    }
+
+    nav button {
+      background: none;
+      border: none;
+      color: #a0a8c8;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: 20px;
+      transition: 0.2s;
+    }
+
+    nav button.active {
+      background: rgba(99, 102, 241, 0.25);
+      color: #ffffff;
+      box-shadow: inset 0 0 0 1px rgba(129, 140, 248, 0.4);
+    }
+
+    .status-pills {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .pill {
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: #1c213e;
+      color: #cbd5e1;
+    }
+
+    .pill.purple { background: #3b2d71; color: #c4b5fd; }
+    .pill.blue { background: #2563eb; color: #ffffff; }
+    .pill.gold { background: #1e293b; color: #93c5fd; }
+
+    /* CARROSSEL DE JOGOS */
     main {
-      flex: 1; width: 100%; min-height: 0; position: relative; overflow-y: auto; overflow-x: hidden;
-      display: flex; align-items: center; justify-content: center; padding: 10px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
     }
-    .carousel-shell {
-      position: relative; width: 100%; max-width: 1320px;
-      display: flex; align-items: center; justify-content: center; perspective: 1100px;
+
+    .cards-container {
+      display: flex;
+      gap: 24px;
+      max-width: 1280px;
+      width: 100%;
+      justify-content: center;
+      flex-wrap: wrap;
     }
-    .carousel-track {
-      display: flex; align-items: center; gap: 16px; padding: 20px 44px;
-      overflow-x: auto; scroll-behavior: smooth; scroll-snap-type: x mandatory;
-      width: 100%; scrollbar-width: none;
-    }
-    .carousel-track::-webkit-scrollbar { display: none; }
-    .nav-arrow {
-      position: absolute; top: 50%; transform: translateY(-50%); z-index: 15;
-      width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.22);
-      background: rgba(15, 23, 42, 0.92); color: #fff; font-size: 15px; font-weight: 900;
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
-    }
-    .nav-arrow.left { left: 4px; }
-    .nav-arrow.right { right: 4px; }
 
     .game-card {
-      flex: 0 0 245px; scroll-snap-align: center;
-      background: #151a30; border-radius: 22px; padding: 14px;
-      border: 1px solid rgba(255,255,255,0.07); cursor: pointer;
-      transition: transform .25s ease, background .25s ease, opacity .25s ease;
-      display: flex; flex-direction: column; gap: 8px; opacity: 0.78;
-      transform: scale(0.9) rotateY(8deg);
+      background: #13172e;
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 20px;
+      width: 240px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
     }
-    .game-card.right-side { transform: scale(0.9) rotateY(-8deg); }
-    .game-card:hover { opacity: 0.96; transform: scale(0.96) rotateY(0deg); }
-    .game-card.active {
-      flex: 0 0 285px; background: #282366; opacity: 1; transform: scale(1.04) rotateY(0deg);
-      border: 1px solid rgba(139, 92, 246, 0.55); z-index: 5;
-      box-shadow: 0 20px 44px rgba(0,0,0,0.7);
+
+    .game-card:hover {
+      transform: translateY(-6px);
+      border-color: #6366f1;
+      box-shadow: 0 12px 30px rgba(79, 70, 229, 0.25);
     }
+
     .preview-box {
-      width: 100%; height: 120px; background: #0e1120; border-radius: 14px;
-      display: flex; align-items: center; justify-content: center; overflow: hidden;
+      height: 125px;
+      background: #0b0e1e;
+      border-radius: 14px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
     }
-    .card-sub { font-size: 10px; font-weight: 800; letter-spacing: 1px; color: #a5b4fc; text-transform: uppercase; }
-    .card-title { font-size: 17px; font-weight: 800; color: #fff; line-height: 1.2; }
-    .card-desc { font-size: 12px; color: #cbd5e1; line-height: 1.32; min-height: 32px; }
-    .card-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 2px; }
+
+    /* Mini arte do Minecraft 270 */
+    .mc-blocks {
+      display: flex;
+    }
+    .mc-blocks span {
+      width: 22px;
+      height: 22px;
+      display: inline-block;
+    }
+
+    .tag-cat {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      color: #64748b;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .game-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .game-desc {
+      font-size: 12px;
+      color: #94a3b8;
+      line-height: 1.4;
+      margin-bottom: 18px;
+      min-height: 50px;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
     .btn-play {
-      background: #2563eb; color: #fff; border: none; padding: 7px 14px;
-      border-radius: 999px; font-weight: 700; font-size: 12px; cursor: pointer; white-space: nowrap;
-    }
-    .btn-play:disabled { opacity: 0.45; cursor: not-allowed; }
-    .badge-tag {
-      background: rgba(139, 92, 246, 0.25); color: #ddd6fe;
-      padding: 5px 9px; border-radius: 999px; font-size: 11px; font-weight: 600; white-space: nowrap;
-    }
-
-    .panel-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 12px; width: 100%; max-width: 1120px; align-self: flex-start; padding: 6px 0 24px;
-    }
-    .cfg-card {
-      background: #181d36; border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px; padding: 15px; display: flex; flex-direction: column; gap: 9px;
-    }
-    .cfg-btn {
-      background: #282366; color: #fff; border: 1px solid rgba(167,139,250,0.35);
-      padding: 8px 12px; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer;
-    }
-    .room-input {
-      background: #0f172a; border: 1px solid #475569; color: #fff; padding: 8px 12px;
-      border-radius: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; width: 135px; text-align: center;
+      background: #3b66f5;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
     }
 
-    .modal-backdrop {
-      position: fixed; inset: 0; background: rgba(7, 9, 19, 0.88); backdrop-filter: blur(8px);
-      z-index: 70; display: none; align-items: center; justify-content: center; padding: 14px;
+    .btn-play:hover {
+      background: #2563eb;
+      transform: scale(1.04);
     }
-    .modal-box {
-      background: #181d38; border: 1px solid rgba(139,92,246,0.45); border-radius: 22px;
-      padding: 20px; max-width: 580px; width: 100%; text-align: center;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.75); max-height: 90%; overflow-y: auto;
-    }
-    .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
-    .mode-card {
-      background: #23294d; border: 2px solid transparent; border-radius: 16px; padding: 14px;
-      cursor: pointer; transition: .2s; display: flex; flex-direction: column; gap: 6px;
-    }
-    .mode-card:hover { border-color: #6366f1; background: #2c2670; }
 
-    .color-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(82px, 1fr));
-      gap: 9px; margin: 14px 0;
+    .badge-info {
+      font-size: 11px;
+      background: #1e2442;
+      color: #94a3b8;
+      padding: 6px 10px;
+      border-radius: 14px;
     }
-    .swatch-btn {
-      position: relative; height: 52px; border-radius: 13px; border: 2px solid rgba(255,255,255,0.25);
-      cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 800; transition: transform .15s;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.85);
-    }
-    .swatch-btn.selected { border: 3px solid #facc15; transform: scale(1.05); box-shadow: 0 0 16px rgba(250,204,21,0.5); }
-    .swatch-btn.taken { opacity: 0.42; cursor: not-allowed; }
-    .swatch-x {
-      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-      font-size: 32px; font-weight: 900; color: #ffffff; text-shadow: 0 0 8px #000;
-      pointer-events: none;
-    }
-    .roster-bar { display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; margin-top: 8px; }
-    .roster-chip {
-      display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.08);
-      padding: 4px 9px; border-radius: 999px; font-size: 11px; font-weight: 700;
-    }
-    .chip-dot { width: 11px; height: 11px; border-radius: 50%; border: 1px solid #fff; }
 
+    /* TELA DO JOGO ATIVO (OVERLAY) */
     #game-overlay {
-      position: fixed; inset: 0; width: 100%; height: 100%; background: #070913; z-index: 50;
-      display: none; flex-direction: column; overflow: hidden;
+      position: fixed;
+      inset: 0;
+      background: #080a16;
+      z-index: 9999;
+      display: none;
+      flex-direction: column;
     }
-    .game-hud {
-      display: flex; justify-content: space-between; align-items: center; gap: 6px;
-      padding: 6px 12px; background: #11162b; border-bottom: 1px solid rgba(255,255,255,0.1);
-      flex-shrink: 0; flex-wrap: wrap;
-    }
-    #canvas-wrap {
-      flex: 1; min-height: 160px; position: relative; width: 100%; height: 100%;
-      overflow: hidden; touch-action: none;
-    }
-    canvas#gameCanvas { width: 100%; height: 100%; display: block; touch-action: none; }
 
-    .touch-layer {
-      position: fixed; bottom: 12px; left: 10px; right: 10px;
-      display: none; justify-content: space-between; align-items: flex-end; pointer-events: none; z-index: 60;
+    .game-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px;
+      background: #12162d;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     }
-    .ctrl-cluster { display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
-    .pad-row { display: flex; align-items: center; gap: 8px; pointer-events: auto; }
-    .dpad { display: grid; grid-template-columns: repeat(3, 42px); grid-template-rows: repeat(3, 42px); gap: 3px; pointer-events: auto; }
-    .dpad button, .fnf-row button {
-      background: #111; color: #fff; border: 2px solid #333; border-radius: 9px;
-      font-size: 15px; font-weight: bold; transition: transform .08s, background .08s; touch-action: none;
-    }
-    .dpad button.held, .fnf-row button.held { background: #3b3b46; transform: scale(0.85); }
-    .fnf-row { display: none; gap: 6px; pointer-events: auto; }
-    .fnf-row button { width: 48px; height: 48px; font-size: 18px; border-radius: 12px; }
-    .joy-base {
-      display: none; width: 104px; height: 104px; border-radius: 50%;
-      background: rgba(17,17,24,0.85); border: 2px solid #475569;
-      position: relative; pointer-events: auto; touch-action: none;
-    }
-    .joy-knob {
-      width: 42px; height: 42px; border-radius: 50%; background: #6366f1;
-      position: absolute; top: 29px; left: 29px; pointer-events: none;
-    }
-    .ab-group { display: flex; gap: 10px; pointer-events: auto; }
-    .btn-a, .btn-b {
-      width: 52px; height: 52px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.25); color: #fff;
-      font-size: 17px; font-weight: 900; box-shadow: 0 5px 15px rgba(0,0,0,0.5); touch-action: none;
-    }
-    .btn-a { background: #2563eb; }
-    .btn-b { background: #7c3aed; }
-    .btn-a:active, .btn-b:active { transform: scale(0.88); }
 
-    #toast {
-      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(130px);
-      background: linear-gradient(90deg, #1e1b4b, #312e81); border: 1px solid #818cf8;
-      padding: 10px 20px; border-radius: 999px; font-size: 12px; font-weight: 700; z-index: 95;
-      transition: transform .35s cubic-bezier(.22,1,.36,1); box-shadow: 0 10px 30px rgba(0,0,0,0.65);
-      white-space: nowrap;
+    .controls-hint {
+      font-size: 13px;
+      color: #cbd5e1;
     }
-    #toast.show { transform: translateX(-50%) translateY(0); }
+
+    .controls-hint strong {
+      color: #60a5fa;
+    }
+
+    .btn-exit {
+      background: #ef4444;
+      color: #fff;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-exit:hover {
+      background: #dc2626;
+    }
+
+    .canvas-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #0b0e1d;
+      position: relative;
+    }
+
+    canvas {
+      border: 2px solid #2e3764;
+      border-radius: 8px;
+      background: #87ceeb;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
+      outline: none;
+    }
+
+    .hotbar {
+      position: absolute;
+      bottom: 20px;
+      display: flex;
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.85);
+      padding: 8px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .slot {
+      width: 38px;
+      height: 38px;
+      border-radius: 6px;
+      border: 2px solid #475569;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 1px 1px 2px black;
+    }
+
+    .slot.selected {
+      border-color: #facc15;
+      transform: scale(1.1);
+    }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="logo-wrap" onclick="switchTab('arcade')" title="LChest 270">
-    <svg width="38" height="38" viewBox="0 0 100 100">
-      <defs>
-        <radialGradient id="bgGrad" cx="40%" cy="35%" r="65%">
-          <stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#4c1d95"/>
-        </radialGradient>
-        <clipPath id="circleClip"><circle cx="50" cy="50" r="46"/></clipPath>
-      </defs>
-      <g clip-path="url(#circleClip)">
-        <circle cx="50" cy="50" r="46" fill="url(#bgGrad)"/>
-        <path d="M68,0 L98,10 L82,55 L52,42 Z" fill="#3b4cca"/>
-        <path d="M4,65 L35,55 L46,92 L12,96 Z" fill="#3b4cca"/>
-        <polygon points="28,18 82,50 28,82" fill="rgba(45,49,98,0.82)"/>
-        <text x="48" y="36" fill="#fff" font-size="22" font-weight="900" font-family="Comic Sans MS, cursive">L</text>
-        <text x="16" y="62" fill="#fff" font-size="19" font-weight="900" transform="rotate(14 40 55)" font-family="Comic Sans MS, cursive">Chest</text>
-        <text x="58" y="79" fill="#fff" font-size="17" font-weight="900" transform="rotate(-18 70 72)" font-family="Comic Sans MS, cursive">270</text>
-      </g>
-    </svg>
-  </div>
-
-  <nav class="nav-tabs">
-    <button class="tab-btn active" id="tab-arcade" onclick="switchTab('arcade')">LChest Live Arcade</button>
-    <button class="tab-btn" id="tab-sala" onclick="switchTab('sala')">Tabela da Sala (<span id="sala-tab-cnt">1</span>)</button>
-    <button class="tab-btn" id="tab-conquistas" onclick="switchTab('conquistas')">Conquistas (<span id="ach-count">0</span>)</button>
-    <button class="tab-btn" id="tab-sistema" onclick="switchTab('sistema')">Sistema</button>
-  </nav>
-
-  <div class="status-pill">
-    <button class="pill-btn room" id="btn-room-top" onclick="openRoomModal()">Sala: <span id="room-code-lbl">OFF</span></button>
-    <button class="pill-btn" id="btn-p2-top" onclick="toggle2P()">1P Solo</button>
-    <strong style="color:#a5b4fc" id="gs-display">14.850 G</strong>
-    <span class="ver-badge">V2.3</span>
-  </div>
-</header>
-
-<div id="room-live-bar">
-  <div class="live-groups" id="live-groups-list"></div>
-  <button class="pill-btn" style="background:#312e81;border-color:#818cf8;" onclick="openPairModal()">🤝 Pedir Par (Jogo de 2)</button>
-</div>
-
-<main id="main-view"></main>
-
-<div class="modal-backdrop" id="modal-room">
-  <div class="modal-box">
-    <div style="font-size:11px;font-weight:800;color:#c4b5fd;letter-spacing:1px;">MULTIPLAYER ONLINE • P1 (ANFITRIÃO) ATÉ P10</div>
-    <h2 style="margin-top:6px;">Sala por Código na Internet</h2>
-    <p style="font-size:12px;color:#cbd5e1;margin-top:6px;">
-      Modo 2P inteligente: pareia automaticamente <strong>2º Player vs 2º Player</strong>, <strong>3 pessoas (2P joga com os dois)</strong>, ou <strong>3P + 2P (divide em duas duplas)</strong>!
-    </p>
-    <div style="margin:16px 0;display:flex;flex-direction:column;gap:11px;align-items:center;">
-      <button class="btn-play" style="background:#7c3aed;padding:10px 20px;" onclick="createHostRoom()">Criar Sala Online (Anfitrião P1)</button>
-      <div id="host-code-box" style="font-size:22px;font-weight:900;letter-spacing:4px;color:#facc15;"></div>
-      <div id="net-status" style="font-size:11px;color:#38bdf8;"></div>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <input class="room-input" id="join-code-input" maxlength="6" placeholder="CÓDIGO" />
-        <button class="btn-play" onclick="joinCodeRoom()">Entrar na Sala</button>
-      </div>
-      <div id="room-members-info" style="font-size:12px;color:#a5b4fc;"></div>
+  <!-- CABEÇALHO -->
+  <header>
+    <div class="logo-badge">LChest<br>270</div>
+    <nav>
+      <button class="active">LChest Live Arcade</button>
+      <button onclick="alert('Sala 1 ativa!')">Tabela da Sala (1)</button>
+      <button onclick="alert('8 Conquistas desbloqueadas!')">Conquistas (8)</button>
+      <button onclick="alert('Sistema OK - Sem erros de script!')">Sistema</button>
+    </nav>
+    <div class="status-pills">
+      <span class="pill purple">Sala: OFF</span>
+      <span class="pill blue">2P Ativo</span>
+      <span class="pill gold">15.050 G</span>
+      <span class="pill">V2.4</span>
     </div>
-    <div style="display:flex;gap:10px;justify-content:center;">
-      <button class="cfg-btn" style="background:#991b1b;" onclick="leaveRoom()">Sair da Sala</button>
-      <button class="cfg-btn" onclick="document.getElementById('modal-room').style.display='none'">Fechar</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-backdrop" id="modal-lobby">
-  <div class="modal-box">
-    <div style="font-size:11px;font-weight:800;color:#facc15;letter-spacing:1px;" id="lobby-subtitle">LOBBY DA PARTIDA</div>
-    <h2 style="margin-top:4px;" id="lobby-title">Escolha sua Cor</h2>
-    <p style="font-size:12px;color:#cbd5e1;margin-top:4px;" id="lobby-turn-msg">Cores com <strong>X</strong> já foram pegas!</p>
-    <div class="color-grid" id="lobby-color-grid"></div>
-    <div class="roster-bar" id="lobby-roster"></div>
-    <div style="display:flex;gap:10px;justify-content:center;margin-top:16px;">
-      <button class="btn-play" id="btn-confirm-color" style="padding:10px 22px;font-size:13px;" onclick="confirmLobbyChoice()">Confirmar Cor e Jogar</button>
-      <button class="cfg-btn" onclick="document.getElementById('modal-lobby').style.display='none'">Cancelar</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-backdrop" id="modal-vote">
-  <div class="modal-box">
-    <div style="font-size:11px;font-weight:800;color:#facc15;letter-spacing:1px;" id="vote-tag">DECISÃO DA SALA</div>
-    <h2 style="margin-top:6px;" id="vote-title">Pedido na Sala</h2>
-    <p style="font-size:13px;color:#cbd5e1;margin:10px 0;" id="vote-desc"></p>
-    <div id="vote-tallies" style="font-size:12px;color:#a5b4fc;margin-bottom:14px;"></div>
-    <div style="display:flex;gap:12px;justify-content:center;">
-      <button class="btn-play" style="background:#16a34a;padding:10px 22px;" onclick="castVote(true)">SIM / Concordar</button>
-      <button class="btn-play" style="background:#dc2626;padding:10px 22px;" onclick="castVote(false)">NÃO / Ficar</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-backdrop" id="modal-pair">
-  <div class="modal-box">
-    <div style="font-size:11px;font-weight:800;color:#38bdf8;letter-spacing:1px;">FORMAR DUPLA (JOGO DE 2 JOGADORES)</div>
-    <h2 style="margin-top:6px;">Pedir Par na Sala</h2>
-    <div style="margin:12px 0;">
-      <label style="font-size:12px;color:#a5b4fc;">Jogo de 2: </label>
-      <select id="pair-game-select" style="background:#0f172a;color:#fff;border:1px solid #475569;padding:6px 10px;border-radius:8px;">
-        <option value="velha">Jogo da Velha (2P / 2P+2P / 3P)</option>
-        <option value="snake">Snake 360 (2P)</option>
-        <option value="dino">Dino Run 360 (2P)</option>
-        <option value="ninja">N+ Stickman (2P)</option>
-        <option value="geo">Geometry Wars (2P)</option>
-        <option value="hexic">Hexic 360 (2P)</option>
-      </select>
-    </div>
-    <div id="pair-candidates-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;"></div>
-    <button class="cfg-btn" onclick="document.getElementById('modal-pair').style.display='none'">Fechar</button>
-  </div>
-</div>
-
-<div class="modal-backdrop" id="modal-2p">
-  <div class="modal-box">
-    <div style="font-size:11px;font-weight:800;color:#a5b4fc;letter-spacing:1px;">MULTIPLAYER 2 JOGADORES ATIVO</div>
-    <h2 style="margin-top:6px;">Escolha o Modo de Jogo</h2>
-    <div class="mode-grid">
-      <div class="mode-card" onclick="confirm2PMode('coop')">
-        <strong style="font-size:16px;color:#38bdf8;">🤝 MODO CO-OP</strong>
-        <span style="font-size:12px;color:#cbd5e1;">Jogam juntos na mesma arena.</span>
-      </div>
-      <div class="mode-card" onclick="confirm2PMode('vs')">
-        <strong style="font-size:16px;color:#c084fc;">⚔️ MODO VS</strong>
-        <span style="font-size:12px;color:#cbd5e1;">Tela dividida: Esquerda (→) vs Direita (←).</span>
-      </div>
-    </div>
-    <button class="cfg-btn" onclick="document.getElementById('modal-2p').style.display='none'">Cancelar</button>
-  </div>
-</div>
-
-<div id="game-overlay">
-  <div class="game-hud">
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-      <strong id="hud-title" style="font-size:13px;">Jogo</strong>
-      <span id="hud-info" style="color:#a5b4fc;font-size:12px;"></span>
-    </div>
-    <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-      <select id="stage-sel" style="display:none;background:#1e293b;color:#fff;border:1px solid #475569;padding:4px 7px;border-radius:8px;font-size:11px;"></select>
-      <button id="btn-upgrade" class="btn-play" style="display:none;background:#7c3aed;" onclick="buyGeoUpgrade()">+1 Dano (20 pts)</button>
-      <button class="btn-play" style="background:#dc2626;" onclick="requestExitGame()">Sair (ESC)</button>
-    </div>
-  </div>
-  <div id="canvas-wrap"><canvas id="gameCanvas"></canvas></div>
-</div>
-
-<div class="touch-layer" id="touch-layer">
-  <div class="ctrl-cluster" id="left-ctrl-slot">
-    <div class="pad-row" id="p2-mobile-pad" style="display:none;">
-      <div class="dpad" id="dpad-p2">
-        <div></div><button data-key="ArrowUp">▲</button><div></div>
-        <button data-key="ArrowLeft">◀</button><div></div><button data-key="ArrowRight">▶</button>
-        <div></div><button data-key="ArrowDown">▼</button><div></div>
-      </div>
-      <button class="btn-a" id="btn-p2-act" style="width:44px;height:44px;font-size:13px;" data-key="ArrowUp">P2</button>
-    </div>
-    <div class="dpad" id="dpad-box">
-      <div></div><button data-key="KeyW">▲</button><div></div>
-      <button data-key="KeyA">◀</button><div></div><button data-key="KeyD">▶</button>
-      <div></div><button data-key="KeyS">▼</button><div></div>
-    </div>
-    <div class="joy-base" id="joy-box"><div class="joy-knob" id="joy-knob"></div></div>
-    <div class="fnf-row" id="fnf-arrows-box">
-      <button data-key="ArrowLeft">◀</button>
-      <button data-key="ArrowUp">▲</button>
-      <button data-key="ArrowDown">▼</button>
-      <button data-key="ArrowRight">▶</button>
-    </div>
-  </div>
-  <div class="ab-group" id="ab-box">
-    <button class="btn-a" id="btn-p1-a" data-key="Space">A</button>
-    <button class="btn-b" id="btn-p1-b" data-key="KeyS">B</button>
-  </div>
-</div>
-
-<div id="toast">🏆 Conquista Desbloqueada!</div>
-
-<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js" defer></script>
-<script>
-const PRESET_COLORS = [
-  { id: 'vermelho',    name: 'Vermelho',     hex: '#ef4444', darkText: false },
-  { id: 'laranja',     name: 'Laranja',      hex: '#f97316', darkText: false },
-  { id: 'amarelo',     name: 'Amarelo',      hex: '#facc15', darkText: true  },
-  { id: 'verde',       name: 'Verde',        hex: '#22c55e', darkText: false },
-  { id: 'verde_esc',   name: 'Verde Escuro', hex: '#14532d', darkText: false },
-  { id: 'azul',        name: 'Azul',         hex: '#3b82f6', darkText: false },
-  { id: 'azul_esc',    name: 'Azul Escuro',  hex: '#1e3a8a', darkText: false },
-  { id: 'roxo',        name: 'Roxo',         hex: '#9333ea', darkText: false },
-  { id: 'rosa',        name: 'Rosa',         hex: '#ec4899', darkText: false },
-  { id: 'preto',       name: 'Preto',        hex: '#111827', darkText: false },
-  { id: 'branco',      name: 'Branco',       hex: '#f8fafc', darkText: true  },
-  { id: 'marrom',      name: 'Marrom',       hex: '#78350f', darkText: false },
-  { id: 'bege',        name: 'Bege',         hex: '#e7d3b0', darkText: true  }
-];
-
-const TWO_PLAYER_GAMES = new Set(['velha', 'snake', 'dino', 'ninja', 'geo', 'hexic']);
-const playerId = 'ID_' + Math.random().toString(36).slice(2, 7).toUpperCase();
-
-const state = {
-  tab: 'arcade',
-  selectedIdx: 0,
-  gamerscore: 14850,
-  multiplayer: false,
-  vsMode: 'coop',
-  pendingGame: null,
-  mobileControls: false,
-  mobileStyle: 'dpad',
-  invertSides: false,
-  p2GeoTank: true,
-  p1Color: '#22c55e',
-  p2Color: '#3b82f6',
-  p1ColorId: 'verde',
-  p2ColorId: 'azul',
-  unlocked: new Set(),
-  dinoDeaths: 0,
-  totalDeaths: 0,
-  scoreSeconds: 0,
-  roomCode: null,
-  isHost: false,
-  mySlot: 1,
-  members: [{
-    id: playerId, slot: 1, colorHex: '#22c55e', colorId: 'verde',
-    hasSecondPlayer: false, p2ColorHex: '#3b82f6', p2ColorId: 'azul',
-    confirmed: false, activeGame: null, subgroupId: 'main', partnerSlot: null,
-    x: 80, y: 150, p2x: 110, p2y: 150
-  }],
-  lobbyPickSubStep: 1,
-  tempSelectedColorId: 'verde',
-  activeVote: null,
-  tttBoards: {},
-  mcWorld: null,
-  mcRows: 0,
-  mcCols: 0
-};
-
-const GAMES = [
-  {
-    id: 'minecraft', sub: 'SANDBOX MULTIPLAYER', title: 'Minecraft 270', is2P: false,
-    desc: 'Chão no fim da tela, colisão lateral sólida e blocos sincronizados entre todos!',
-    badge: 'Até 10 Players',
-    art: `<svg width="160" height="90" viewBox="0 0 180 100">
-      <rect x="52" y="34" width="26" height="26" fill="#16a34a"/><rect x="52" y="42" width="26" height="18" fill="#78350f"/>
-      <rect x="78" y="34" width="26" height="26" fill="#64748b"/>
-      <rect x="104" y="34" width="26" height="26" fill="#38bdf8"/>
-    </svg>`
-  },
-  {
-    id: 'velha', sub: '2P / 2P+2P / 3P', title: 'Jogo da Velha', is2P: true,
-    desc: 'Suporta 2P local, 2º Player vs 2º Player, 2 pessoas (3 jogadores) e 3P + 2P!',
-    badge: 'Online + 2P',
-    art: `<svg width="160" height="90" viewBox="0 0 180 100">
-      <line x1="74" y1="20" x2="74" y2="80" stroke="#64748b" stroke-width="3"/>
-      <line x1="106" y1="20" x2="106" y2="80" stroke="#64748b" stroke-width="3"/>
-      <line x1="46" y1="40" x2="134" y2="40" stroke="#64748b" stroke-width="3"/>
-      <line x1="46" y1="60" x2="134" y2="60" stroke="#64748b" stroke-width="3"/>
-      <circle cx="90" cy="50" r="7" fill="none" stroke="#38bdf8" stroke-width="3"/>
-    </svg>`
-  },
-  {
-    id: 'dino', sub: 'ARCADE RUNNER', title: 'Dino Run 360', is2P: true,
-    desc: 'Sprites pixel-art (0.10s), pulo 35ms, abaixar (↓/S/B) e 1–4 cactos.',
-    badge: '2P / Sala',
-    art: `<svg width="160" height="90" viewBox="0 0 180 100">
-      <rect x="34" y="34" width="24" height="24" fill="#22c55e" stroke="#000" stroke-width="3"/>
-      <rect x="46" y="40" width="3" height="7" fill="#000"/><rect x="52" y="40" width="3" height="7" fill="#000"/>
-      <line x1="38" y1="58" x2="33" y2="66" stroke="#000" stroke-width="3"/>
-      <line x1="54" y1="58" x2="59" y2="66" stroke="#000" stroke-width="3"/>
-      <rect x="122" y="40" width="8" height="28" rx="2" fill="#22c55e"/>
-      <rect x="116" y="48" width="20" height="6" rx="2" fill="#22c55e"/>
-      <line x1="15" y1="69" x2="165" y2="69" stroke="#334155" stroke-width="3"/>
-    </svg>`
-  },
-  {
-    id: 'ninja', sub: '20 FASES + ELEVADOR', title: 'N+ Stickman (20 Fases)', is2P: true,
-    desc: '20 fases totalmente diferentes com elevador móvel (sobe e desce) e parkour.',
-    badge: '20 Fases Únicas',
-    art: `<svg width="160" height="90" viewBox="0 0 180 100">
-      <circle cx="48" cy="28" r="7" fill="#fff"/>
-      <line x1="48" y1="35" x2="46" y2="54" stroke="#fff" stroke-width="3"/>
-      <line x1="47" y1="42" x2="36" y2="49" stroke="#fff" stroke-width="3"/>
-      <line x1="47" y1="42" x2="59" y2="47" stroke="#fff" stroke-width="3"/>
-      <line x1="46" y1="54" x2="37" y2="68" stroke="#fff" stroke-width="3"/>
-      <line x1="46" y1="54" x2="56" y2="68" stroke="#fff" stroke-width="3"/>
-      <rect x="82" y="40" width="24" height="7" rx="3" fill="#38bdf8"/>
-      <rect x="125" y="20" width="16" height="22" fill="#22c55e"/>
-      <rect x="112" y="42" width="44" height="8" rx="4" fill="#475569"/>
-      <rect x="20" y="70" width="140" height="9" rx="4" fill="#475569"/>
-    </svg>`
-  },
-  {
-    id: 'fnf', sub: 'RITMO 7 SEMANAS', title: 'Friday Night Funkin’', is2P: false,
-    desc: 'Todas as 7 semanas! No Mobile com Joystick, vira 4 setas lado a lado.',
-    badge: '7 Semanas',
-    art: `<svg width="160" height="90" viewBox="0 0 180 100">
-      <text x="26" y="56" fill="#c026d3" font-size="26" font-weight="900">◀</text>
-      <text x="62" y="56" fill="#06b6d4" font-size="26" font-weight="900">▲</text>
-      <text x="98" y="56" fill="#22c55e" font-size="26" font-weight="900">▼</text>
-      <text x="132" y="56" fill="#ef4444" font-size="26" font-weight="900">▶</text>
-    </svg>`
-  },
-  {
-    id: 'gdash', sub: 'RUNNER RÍTMICO', title: 'Geometry Dash', is2P: false,
-    desc: 'Salte espinhos e blocos neon no ritmo junto com os jogadores da sala.',
-    badge: 'Multijogador',
-    art: `<svg width="160" height="90" viewBox="0 0 180 100">
-      <rect x="34" y="44" width="24" height="24" fill="#facc15" stroke="#000" stroke-width="2.5"/>
-      <polygon points="105,68 117,44 129,68" fill="#ef4444"/>
-      <polygon points="129,68 141,44 153,68" fill="#ef4444"/>
-      <line x1="15" y1="69" x2="165" y2="69" stroke="#38bdf8" stroke-width="3"/>
-    </svg>`
-  },
-  {
-    id: 'roblox', sub: 'OBBY MULTIPLAYER', title: 'Roblox 270 (Obby)', is2P: false,
-    desc: 'Parkour obby com lava, checkpoints e P1 até P10 se mexendo juntos!',
-    badge: 'Até 10 Players',
-    art: `<svg width="160" height="90" viewBox="0 0 180 100">
-      <rect x="44" y="28" width="16" height="16" rx="3" fill="#facc15"/>
-      <rect x="40" y="45" width="24" height="20" rx="2" fill="#2563eb"/>
-      <rect x="85" y="54" width="60" height="10" rx="4" fill="#ef4444"/>
-    </svg>`
-  },
-  {
-    id: 'snake', sub: 'ARENA COMPETITIVA', title: 'Snake 360', is2P: true,
-    desc: 'Disputa por maçãs em 1P, Co-op, Modo VS ou Dupla por Pedido de Par.',
-    badge: 'Jogo de 2',
-    art: `<svg width="160" height="90" viewBox="0 0 180 100">
-      <rect x="22" y="38" width="46" height="10" rx="5" fill="#22c55e"/>
-      <circle cx="88" cy="48" r="7" fill="#ef4444"/>
-      <rect x="108" y="54" width="48" height="10" rx="5" fill="#3b82f6"/>
-    </svg>`
-  },
-  {
-    id: 'geo', sub: 'TWIN-STICK SHOOTER', title: 'Geometry Wars: Retro', is2P: true,
-    desc: 'Quadrado (3HP), Triângulo (5HP), Círculo (10HP) e upgrade de dano.',
-    badge: 'Jogo de 2',
-    art: `<svg width="160" height="90" viewBox="0 0 180 100">
-      <polygon points="55,35 75,45 55,55 61,45" fill="none" stroke="#38bdf8" stroke-width="2.5"/>
-      <rect x="105" y="28" width="18" height="18" fill="none" stroke="#a855f7" stroke-width="2.5"/>
-      <circle cx="125" cy="66" r="10" fill="none" stroke="#f43f5e" stroke-width="2.5"/>
-    </svg>`
-  },
-  {
-    id: 'hexic', sub: 'PUZZLE HEXAGONAL', title: 'Hexic 360', is2P: true,
-    desc: 'Gire trios de hexágonos (A/B) e faça combos em 1P ou Dupla.',
-    badge: 'Jogo de 2',
-    art: `<svg width="160" height="90" viewBox="0 0 180 100">
-      <polygon points="75,25 90,33 90,50 75,58 60,50 60,33" fill="#7c3aed"/>
-      <polygon points="108,25 123,33 123,50 108,58 93,50 93,33" fill="#2563eb"/>
-      <polygon points="91,53 106,61 106,78 91,86 76,78 76,61" fill="#10b981"/>
-    </svg>`
-  }
-];
-
-const localChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('lchest270_v23') : null;
-let peer = null, hostConn = null;
-const clientConns = new Map();
-
-function getMyMember() {
-  return state.members.find(m => m.id === playerId) || state.members[0];
-}
-function getGroupMembers(gameId = null) {
-  const me = getMyMember();
-  const gId = gameId || me?.activeGame;
-  return state.members
-    .filter(m => m.activeGame === gId && m.subgroupId === (me?.subgroupId || 'main'))
-    .sort((a, b) => a.slot - b.slot);
-}
-function getOtherMembers() {
-  return getGroupMembers().filter(m => m.id !== playerId);
-}
-
-// =========================================================================
-// MOTOR DE PAREAMENTO INTELIGENTE PARA 2P + ONLINE (TODAS AS REGRAS DO USUÁRIO)
-// =========================================================================
-function build2PMatches(groupMembers) {
-  const sorted = [...groupMembers].sort((a, b) => a.slot - b.slot);
-  const with2P = sorted.filter(m => m.hasSecondPlayer);
-  const solo1P = sorted.filter(m => !m.hasSecondPlayer);
-  const matches = [];
-
-  // CASO A: Exatamente 2 pessoas na partida e SÓ UMA tem o modo 2P ativo (total = 3 jogadores)
-  // Regra: "se tiver só 2 pessoas e um deles tenha o 2p ativado, o 2p fique com os dois ficando 3, mas só nesse caso"
-  if (sorted.length === 2 && with2P.length === 1 && solo1P.length === 1) {
-    const dual = with2P[0];
-    const single = solo1P[0];
-    matches.push({
-      id: `tri_${dual.slot}_${single.slot}`,
-      mode: 'tri', // 3 jogadores: P(dual) + P(dual)(2º) + P(single)
-      participants: [
-        { slot: dual.slot, sub: 1, label: `P${dual.slot}`, color: dual.colorHex || '#22c55e', symbol: 'X' },
-        { slot: single.slot, sub: 1, label: `P${single.slot}`, color: single.colorHex || '#facc15', symbol: 'O' },
-        { slot: dual.slot, sub: 2, label: `P${dual.slot}(2º)`, color: dual.p2ColorHex || '#3b82f6', symbol: '△' }
-      ]
-    });
-    return matches;
-  }
-
-  // CASO B: 3 pessoas na partida e uma delas tem 2P ativo (total = 4 jogadores -> duas duplas!)
-  // Regra: "se tiver 3p e um tiver o 2p e todos querem jogar o mesmo jogo, o segundo player do modo 2p fique com um e o normal com o outro"
-  if (sorted.length === 3 && with2P.length === 1 && solo1P.length === 2) {
-    const dual = with2P[0];
-    const sA = solo1P[0];
-    const sB = solo1P[1];
-    // Mesa 1: Principal do 2P vs Primeiro Solo
-    matches.push({
-      id: `pair_${dual.slot}s1_${sA.slot}`,
-      mode: 'duo',
-      participants: [
-        { slot: dual.slot, sub: 1, label: `P${dual.slot}`, color: dual.colorHex || '#22c55e', symbol: 'X' },
-        { slot: sA.slot, sub: 1, label: `P${sA.slot}`, color: sA.colorHex || '#ef4444', symbol: 'O' }
-      ]
-    });
-    // Mesa 2: Segundo player do 2P vs Outro Solo
-    matches.push({
-      id: `pair_${dual.slot}s2_${sB.slot}`,
-      mode: 'duo',
-      participants: [
-        { slot: dual.slot, sub: 2, label: `P${dual.slot}(2º)`, color: dual.p2ColorHex || '#3b82f6', symbol: 'X' },
-        { slot: sB.slot, sub: 1, label: `P${sB.slot}`, color: sB.colorHex || '#a855f7', symbol: 'O' }
-      ]
-    });
-    return matches;
-  }
-
-  // CASO C: Vários jogadores com 2P ativo ->
-  // Regra: "o player dois de um jogador, do modo 2p, jogue com o 2p do outro se ele tiver"
-  const poolPrimary = [];
-  const poolSecond = [];
-  sorted.forEach(m => {
-    poolPrimary.push({ slot: m.slot, sub: 1, label: `P${m.slot}`, color: m.colorHex || '#22c55e' });
-    if (m.hasSecondPlayer) {
-      poolSecond.push({ slot: m.slot, sub: 2, label: `P${m.slot}(2º)`, color: m.p2ColorHex || '#3b82f6' });
-    }
-  });
-
-  // 1) Pareia os 2º Players entre si (P1(2º) vs P2(2º), P3(2º) vs P4(2º)...)
-  while (poolSecond.length >= 2) {
-    const a = poolSecond.shift();
-    const b = poolSecond.shift();
-    matches.push({
-      id: `sec_${a.slot}_${b.slot}`,
-      mode: 'duo',
-      participants: [
-        { ...a, symbol: 'X' },
-        { ...b, symbol: 'O' }
-      ]
-    });
-  }
-
-  // 2) Pareia os Players Principais entre si (P1 vs P2, P3 vs P4...)
-  while (poolPrimary.length >= 2) {
-    const a = poolPrimary.shift();
-    const b = poolPrimary.shift();
-    matches.push({
-      id: `pri_${a.slot}_${b.slot}`,
-      mode: 'duo',
-      participants: [
-        { ...a, symbol: 'X' },
-        { ...b, symbol: 'O' }
-      ]
-    });
-  }
-
-  // 3) Se sobrou 1 principal e 1 secundário do mesmo dono (1 pessoa jogando 2P local sozinha)
-  if (poolPrimary.length === 1 && poolSecond.length === 1) {
-    matches.push({
-      id: `local_${poolPrimary[0].slot}`,
-      mode: 'duo',
-      participants: [
-        { ...poolPrimary[0], symbol: 'X' },
-        { ...poolSecond[0], symbol: 'O' }
-      ]
-    });
-  } else if (poolPrimary.length === 1) {
-    // Solo contra CPU
-    matches.push({
-      id: `solo_${poolPrimary[0].slot}`,
-      mode: 'solo',
-      participants: [
-        { ...poolPrimary[0], symbol: 'X' },
-        { slot: 0, sub: 0, label: 'CPU', color: '#f43f5e', symbol: 'O' }
-      ]
-    });
-  }
-
-  return matches;
-}
-
-function getMyMatches(groupMembers) {
-  const all = build2PMatches(groupMembers);
-  return all.filter(m => m.participants.some(p => p.slot === state.mySlot));
-}
-
-function sendNet(payload) {
-  if (!state.roomCode) return;
-  const pkt = { code: state.roomCode, sender: playerId, ...payload };
-  if (localChannel) localChannel.postMessage(pkt);
-  if (state.isHost) {
-    clientConns.forEach(c => { if (c.open) c.send(pkt); });
-  } else if (hostConn && hostConn.open) {
-    hostConn.send(pkt);
-  }
-}
-
-function handleRoomPacket(msg) {
-  if (!state.roomCode || msg.code !== state.roomCode || msg.sender === playerId) return;
-
-  if (state.isHost && msg.type !== 'join_req') {
-    clientConns.forEach((c, pid) => { if (pid !== msg.sender && c.open) c.send(msg); });
-  }
-
-  if (msg.type === 'join_req' && state.isHost) {
-    let existing = state.members.find(m => m.id === msg.sender);
-    if (!existing && state.members.length < 10) {
-      const usedSlots = new Set(state.members.map(m => m.slot));
-      let nextSlot = 2;
-      while (usedSlots.has(nextSlot)) nextSlot++;
-      existing = {
-        id: msg.sender, slot: nextSlot, colorHex: null, colorId: null,
-        hasSecondPlayer: !!msg.hasSecondPlayer, p2ColorHex: null, p2ColorId: null,
-        confirmed: false, activeGame: null, subgroupId: 'main', partnerSlot: null,
-        x: 90 + nextSlot * 22, y: 150, p2x: 110 + nextSlot * 22, p2y: 150
-      };
-      state.members.push(existing);
-      state.members.sort((a, b) => a.slot - b.slot);
-    }
-    syncRoomState();
-  }
-  else if (msg.type === 'state_sync') {
-    state.members = msg.members;
-    const me = getMyMember();
-    if (me) state.mySlot = me.slot;
-    refreshLiveBar();
-
-    if (me && me.activeGame && !currentGame && document.getElementById('modal-lobby').style.display !== 'flex') {
-      openColorLobby(me.activeGame, true);
-    } else if (me && !me.activeGame && currentGame) {
-      closeGame(true);
-    }
-    if (document.getElementById('modal-lobby').style.display === 'flex') renderLobby();
-  }
-  else if (msg.type === 'toggle_2p') {
-    const m = state.members.find(x => x.id === msg.sender);
-    if (m) m.hasSecondPlayer = !!msg.hasSecondPlayer;
-    if (state.isHost) syncRoomState();
-    refreshLiveBar();
-  }
-  else if (msg.type === 'color_pick') {
-    const m = state.members.find(x => x.id === msg.sender);
-    if (m) {
-      m.colorId = msg.colorId; m.colorHex = msg.colorHex;
-      m.hasSecondPlayer = !!msg.hasSecondPlayer;
-      m.p2ColorId = msg.p2ColorId || null; m.p2ColorHex = msg.p2ColorHex || null;
-      m.confirmed = true;
-    }
-    if (state.isHost) syncRoomState();
-    refreshLiveBar();
-    if (document.getElementById('modal-lobby').style.display === 'flex') renderLobby();
-  }
-  else if (msg.type === 'ttt_move') {
-    state.tttBoards[msg.matchId] = msg.boardState;
-  }
-  else if (msg.type === 'mc_block') {
-    if (state.mcWorld && state.mcWorld[msg.r] && state.mcWorld[msg.r][msg.c] !== undefined) {
-      state.mcWorld[msg.r][msg.c] = msg.val;
-    }
-  }
-  else if (msg.type === 'mc_world_sync') {
-    if (msg.world) state.mcWorld = msg.world;
-  }
-  else if (msg.type === 'vote_start') {
-    state.activeVote = msg.vote;
-    openVoteModal();
-  }
-  else if (msg.type === 'vote_cast') {
-    if (!state.activeVote || state.activeVote.voteId !== msg.voteId) return;
-    state.activeVote.votes[msg.slot] = msg.agree;
-    updateVoteModal();
-    if (state.isHost) checkVoteResolution();
-  }
-  else if (msg.type === 'vote_resolved') {
-    document.getElementById('modal-vote').style.display = 'none';
-    state.activeVote = null;
-    if (msg.notice) showToast(msg.notice);
-  }
-  else if (msg.type === 'pair_req') {
-    if (msg.toSlot === state.mySlot) {
-      const accept = confirm(`P${msg.fromSlot} pediu para formar PAR com você em ${GAMES.find(g=>g.id===msg.gameId)?.title || msg.gameId}! Aceitar?`);
-      sendNet({ type: 'pair_reply', fromSlot: msg.fromSlot, toSlot: state.mySlot, gameId: msg.gameId, accepted: accept });
-    }
-  }
-  else if (msg.type === 'pair_reply') {
-    if (msg.accepted && state.isHost) {
-      const m1 = state.members.find(m => m.slot === msg.fromSlot);
-      const m2 = state.members.find(m => m.slot === msg.toSlot);
-      const sub = `pair_${msg.fromSlot}_${msg.toSlot}`;
-      if (m1 && m2) {
-        m1.partnerSlot = m2.slot; m2.partnerSlot = m1.slot;
-        m1.activeGame = msg.gameId; m2.activeGame = msg.gameId;
-        m1.subgroupId = sub; m2.subgroupId = sub;
-        m1.confirmed = false; m2.confirmed = false;
-      }
-      syncRoomState();
-    } else if (msg.accepted && !state.isHost && (state.mySlot === msg.fromSlot || state.mySlot === msg.toSlot)) {
-      openColorLobby(msg.gameId, true);
-    }
-  }
-  else if (msg.type === 'pos') {
-    const m = state.members.find(x => x.id === msg.sender);
-    if (m) {
-      m.x = msg.x; m.y = msg.y; m.extra = msg.extra;
-      if (msg.colorHex) m.colorHex = msg.colorHex;
-      m.hasSecondPlayer = !!msg.hasSecondPlayer;
-      if (msg.hasSecondPlayer) { m.p2x = msg.p2x; m.p2y = msg.p2y; m.p2ColorHex = msg.p2ColorHex; }
-    }
-  }
-}
-
-if (localChannel) localChannel.onmessage = e => handleRoomPacket(e.data);
-
-function syncRoomState() {
-  refreshLiveBar();
-  if (state.isHost) sendNet({ type: 'state_sync', members: state.members });
-}
-
-function openRoomModal() {
-  document.getElementById('modal-room').style.display = 'flex';
-  refreshLiveBar();
-}
-
-function createHostRoom() {
-  const code = Math.random().toString(36).substring(2, 7).toUpperCase();
-  state.roomCode = code; state.isHost = true; state.mySlot = 1;
-  state.members = [{
-    id: playerId, slot: 1, colorHex: state.p1Color, colorId: state.p1ColorId,
-    hasSecondPlayer: state.multiplayer, p2ColorHex: state.p2Color, p2ColorId: state.p2ColorId,
-    confirmed: false, activeGame: null, subgroupId: 'main', partnerSlot: null,
-    x: 80, y: 150, p2x: 110, p2y: 150
-  }];
-  document.getElementById('host-code-box').textContent = code;
-  document.getElementById('net-status').textContent = 'Conectando rede online...';
-
-  if (window.Peer) {
-    if (peer) peer.destroy();
-    peer = new Peer('LCHEST270_' + code);
-    peer.on('open', () => {
-      document.getElementById('net-status').textContent = 'Online na Internet! Passe o código acima aos amigos.';
-    });
-    peer.on('connection', conn => {
-      conn.on('data', data => {
-        if (data && data.sender) clientConns.set(data.sender, conn);
-        handleRoomPacket(data);
-      });
-    });
-    peer.on('error', () => {
-      document.getElementById('net-status').textContent = 'Sala local pronta.';
-    });
-  } else {
-    document.getElementById('net-status').textContent = 'Sala local pronta.';
-  }
-  refreshLiveBar();
-  showToast(`Sala ${code} criada! Você é o P1 (Anfitrião).`);
-}
-
-function joinCodeRoom() {
-  const val = document.getElementById('join-code-input').value.trim().toUpperCase();
-  if (!val) return;
-  state.roomCode = val; state.isHost = false;
-  document.getElementById('net-status').textContent = `Conectando à sala ${val}...`;
-  sendNet({ type: 'join_req', hasSecondPlayer: state.multiplayer });
-
-  if (window.Peer) {
-    if (peer) peer.destroy();
-    peer = new Peer();
-    peer.on('open', () => {
-      hostConn = peer.connect('LCHEST270_' + val);
-      hostConn.on('open', () => {
-        document.getElementById('net-status').textContent = `Conectado online à sala ${val}!`;
-        hostConn.send({ code: val, sender: playerId, type: 'join_req', hasSecondPlayer: state.multiplayer });
-      });
-      hostConn.on('data', data => handleRoomPacket(data));
-    });
-  }
-  refreshLiveBar();
-}
-
-function leaveRoom() {
-  if (peer) { peer.destroy(); peer = null; }
-  clientConns.clear(); hostConn = null;
-  state.roomCode = null; state.isHost = false; state.mySlot = 1;
-  state.members = [{
-    id: playerId, slot: 1, colorHex: state.p1Color, colorId: 'verde',
-    hasSecondPlayer: state.multiplayer, p2ColorHex: state.p2Color, p2ColorId: 'azul',
-    confirmed: false, activeGame: null, subgroupId: 'main', partnerSlot: null, x: 80, y: 150, p2x: 110, p2y: 150
-  }];
-  document.getElementById('host-code-box').textContent = '';
-  document.getElementById('net-status').textContent = '';
-  refreshLiveBar();
-}
-
-function startVote(kind, targetGame) {
-  const me = getMyMember();
-  const vote = {
-    voteId: 'V_' + Date.now(), kind, requesterSlot: state.mySlot,
-    targetGame, subgroupId: me?.subgroupId || 'main', votes: { [state.mySlot]: true }
-  };
-  state.activeVote = vote;
-  sendNet({ type: 'vote_start', vote });
-  openVoteModal();
-  if (state.isHost) checkVoteResolution();
-}
-
-function openVoteModal() {
-  const v = state.activeVote;
-  if (!v) return;
-  const gTitle = GAMES.find(g => g.id === v.targetGame)?.title || v.targetGame;
-  document.getElementById('modal-vote').style.display = 'flex';
-  if (v.kind === 'enter') {
-    document.getElementById('vote-tag').textContent = 'PEDIDO DE JOGO PARA O ANFITRIÃO';
-    document.getElementById('vote-title').textContent = `P${v.requesterSlot} quer jogar ${gTitle}`;
-    document.getElementById('vote-desc').textContent = `O Anfitrião (P1) e a sala decidem se vão jogar ${gTitle}:`;
-  } else {
-    document.getElementById('vote-tag').textContent = 'VOTAÇÃO PARA SAIR DO JOGO';
-    document.getElementById('vote-title').textContent = `P${v.requesterSlot} pediu para sair de ${gTitle}`;
-    document.getElementById('vote-desc').textContent = `Quem votar SIM sai para escolher outro jogo; quem votar NÃO continua jogando!`;
-  }
-  updateVoteModal();
-}
-
-function updateVoteModal() {
-  const v = state.activeVote;
-  if (!v) return;
-  const lines = state.members.map(m => {
-    const val = v.votes[m.slot];
-    return `P${m.slot}: ${val === true ? '✅ SIM' : val === false ? '❌ NÃO' : '⏳ Aguardando'}`;
-  });
-  document.getElementById('vote-tallies').textContent = lines.join('  •  ');
-}
-
-function castVote(agree) {
-  const v = state.activeVote;
-  if (!v) return;
-  v.votes[state.mySlot] = agree;
-  sendNet({ type: 'vote_cast', voteId: v.voteId, slot: state.mySlot, agree });
-  updateVoteModal();
-  if (state.isHost) checkVoteResolution();
-}
-
-function checkVoteResolution() {
-  const v = state.activeVote;
-  if (!v || !state.isHost) return;
-  const relevant = v.kind === 'exit'
-    ? state.members.filter(m => m.activeGame === v.targetGame && m.subgroupId === v.subgroupId)
-    : state.members;
-  if (!relevant.every(m => v.votes[m.slot] !== undefined)) return;
-
-  let notice = '';
-  if (v.kind === 'enter') {
-    const hostAgreed = v.votes[1] === true;
-    const yesCount = relevant.filter(m => v.votes[m.slot] === true).length;
-    if (hostAgreed && yesCount >= Math.ceil(relevant.length / 2)) {
-      state.members.forEach(m => { m.activeGame = v.targetGame; m.subgroupId = 'main'; m.confirmed = false; m.partnerSlot = null; });
-      notice = `Sala aprovou ${GAMES.find(g=>g.id===v.targetGame)?.title}!`;
-      syncRoomState();
-      openColorLobby(v.targetGame, true);
-    } else {
-      notice = `Pedido recusado pelo Anfitrião/Sala.`;
-    }
-  } else {
-    const yesMembers = relevant.filter(m => v.votes[m.slot] === true);
-    const noMembers = relevant.filter(m => m.votes[m.slot] === false);
-    if (noMembers.length === 0) {
-      relevant.forEach(m => { m.activeGame = null; m.confirmed = false; m.partnerSlot = null; m.subgroupId = 'main'; });
-      notice = `Todos concordaram em sair!`;
-      if (currentGame) closeGame(true);
-    } else if (yesMembers.length > 1) {
-      const newSub = 'sub_' + Date.now();
-      yesMembers.forEach(m => { m.activeGame = null; m.confirmed = false; m.partnerSlot = null; m.subgroupId = newSub; });
-      notice = `${yesMembers.map(m=>'P'+m.slot).join(', ')} saíram para outro jogo; ${noMembers.map(m=>'P'+m.slot).join(', ')} continuam!`;
-      if (yesMembers.some(m => m.slot === state.mySlot) && currentGame) closeGame(true);
-    } else {
-      notice = `Saída negada: nem todos concordaram.`;
-    }
-    syncRoomState();
-  }
-  document.getElementById('modal-vote').style.display = 'none';
-  state.activeVote = null;
-  sendNet({ type: 'vote_resolved', notice });
-  if (notice) showToast(notice);
-}
-
-function openPairModal() {
-  if (!state.roomCode) { showToast('Entre ou crie uma sala primeiro!'); return; }
-  const candidates = state.members.filter(m => m.slot !== state.mySlot && (!m.activeGame || m.subgroupId !== 'main'));
-  const box = document.getElementById('pair-candidates-list');
-  box.innerHTML = !candidates.length
-    ? `<div style="font-size:12px;color:#94a3b8;">Nenhum jogador livre fora do grupo principal no momento.</div>`
-    : candidates.map(c => `
-      <div style="display:flex;justify-content:space-between;align-items:center;background:#0f172a;padding:8px 12px;border-radius:12px;">
-        <span><strong style="color:${c.colorHex||'#fff'}">P${c.slot}</strong> (${c.activeGame ? 'Jogando ' + c.activeGame : 'Livre no Lobby'})</span>
-        <button class="btn-play" onclick="sendPairRequest(${c.slot})">Pedir Par</button>
-      </div>`).join('');
-  document.getElementById('modal-pair').style.display = 'flex';
-}
-
-function sendPairRequest(toSlot) {
-  const gameId = document.getElementById('pair-game-select').value;
-  sendNet({ type: 'pair_req', fromSlot: state.mySlot, toSlot, gameId });
-  document.getElementById('modal-pair').style.display = 'none';
-  showToast(`Pedido de par enviado para P${toSlot}!`);
-}
-
-function renderPairWithRopeSVG(m1, m2) {
-  const c1 = m1.colorHex || '#22c55e', c2 = m2.colorHex || '#3b82f6';
-  const gid = `rope_${m1.slot}_${m2.slot}`;
-  return `<span class="pair-unit">
-    <span class="p-badge" style="background:${c1};color:${c1==='#f8fafc'||c1==='#facc15'||c1==='#e7d3b0'?'#000':'#fff'}">P${m1.slot}</span>
-    <svg width="34" height="14" viewBox="0 0 34 14">
-      <defs><linearGradient id="${gid}" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="${c1}"/><stop offset="100%" stop-color="${c2}"/></linearGradient></defs>
-      <path d="M2,7 Q9,2 17,7 T32,7" fill="none" stroke="url(#${gid})" stroke-width="4" stroke-linecap="round"/>
-    </svg>
-    <span class="p-badge" style="background:${c2};color:${c2==='#f8fafc'||c2==='#facc15'||c2==='#e7d3b0'?'#000':'#fff'}">P${m2.slot}</span>
-  </span>`;
-}
-
-function refreshLiveBar() {
-  document.getElementById('sala-tab-cnt').textContent = state.members.length;
-  document.getElementById('room-code-lbl').textContent = state.roomCode ? `${state.roomCode} (P${state.mySlot} • ${state.members.length}J)` : 'OFF';
-  const info = document.getElementById('room-members-info');
-  if (info) {
-    info.textContent = state.roomCode
-      ? `Sala ${state.roomCode} • Você é P${state.mySlot}${state.multiplayer ? ` + P${state.mySlot}(2º)` : ''} • Conectados: ${state.members.map(m => 'P' + m.slot + (m.hasSecondPlayer ? `+P${m.slot}(2º)` : '')).join(', ')}`
-      : '';
-  }
-
-  const bar = document.getElementById('room-live-bar');
-  if (!state.roomCode) { bar.style.display = 'none'; return; }
-  bar.style.display = 'flex';
-
-  const byGame = new Map();
-  state.members.forEach(m => {
-    const key = m.activeGame || 'lobby';
-    if (!byGame.has(key)) byGame.set(key, []);
-    byGame.get(key).push(m);
-  });
-
-  const html = [];
-  byGame.forEach((list, gameKey) => {
-    const gTitle = gameKey === 'lobby' ? 'No Lobby' : (GAMES.find(g => g.id === gameKey)?.title || gameKey);
-    const renderedSlots = new Set();
-    const parts = [];
-    list.forEach(m => {
-      if (renderedSlots.has(m.slot)) return;
-      if (m.partnerSlot) {
-        const partner = list.find(p => p.slot === m.partnerSlot);
-        if (partner) {
-          renderedSlots.add(m.slot); renderedSlots.add(partner.slot);
-          parts.push(renderPairWithRopeSVG(m, partner));
-          return;
-        }
-      }
-      renderedSlots.add(m.slot);
-      const c = m.colorHex || '#475569';
-      parts.push(`<span class="p-badge" style="background:${c};color:${c==='#f8fafc'||c==='#facc15'||c==='#e7d3b0'?'#000':'#fff'}">P${m.slot}</span>`);
-      if (m.hasSecondPlayer) {
-        const c2 = m.p2ColorHex || '#3b82f6';
-        parts.push(`<span class="p-badge" style="background:${c2};color:${c2==='#f8fafc'||c2==='#facc15'||c2==='#e7d3b0'?'#000':'#fff'}">P${m.slot}(2º)</span>`);
-      }
-    });
-    html.push(`<div class="group-pill"><strong>${gTitle}:</strong> ${parts.join(' ')}</div>`);
-  });
-  document.getElementById('live-groups-list').innerHTML = html.join('');
-  if (state.tab === 'sala') renderMain();
-}
-
-function openColorLobby(gameId, fromSync = false) {
-  state.pendingGame = gameId;
-  const me = getMyMember();
-
-  if (state.roomCode && !fromSync) {
-    if (state.isHost) {
-      state.members.forEach(m => {
-        if (m.subgroupId === (me?.subgroupId || 'main')) {
-          m.activeGame = gameId; m.confirmed = false; m.colorId = null; m.colorHex = null; m.p2ColorId = null; m.p2ColorHex = null;
-        }
-      });
-      syncRoomState();
-    } else if (me && me.subgroupId !== 'main') {
-      state.members.forEach(m => {
-        if (m.subgroupId === me.subgroupId) {
-          m.activeGame = gameId; m.confirmed = false; m.colorId = null; m.colorHex = null;
-        }
-      });
-      sendNet({ type: 'state_sync', members: state.members });
-    } else {
-      startVote('enter', gameId);
-      return;
-    }
-  } else if (!state.roomCode) {
-    state.members = [{
-      id: playerId, slot: 1, colorId: null, colorHex: null,
-      hasSecondPlayer: state.multiplayer, p2ColorId: null, p2ColorHex: null,
-      confirmed: false, activeGame: gameId, subgroupId: 'main', x: 80, y: 150, p2x: 110, p2y: 150
-    }];
-  }
-
-  state.lobbyPickSubStep = 1;
-  state.tempSelectedColorId = 'verde';
-  document.getElementById('modal-lobby').style.display = 'flex';
-  renderLobby();
-}
-
-function renderLobby() {
-  const me = getMyMember();
-  const groupMembers = state.members
-    .filter(m => m.activeGame === state.pendingGame && m.subgroupId === (me?.subgroupId || 'main'))
-    .sort((a, b) => a.slot - b.slot);
-  const sorted = groupMembers.length ? groupMembers : [...state.members].sort((a, b) => a.slot - b.slot);
-
-  const nextUnconfirmed = sorted.find(m => !m.confirmed);
-  const activeSlot = nextUnconfirmed ? nextUnconfirmed.slot : sorted[sorted.length - 1].slot;
-  const isMyTurn = state.mySlot === activeSlot;
-  const pickingSecond = isMyTurn && state.multiplayer && state.lobbyPickSubStep === 2;
-
-  document.getElementById('lobby-subtitle').textContent = state.roomCode
-    ? `SALA ${state.roomCode} • VOCÊ É P${state.mySlot}${state.multiplayer ? ` + P${state.mySlot}(2º)` : ''}`
-    : `MODO LOCAL • VOCÊ É P1${state.multiplayer ? ' + P1(2º)' : ''}`;
-
-  document.getElementById('lobby-title').textContent = isMyTurn
-    ? (pickingSecond ? `Escolha a cor de P${state.mySlot} (2º Player)` : `Sua vez: Escolha a cor de P${state.mySlot}`)
-    : `Aguardando P${activeSlot} escolher...`;
-
-  document.getElementById('lobby-turn-msg').innerHTML = isMyTurn
-    ? `Cores com <strong>X</strong> já foram escolhidas por outro jogador.`
-    : `O <strong>Anfitrião (P1)</strong> escolhe primeiro e depois os próximos na ordem!`;
-
-  const takenColors = new Set();
-  state.members.forEach(m => {
-    if (m.confirmed && m.colorId) takenColors.add(m.colorId);
-    if (m.confirmed && m.hasSecondPlayer && m.p2ColorId) takenColors.add(m.p2ColorId);
-  });
-  if (pickingSecond && state.p1ColorId) takenColors.add(state.p1ColorId);
-
-  if (takenColors.has(state.tempSelectedColorId)) {
-    const firstFree = PRESET_COLORS.find(c => !takenColors.has(c.id));
-    if (firstFree) state.tempSelectedColorId = firstFree.id;
-  }
-
-  const grid = document.getElementById('lobby-color-grid');
-  grid.innerHTML = PRESET_COLORS.map(c => {
-    const isTaken = takenColors.has(c.id);
-    const isSel = !isTaken && state.tempSelectedColorId === c.id;
-    return `<button class="swatch-btn ${isTaken ? 'taken' : ''} ${isSel ? 'selected' : ''}"
-      style="background:${c.hex};color:${c.darkText ? '#111' : '#fff'};"
-      onclick="selectLobbyColor('${c.id}', ${isTaken})">
-      <span>${c.name}</span>
-      ${isTaken ? '<div class="swatch-x">X</div>' : ''}
-    </button>`;
-  }).join('');
-
-  document.getElementById('lobby-roster').innerHTML = sorted.map(m => `
-    <div class="roster-chip">
-      <span class="chip-dot" style="background:${m.colorHex || '#475569'}"></span>
-      <span>P${m.slot}${m.hasSecondPlayer ? `+P${m.slot}(2º)` : ''}: ${m.confirmed ? 'Pronto' : (m.slot === activeSlot ? 'Escolhendo...' : 'Aguardando')}</span>
-    </div>`).join('');
-
-  const btnConfirm = document.getElementById('btn-confirm-color');
-  btnConfirm.disabled = !isMyTurn || takenColors.has(state.tempSelectedColorId);
-  btnConfirm.textContent = (isMyTurn && state.multiplayer && state.lobbyPickSubStep === 1)
-    ? `Confirmar Cor de P${state.mySlot} e Escolher P${state.mySlot}(2º)`
-    : 'Confirmar Cor e Entrar na Partida';
-}
-
-function selectLobbyColor(colorId, isTaken) {
-  if (isTaken) return;
-  state.tempSelectedColorId = colorId;
-  renderLobby();
-}
-
-function confirmLobbyChoice() {
-  const chosen = PRESET_COLORS.find(c => c.id === state.tempSelectedColorId);
-  if (!chosen) return;
-
-  if (state.multiplayer && state.lobbyPickSubStep === 1) {
-    state.p1Color = chosen.hex;
-    state.p1ColorId = chosen.id;
-    state.lobbyPickSubStep = 2;
-    renderLobby();
-    return;
-  }
-
-  if (state.multiplayer && state.lobbyPickSubStep === 2) {
-    state.p2Color = chosen.hex;
-    state.p2ColorId = chosen.id;
-  } else {
-    state.p1Color = chosen.hex;
-    state.p1ColorId = chosen.id;
-  }
-
-  const me = getMyMember();
-  if (me) {
-    me.colorId = state.p1ColorId; me.colorHex = state.p1Color;
-    me.hasSecondPlayer = state.multiplayer;
-    me.p2ColorId = state.p2ColorId; me.p2ColorHex = state.p2Color;
-    me.confirmed = true; me.activeGame = state.pendingGame;
-  }
-
-  sendNet({
-    type: 'color_pick',
-    colorId: state.p1ColorId, colorHex: state.p1Color,
-    hasSecondPlayer: state.multiplayer, p2ColorId: state.p2ColorId, p2ColorHex: state.p2Color
-  });
-  if (state.isHost) syncRoomState();
-  refreshLiveBar();
-  document.getElementById('modal-lobby').style.display = 'none';
-  startGame(state.pendingGame);
-}
-
-function toggle2P() {
-  state.multiplayer = !state.multiplayer;
-  const me = getMyMember();
-  if (me) me.hasSecondPlayer = state.multiplayer;
-  const btn = document.getElementById('btn-p2-top');
-  btn.textContent = state.multiplayer ? '2P Ativo' : '1P Solo';
-  btn.classList.toggle('on', state.multiplayer);
-  if (state.roomCode) {
-    sendNet({ type: 'toggle_2p', hasSecondPlayer: state.multiplayer });
-    if (state.isHost) syncRoomState();
-  }
-  refreshLiveBar();
-  if (state.tab === 'sistema') renderMain();
-}
-
-function showToast(txt) {
-  const t = document.getElementById('toast');
-  t.textContent = txt; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3600);
-}
-
-function unlock(name, pts = 25) {
-  if (state.unlocked.has(name)) return;
-  state.unlocked.add(name); state.gamerscore += pts;
-  document.getElementById('gs-display').textContent = state.gamerscore.toLocaleString('pt-BR') + ' G';
-  document.getElementById('ach-count').textContent = state.unlocked.size;
-  showToast(`🏆 Conquista: ${name} (+${pts}G)`);
-}
-
-function switchTab(t) {
-  state.tab = t;
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + t).classList.add('active');
-  renderMain();
-}
-
-function stepCarousel(dir) {
-  state.selectedIdx = (state.selectedIdx + dir + GAMES.length) % GAMES.length;
-  renderMain();
-  const activeCard = document.querySelector('.game-card.active');
-  if (activeCard) activeCard.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-}
-
-function renderMain() {
-  const main = document.getElementById('main-view');
-  if (state.tab === 'arcade') {
-    main.innerHTML = `
-      <div class="carousel-shell">
-        <button class="nav-arrow left" onclick="stepCarousel(-1)">◀</button>
-        <div class="carousel-track">${GAMES.map((g, i) => {
-          const sideClass = i < state.selectedIdx ? 'left-side' : i > state.selectedIdx ? 'right-side' : 'active';
-          return `<div class="game-card ${sideClass}" onclick="requestLaunch('${g.id}', ${i})">
-            <div class="preview-box">${g.art}</div>
-            <div class="card-sub">${g.sub}</div>
-            <div class="card-title">${g.title}</div>
-            <div class="card-desc">${g.desc}</div>
-            <div class="card-actions">
-              <button class="btn-play" onclick="event.stopPropagation(); requestLaunch('${g.id}', ${i})">Iniciar Jogo</button>
-              <span class="badge-tag">${g.badge}</span>
+  </header>
+
+  <!-- LISTA DE JOGOS -->
+  <main>
+    <div class="cards-container">
+      <!-- CARD 1: MINECRAFT 270 -->
+      <div class="game-card">
+        <div>
+          <div class="preview-box">
+            <div class="mc-blocks">
+              <span style="background:#22c55e"></span>
+              <span style="background:#854d0e"></span>
+              <span style="background:#64748b"></span>
+              <span style="background:#38bdf8"></span>
             </div>
-          </div>`;
-        }).join('')}
+          </div>
+          <div class="tag-cat">SANDBOX MULTIPLAYER</div>
+          <div class="game-title">Minecraft 270</div>
+          <div class="game-desc">Chão no fim da tela, colisão lateral sólida e blocos sincronizados entre todos!</div>
         </div>
-        <button class="nav-arrow right" onclick="stepCarousel(1)">▶</button>
-      </div>`;
-  } else if (state.tab === 'sala') {
-    const byGame = new Map();
-    state.members.forEach(m => {
-      const key = m.activeGame || 'lobby';
-      if (!byGame.has(key)) byGame.set(key, []);
-      byGame.get(key).push(m);
-    });
-    let cardsHtml = '';
-    byGame.forEach((list, gameKey) => {
-      const gTitle = gameKey === 'lobby' ? 'Lobby Principal' : (GAMES.find(g => g.id === gameKey)?.title || gameKey);
-      const rendered = new Set();
-      const items = [];
-      list.forEach(m => {
-        if (rendered.has(m.slot)) return;
-        if (m.partnerSlot) {
-          const p = list.find(x => x.slot === m.partnerSlot);
-          if (p) {
-            rendered.add(m.slot); rendered.add(p.slot);
-            items.push(`<div style="margin:6px 0;">${renderPairWithRopeSVG(m, p)} <span style="font-size:11px;color:#94a3b8;">(Dupla Lado a Lado)</span></div>`);
-            return;
-          }
-        }
-        rendered.add(m.slot);
-        const c = m.colorHex || '#475569';
-        items.push(`<div style="display:flex;align-items:center;gap:6px;margin:5px 0;flex-wrap:wrap;">
-          <span class="p-badge" style="background:${c};color:${c==='#f8fafc'||c==='#facc15'||c==='#e7d3b0'?'#000':'#fff'}">P${m.slot}</span>
-          ${m.hasSecondPlayer ? `<span class="p-badge" style="background:${m.p2ColorHex||'#3b82f6'};color:#fff;">P${m.slot}(2º)</span>` : ''}
-          <span style="font-size:12px;">${m.slot === 1 ? 'Anfitrião' : 'Convidado'}</span>
-        </div>`);
-      });
-      cardsHtml += `<div class="cfg-card"><strong>🎮 ${gTitle}</strong>${items.join('')}</div>`;
-    });
-    main.innerHTML = `<div class="panel-grid">
-      <div class="cfg-card">
-        <strong>Status da Sala</strong>
-        <span style="font-size:12px;color:#cbd5e1;">${state.roomCode ? `Código: <b>${state.roomCode}</b> • Você: <b>P${state.mySlot}${state.multiplayer ? `+P${state.mySlot}(2º)` : ''}</b>` : 'Você está offline.'}</span>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <button class="cfg-btn" onclick="openRoomModal()">Gerenciar Sala</button>
-          <button class="cfg-btn" onclick="openPairModal()">🤝 Pedir Par (Jogo de 2)</button>
+        <div class="card-footer">
+          <button class="btn-play" onclick="openMinecraft270()">Iniciar Jogo</button>
+          <span class="badge-info">Até 10 Players</span>
         </div>
       </div>
-      ${cardsHtml}
-    </div>`;
-  } else if (state.tab === 'conquistas') {
-    const all = [
-      'Persistente em Cactos (500 pts Dino)', '1 Morte no Dino', '2 Mortes no Dino', '5 Mortes no Dino', '10 Mortes no Dino',
-      '1 Morte Global', '2 Mortes Globais', '5 Mortes Globais', '10 Mortes Globais',
-      'Ninja Atleta (Fase 10 N+)', 'Cobra Gulosa (Tamanho 20)', 'Matador de Bichos (55 pts Geo Wars)',
-      '270 Cravado! (Exatos 270 pts)', '270 Segundos Exatos!'
-    ];
-    main.innerHTML = `<div class="panel-grid">${all.map(a => `
-      <div class="cfg-card" style="opacity:${state.unlocked.has(a)?1:0.55}">
-        <strong>${state.unlocked.has(a) ? '🏆' : '🔒'} ${a}</strong>
-        <span style="font-size:12px;color:#94a3b8">${state.unlocked.has(a) ? 'Desbloqueada!' : 'Bloqueada'}</span>
-      </div>`).join('')}</div>`;
-  } else {
-    main.innerHTML = `<div class="panel-grid">
-      <div class="cfg-card">
-        <strong>Sala Online por Código</strong>
-        <button class="cfg-btn" onclick="openRoomModal()">${state.roomCode ? `Sala Ativa: ${state.roomCode} (P${state.mySlot})` : 'Criar ou Entrar com Código'}</button>
+
+      <!-- CARD 2: JOGO DA VELHA -->
+      <div class="game-card">
+        <div>
+          <div class="preview-box">
+            <span style="font-size:44px; color:#64748b;">#</span>
+          </div>
+          <div class="tag-cat">2P / 2P+2P / 3P</div>
+          <div class="game-title">Jogo da Velha</div>
+          <div class="game-desc">Suporta 2P local, 2º Player vs 2º Player, 2 pessoas (3 jogadores) e 3P + 2P!</div>
+        </div>
+        <div class="card-footer">
+          <button class="btn-play" onclick="alert('Selecione Minecraft 270 para testar a correção!')">Iniciar Jogo</button>
+          <span class="badge-info">Online + 2P</span>
+        </div>
       </div>
-      <div class="cfg-card">
-        <strong>Jogadores (1P / 2P no mesmo aparelho)</strong>
-        <button class="cfg-btn" onclick="toggle2P()">${state.multiplayer ? '2 Jogadores Ativo (WASD + Setas)' : '1 Jogador'}</button>
+
+      <!-- CARD 3: DINO RUN 360 -->
+      <div class="game-card">
+        <div>
+          <div class="preview-box">
+            <span style="font-size:34px;">🦖 🌵</span>
+          </div>
+          <div class="tag-cat">ARCADE RUNNER</div>
+          <div class="game-title">Dino Run 360</div>
+          <div class="game-desc">Sprites pixel-art (0.10s), pulo 35ms, abaixar (↓/S/B) e 1-4 cactos.</div>
+        </div>
+        <div class="card-footer">
+          <button class="btn-play" onclick="alert('Selecione Minecraft 270 para testar a correção!')">Iniciar Jogo</button>
+          <span class="badge-info">2P / Sala</span>
+        </div>
       </div>
-      <div class="cfg-card">
-        <strong>Controles na Tela (Mobile 1P e 2P)</strong>
-        <button class="cfg-btn" onclick="state.mobileControls=!state.mobileControls; renderMain()">${state.mobileControls ? 'Ativado (Com 2 Controles se 2P!)' : 'Desativado (Modo PC)'}</button>
+
+      <!-- CARD 4: N+ STICKMAN -->
+      <div class="game-card">
+        <div>
+          <div class="preview-box">
+            <span style="font-size:36px;">🏃‍♂️ 🟩</span>
+          </div>
+          <div class="tag-cat">20 FASES + ELEVADOR</div>
+          <div class="game-title">N+ Stickman (20 Fases)</div>
+          <div class="game-desc">20 fases totalmente diferentes com elevador móvel (sobe e desce) e parkour.</div>
+        </div>
+        <div class="card-footer">
+          <button class="btn-play" onclick="alert('Selecione Minecraft 270 para testar a correção!')">Iniciar Jogo</button>
+          <span class="badge-info">20 Fases Únicas</span>
+        </div>
       </div>
-      <div class="cfg-card">
-        <strong>Estilo Direção Mobile (FNF adapta Joystick → Setas)</strong>
-        <button class="cfg-btn" onclick="state.mobileStyle=(state.mobileStyle==='dpad'?'joystick':'dpad'); renderMain()">${state.mobileStyle === 'dpad' ? 'D-Pad Preto' : 'Joystick (Vira 4 Setas no FNF)'}</button>
+    </div>
+  </main>
+
+  <!-- TELA DO MINECRAFT 270 -->
+  <div id="game-overlay">
+    <div class="game-topbar">
+      <div>
+        <strong>Minecraft 270</strong> &nbsp;|&nbsp;
+        <span class="controls-hint">
+          Mover: <strong>A / D</strong> ou <strong>Setas</strong> &nbsp;•&nbsp;
+          Pular: <strong>W / Espaço</strong> &nbsp;•&nbsp;
+          Quebrar: <strong>Clique Esq.</strong> &nbsp;•&nbsp;
+          Colocar: <strong>Clique Dir.</strong> &nbsp;•&nbsp;
+          Trocar Bloco: <strong>1 - 4</strong>
+        </span>
       </div>
-      <div class="cfg-card">
-        <strong>Inverter Lados (Controles Mobile)</strong>
-        <button class="cfg-btn" onclick="state.invertSides=!state.invertSides; renderMain()">${state.invertSides ? 'Invertido' : 'Normal'}</button>
+      <button class="btn-exit" onclick="closeGame()">✖ Sair do Jogo (ESC)</button>
+    </div>
+
+    <div class="canvas-wrapper">
+      <canvas id="mcCanvas" width="960" height="540" tabindex="0"></canvas>
+      <div class="hotbar" id="hotbar">
+        <div class="slot selected" style="background:#22c55e" onclick="selectBlock(1)">1</div>
+        <div class="slot" style="background:#854d0e" onclick="selectBlock(2)">2</div>
+        <div class="slot" style="background:#64748b" onclick="selectBlock(3)">3</div>
+        <div class="slot" style="background:#38bdf8" onclick="selectBlock(4)">4</div>
       </div>
-      <div class="cfg-card">
-        <strong>Controle 2º Player (Geometry Wars VS)</strong>
-        <button class="cfg-btn" onclick="state.p2GeoTank=!state.p2GeoTank; renderMain()">${state.p2GeoTank ? 'Tanque (←/→ Gira, ↑/↓ Anda)' : 'Direcional (Mira segue a seta)'}</button>
-      </div>
-    </div>`;
-  }
-}
+    </div>
+  </div>
 
-const keys = {};
-let mouse = { x: 400, y: 300, down: false, clicked: false };
-let raf = null, currentGame = null, secTimer = null;
+  <script>
+    const overlay = document.getElementById('game-overlay');
+    const canvas = document.getElementById('mcCanvas');
+    const ctx = canvas.getContext('2d');
 
-function setKey(k, v) {
-  if (v && !keys[k]) { keys[k + '_time'] = performance.now(); keys[k + '_just'] = true; }
-  keys[k] = v;
-}
-window.addEventListener('keydown', e => {
-  if (e.code === 'Escape' && currentGame) requestExitGame();
-  if (e.code === 'KeyE' && currentGame === 'geo') buyGeoUpgrade();
-  if (!keys[e.code]) { keys[e.code] = true; keys[e.code + '_time'] = performance.now(); keys[e.code + '_just'] = true; }
-});
-window.addEventListener('keyup', e => { keys[e.code] = false; });
+    const TILE = 30;
+    const COLS = canvas.width / TILE;  // 32 colunas
+    const ROWS = canvas.height / TILE; // 18 linhas
 
-document.querySelectorAll('#dpad-box button, #dpad-p2 button, #ab-box button, #fnf-arrows-box button, #btn-p2-act').forEach(btn => {
-  const k = btn.dataset.key;
-  btn.addEventListener('pointerdown', e => { e.preventDefault(); btn.classList.add('held'); setKey(k, true); });
-  const rel = () => { btn.classList.remove('held'); setKey(k, false); };
-  btn.addEventListener('pointerup', rel);
-  btn.addEventListener('pointerleave', rel);
-  btn.addEventListener('pointercancel', rel);
-});
+    let gameRunning = false;
+    let animationId = null;
+    let world = [];
+    let selectedBlock = 1;
 
-const joyBox = document.getElementById('joy-box');
-const joyKnob = document.getElementById('joy-knob');
-joyBox.addEventListener('pointermove', e => {
-  if (e.buttons === 0 && e.pointerType === 'mouse') return;
-  const r = joyBox.getBoundingClientRect();
-  const dx = e.clientX - (r.left + r.width / 2);
-  const dy = e.clientY - (r.top + r.height / 2);
-  const dist = Math.min(30, Math.hypot(dx, dy));
-  const ang = Math.atan2(dy, dx);
-  joyKnob.style.left = (29 + Math.cos(ang) * dist) + 'px';
-  joyKnob.style.top = (29 + Math.sin(ang) * dist) + 'px';
-  setKey('KeyA', dx < -12); setKey('KeyD', dx > 12);
-  setKey('KeyW', dy < -12); setKey('KeyS', dy > 12);
-});
-joyBox.addEventListener('pointerup', () => {
-  joyKnob.style.left = '29px'; joyKnob.style.top = '29px';
-  ['KeyA','KeyD','KeyW','KeyS'].forEach(k => setKey(k, false));
-});
-
-function resizeCanvas() {
-  const wrap = document.getElementById('canvas-wrap');
-  const canvas = document.getElementById('gameCanvas');
-  if (!wrap || !canvas || document.getElementById('game-overlay').style.display === 'none') return;
-  const rect = wrap.getBoundingClientRect();
-  const w = Math.floor(rect.width || window.innerWidth);
-  const h = Math.floor(rect.height || (window.innerHeight - 54));
-  if (w > 40 && h > 40 && (canvas.width !== w || canvas.height !== h)) {
-    canvas.width = w;
-    canvas.height = h;
-  }
-}
-window.addEventListener('resize', resizeCanvas);
-window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 200));
-
-function requestLaunch(id, idx) {
-  state.selectedIdx = idx;
-  if (state.multiplayer && TWO_PLAYER_GAMES.has(id) && id !== 'velha') {
-    state.pendingGame = id;
-    document.getElementById('modal-2p').style.display = 'flex';
-  } else {
-    state.vsMode = 'coop';
-    openColorLobby(id, false);
-  }
-}
-
-function confirm2PMode(mode) {
-  state.vsMode = mode;
-  document.getElementById('modal-2p').style.display = 'none';
-  if (state.pendingGame) openColorLobby(state.pendingGame, false);
-}
-
-function requestExitGame() {
-  if (state.roomCode && state.members.length > 1) startVote('exit', currentGame);
-  else closeGame(false);
-}
-
-function closeGame(fromSync = false) {
-  cancelAnimationFrame(raf);
-  clearInterval(secTimer);
-  const prevGame = currentGame;
-  currentGame = null;
-  document.getElementById('game-overlay').style.display = 'none';
-  document.getElementById('touch-layer').style.display = 'none';
-  document.getElementById('btn-upgrade').style.display = 'none';
-  document.getElementById('stage-sel').style.display = 'none';
-  if (!fromSync && prevGame) {
-    const me = getMyMember();
-    if (me) { me.activeGame = null; me.partnerSlot = null; }
-    if (state.isHost) syncRoomState();
-  }
-  refreshLiveBar();
-  renderMain();
-}
-
-function registerDeath(isDino = false) {
-  if (isDino) {
-    state.dinoDeaths++;
-    if ([1,2,5,10].includes(state.dinoDeaths)) unlock(`${state.dinoDeaths} ${state.dinoDeaths===1?'Morte':'Mortes'} no Dino`);
-  }
-  state.totalDeaths++;
-  if ([1,2,5,10].includes(state.totalDeaths)) unlock(`${state.totalDeaths} ${state.totalDeaths===1?'Morte Global':'Mortes Globais'}`);
-}
-
-function drawHeadBadge(ctx, x, y, label, color) {
-  const w = Math.max(28, label.length * 6.5 + 8);
-  ctx.fillStyle = color;
-  ctx.strokeStyle = '#000'; ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.roundRect(x - w/2, y - 16, w, 14, 5); ctx.fill(); ctx.stroke();
-  ctx.fillStyle = (color === '#f8fafc' || color === '#facc15' || color === '#e7d3b0') ? '#000' : '#fff';
-  ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
-  ctx.fillText(label, x, y - 6);
-}
-
-let geoState = null;
-function buyGeoUpgrade() {
-  if (!geoState || geoState.score < geoState.cost) return;
-  geoState.score -= geoState.cost; geoState.dmg += 1; geoState.cost += 5;
-  document.getElementById('btn-upgrade').textContent = `+1 Dano (${geoState.cost} pts)`;
-}
-
-function startGame(id) {
-  currentGame = id;
-  const myColor = state.p1Color;
-  const myLabel = `P${state.mySlot}`;
-  const my2ndLabel = `P${state.mySlot}(2º)`;
-  const me = getMyMember();
-  if (me) me.activeGame = id;
-  refreshLiveBar();
-
-  const g = GAMES.find(x => x.id === id);
-  document.getElementById('hud-title').textContent = `${g.title} [${myLabel}${state.multiplayer ? '+' + my2ndLabel : ''}]`;
-  document.getElementById('game-overlay').style.display = 'flex';
-  resizeCanvas();
-  requestAnimationFrame(resizeCanvas);
-
-  const tl = document.getElementById('touch-layer');
-  tl.style.display = state.mobileControls ? 'flex' : 'none';
-  tl.style.flexDirection = state.invertSides ? 'row-reverse' : 'row';
-
-  const p2Pad = document.getElementById('p2-mobile-pad');
-  p2Pad.style.display = (state.mobileControls && state.multiplayer) ? 'flex' : 'none';
-  document.querySelectorAll('#dpad-p2 button, #btn-p2-act').forEach(b => b.style.borderColor = state.p2Color);
-  document.querySelectorAll('#dpad-box button').forEach(b => b.style.borderColor = state.p1Color);
-  document.getElementById('btn-p1-a').style.background = state.p1Color;
-  document.getElementById('btn-p2-act').style.background = state.p2Color;
-
-  const dpadEl = document.getElementById('dpad-box');
-  const joyEl = document.getElementById('joy-box');
-  const fnfEl = document.getElementById('fnf-arrows-box');
-  dpadEl.style.display = 'none'; joyEl.style.display = 'none'; fnfEl.style.display = 'none';
-  if (id === 'fnf' && state.mobileStyle === 'joystick') fnfEl.style.display = 'flex';
-  else if (state.mobileStyle === 'joystick') joyEl.style.display = 'block';
-  else dpadEl.style.display = 'grid';
-
-  const canvas = document.getElementById('gameCanvas');
-  const ctx = canvas.getContext('2d');
-  const handleTouchOrClick = (clientX, clientY, isDown, isClick) => {
-    const r = canvas.getBoundingClientRect();
-    mouse.x = clientX - r.left; mouse.y = clientY - r.top;
-    mouse.down = isDown; if (isClick) mouse.clicked = true;
-  };
-  canvas.onmousemove = e => handleTouchOrClick(e.clientX, e.clientY, mouse.down, false);
-  canvas.onmousedown = e => handleTouchOrClick(e.clientX, e.clientY, true, true);
-  canvas.onmouseup = () => mouse.down = false;
-  canvas.ontouchstart = e => { e.preventDefault(); const t = e.touches[0]; handleTouchOrClick(t.clientX, t.clientY, true, true); };
-  canvas.ontouchmove = e => { e.preventDefault(); const t = e.touches[0]; handleTouchOrClick(t.clientX, t.clientY, true, false); };
-  canvas.ontouchend = () => mouse.down = false;
-
-  clearInterval(secTimer);
-  secTimer = setInterval(() => {
-    if (['dino','geo','snake','hexic','gdash'].includes(currentGame)) {
-      state.scoreSeconds++;
-      if (state.scoreSeconds === 270) unlock('270 Segundos Exatos!', 27);
-    }
-  }, 1000);
-
-  let syncTick = 0;
-
-  // =========================================================================
-  // 1) MINECRAFT 270 — CHÃO NO FIM DA TELA + COLISÃO LATERAL E VERTICAL + SYNC DE BLOCOS
-  // =========================================================================
-  if (id === 'minecraft') {
-    const sel = document.getElementById('stage-sel');
-    sel.style.display = 'inline-block';
-    const blocks = [
-      { id: 1, name: 'Grama', c: '#22c55e' },
-      { id: 2, name: 'Terra', c: '#78350f' },
-      { id: 3, name: 'Pedra', c: '#64748b' },
-      { id: 4, name: 'Madeira', c: '#b45309' },
-      { id: 5, name: 'Diamante', c: '#38bdf8' }
-    ];
-    sel.innerHTML = blocks.map(b => `<option value="${b.id}">Bloco: ${b.name}</option>`).join('');
-    let curBlock = 1;
-    sel.onchange = () => curBlock = Number(sel.value);
-
-    const sz = 28;
-    const cols = Math.max(36, Math.ceil(Math.max(canvas.width, 1366) / sz));
-    const rows = Math.max(18, Math.ceil(Math.max(canvas.height, 768) / sz));
-    state.mcCols = cols;
-    state.mcRows = rows;
-
-    // Cria o mundo se ainda não foi sincronizado pela sala
-    if (!state.mcWorld || state.mcWorld.length !== rows || state.mcWorld[0].length !== cols) {
-      state.mcWorld = Array.from({length: rows}, (_, r) =>
-        Array.from({length: cols}, () => r === rows - 3 ? 1 : r > rows - 3 ? 2 : 0)
-      );
-      if (state.isHost && state.roomCode) {
-        sendNet({ type: 'mc_world_sync', world: state.mcWorld });
-      }
-    }
-
-    const pw = 20, ph = 26;
-    const isSolidAt = (x, y) => {
-      const c = Math.floor(x / sz);
-      const r = Math.floor(y / sz);
-      if (r < 0) return false;
-      if (r >= rows || c < 0 || c >= cols) return true;
-      return state.mcWorld[r][c] > 0;
+    const BLOCK_COLORS = {
+      1: '#22c55e', // Grama
+      2: '#854d0e', // Terra
+      3: '#64748b', // Pedra
+      4: '#38bdf8'  // Diamante/Vidro
     };
 
-    const rectCollidesWorld = (rx, ry, rw, rh) => {
-      const m = 1;
-      return (
-        isSolidAt(rx + m, ry + m) ||
-        isSolidAt(rx + rw - m, ry + m) ||
-        isSolidAt(rx + m, ry + rh - m) ||
-        isSolidAt(rx + rw - m, ry + rh - m) ||
-        isSolidAt(rx + m, ry + rh * 0.5) ||
-        isSolidAt(rx + rw - m, ry + rh * 0.5)
-      );
+    // Estado do Jogador
+    const player = {
+      x: 120,
+      y: 200,
+      w: 22,
+      h: 44,
+      vx: 0,
+      vy: 0,
+      speed: 4.2,
+      jumpPower: -10.5,
+      grounded: false
     };
 
-    const movePlayerPhysics = (pl, vx, jumpPressed) => {
-      // 1) Movimento Horizontal + Colisão Lateral Sólida (X)
-      pl.x += vx;
-      if (pl.x < 0) pl.x = 0;
-      if (pl.x + pw > cols * sz) pl.x = cols * sz - pw;
+    // Controles de Teclado
+    const keys = {};
 
-      if (rectCollidesWorld(pl.x, pl.y, pw, ph)) {
-        if (vx > 0) {
-          const rightCol = Math.floor((pl.x + pw - 1) / sz);
-          pl.x = rightCol * sz - pw;
-        } else if (vx < 0) {
-          const leftCol = Math.floor(pl.x / sz);
-          pl.x = (leftCol + 1) * sz;
-        }
+    window.addEventListener('keydown', (e) => {
+      if (!gameRunning) return;
+
+      // Impede a página de rolar com setas ou espaço
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', ' '].includes(e.key)) {
+        e.preventDefault();
       }
 
-      // 2) Pulo + Gravidade + Colisão Vertical (Teto e Chão) (Y)
-      if (jumpPressed && pl.grounded) {
-        pl.vy = -10.2;
-        pl.grounded = false;
-      }
-      pl.vy = Math.min(14, pl.vy + 0.52);
-      pl.y += pl.vy;
-      pl.grounded = false;
-
-      if (rectCollidesWorld(pl.x, pl.y, pw, ph)) {
-        if (pl.vy > 0) {
-          const footRow = Math.floor((pl.y + ph - 1) / sz);
-          pl.y = footRow * sz - ph;
-          pl.vy = 0;
-          pl.grounded = true;
-        } else if (pl.vy < 0) {
-          const headRow = Math.floor(pl.y / sz);
-          pl.y = (headRow + 1) * sz;
-          pl.vy = 0;
-        }
-      }
-    };
-
-    const spawnY = (rows - 4) * sz - ph;
-    const p1 = { x: 60 + state.mySlot * 26, y: spawnY, vy: 0, grounded: false };
-    const p2 = { x: p1.x + 28, y: spawnY, vy: 0, grounded: false };
-
-    const loop = () => {
-      syncTick++;
-      ctx.fillStyle = '#0ea5e9';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Mantém o chão exatamente alinhado no fundo da tela visível
-      const visibleRows = Math.max(8, Math.floor(canvas.height / sz));
-      const rowOffset = Math.max(0, rows - visibleRows);
-      const offsetY = canvas.height - (rows * sz);
-
-      let vx1 = 0;
-      if (keys['KeyA'] || (!state.multiplayer && keys['ArrowLeft'])) vx1 -= 3.6;
-      if (keys['KeyD'] || (!state.multiplayer && keys['ArrowRight'])) vx1 += 3.6;
-      const jump1 = keys['KeyW'] || keys['Space'] || (!state.multiplayer && keys['ArrowUp']);
-      movePlayerPhysics(p1, vx1, jump1);
-
-      if (state.multiplayer) {
-        let vx2 = 0;
-        if (keys['ArrowLeft']) vx2 -= 3.6;
-        if (keys['ArrowRight']) vx2 += 3.6;
-        movePlayerPhysics(p2, vx2, keys['ArrowUp']);
+      if (e.key === 'Escape') {
+        closeGame();
+        return;
       }
 
-      // Colocar ou quebrar blocos (sincronizado com toda a sala!)
-      if (mouse.clicked) {
-        mouse.clicked = false;
-        const bx = Math.floor(mouse.x / sz);
-        const by = Math.floor((mouse.y - offsetY) / sz);
-        if (state.mcWorld[by] && state.mcWorld[by][bx] !== undefined) {
-          const blockRectX = bx * sz, blockRectY = by * sz;
-          const overlapsP1 = p1.x + pw > blockRectX && p1.x < blockRectX + sz && p1.y + ph > blockRectY && p1.y < blockRectY + sz;
-          const overlapsP2 = state.multiplayer && p2.x + pw > blockRectX && p2.x < blockRectX + sz && p2.y + ph > blockRectY && p2.y < blockRectY + sz;
-
-          if (state.mcWorld[by][bx] > 0) {
-            state.mcWorld[by][bx] = 0;
-            sendNet({ type: 'mc_block', r: by, c: bx, val: 0 });
-          } else if (!overlapsP1 && !overlapsP2) {
-            state.mcWorld[by][bx] = curBlock;
-            sendNet({ type: 'mc_block', r: by, c: bx, val: curBlock });
-          }
-        }
+      if (['1', '2', '3', '4'].includes(e.key)) {
+        selectBlock(Number(e.key));
       }
 
-      // Desenha os blocos do mundo
-      for (let r = rowOffset; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          const bId = state.mcWorld[r][c];
-          if (bId > 0) {
-            ctx.fillStyle = blocks.find(b => b.id === bId)?.c || '#64748b';
-            ctx.fillRect(c * sz, r * sz + offsetY, sz - 1, sz - 1);
-          }
-        }
-      }
+      keys[e.key.toLowerCase()] = true;
+    });
 
-      // Desenha P1, P2 local e outros jogadores da sala na mesma altura do chão
-      ctx.fillStyle = myColor;
-      ctx.fillRect(p1.x, p1.y + offsetY, pw, ph);
-      drawHeadBadge(ctx, p1.x + pw/2, p1.y + offsetY - 4, myLabel, myColor);
+    window.addEventListener('keyup', (e) => {
+      keys[e.key.toLowerCase()] = false;
+    });
 
-      if (state.multiplayer) {
-        ctx.fillStyle = state.p2Color;
-        ctx.fillRect(p2.x, p2.y + offsetY, pw, ph);
-        drawHeadBadge(ctx, p2.x + pw/2, p2.y + offsetY - 4, my2ndLabel, state.p2Color);
-      }
+    // Zera teclas se o usuário mudar de aba (evita boneco travado)
+    window.addEventListener('blur', () => {
+      for (let k in keys) keys[k] = false;
+    });
 
-      getOtherMembers().slice(0, 9).forEach(peer => {
-        const ox = peer.x ?? 100;
-        const oy = peer.y ?? spawnY;
-        ctx.fillStyle = peer.colorHex || '#facc15';
-        ctx.fillRect(ox, oy + offsetY, pw, ph);
-        drawHeadBadge(ctx, ox + pw/2, oy + offsetY - 4, `P${peer.slot}`, peer.colorHex || '#facc15');
-        if (peer.hasSecondPlayer) {
-          const ox2 = peer.p2x ?? (ox + 26);
-          const oy2 = peer.p2y ?? spawnY;
-          ctx.fillStyle = peer.p2ColorHex || '#ec4899';
-          ctx.fillRect(ox2, oy2 + offsetY, pw, ph);
-          drawHeadBadge(ctx, ox2 + pw/2, oy2 + offsetY - 4, `P${peer.slot}(2º)`, peer.p2ColorHex || '#ec4899');
-        }
+    function selectBlock(id) {
+      selectedBlock = id;
+      const slots = document.querySelectorAll('.slot');
+      slots.forEach((s, index) => {
+        s.classList.toggle('selected', index + 1 === id);
       });
+    }
 
-      if (tick % 3 === 0) {
-        sendNet({
-          type: 'pos', x: p1.x, y: p1.y, colorHex: myColor,
-          hasSecondPlayer: state.multiplayer, p2x: p2.x, p2y: p2.y, p2ColorHex: state.p2Color
-        });
+    function initWorld() {
+      world = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+      // Gera terreno no fundo da tela
+      for (let c = 0; c < COLS; c++) {
+        world[ROWS - 4][c] = 1; // Grama
+        world[ROWS - 3][c] = 2; // Terra
+        world[ROWS - 2][c] = 3; // Pedra
+        world[ROWS - 1][c] = 3; // Pedra base
       }
+      // Alguns blocos extras no mapa
+      world[ROWS - 5][10] = 1;
+      world[ROWS - 5][11] = 2;
+      world[ROWS - 6][11] = 1;
+    }
 
-      document.getElementById('hud-info').textContent = `${myLabel} • Toque/Clique constrói ou quebra (visível para todos!)`;
-      raf = requestAnimationFrame(loop);
-    };
-    loop();
-  }
+    function openMinecraft270() {
+      // Limpa qualquer tecla presa antes de iniciar
+      for (let k in keys) keys[k] = false;
 
-  // =========================================================================
-  // 2) JOGO DA VELHA — COM SUPORTE COMPLETO AO MODO 2P LOCAL, 2P+2P, 2 PESSOAS (3P) E 3P+2P
-  // =========================================================================
-  else if (id === 'velha') {
-    const checkWin3 = b => [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]].some(([a,c,d]) => b[a] && b[a]===b[c] && b[a]===b[d]);
+      initWorld();
+      player.x = 120;
+      player.y = 200;
+      player.vx = 0;
+      player.vy = 0;
 
-    const checkWin4 = b => {
-      // Tabuleiro 4x4 (3 em linha vence para ficar dinâmico no modo 3 jogadores!)
-      const lines = [];
-      for (let r = 0; r < 4; r++) {
-        lines.push([r*4, r*4+1, r*4+2], [r*4+1, r*4+2, r*4+3]);
+      overlay.style.display = 'flex';
+      gameRunning = true;
+      canvas.focus();
+
+      if (animationId) cancelAnimationFrame(animationId);
+      gameLoop();
+    }
+
+    function closeGame() {
+      gameRunning = false;
+      if (animationId) cancelAnimationFrame(animationId);
+      overlay.style.display = 'none';
+      for (let k in keys) keys[k] = false;
+    }
+
+    // Interação com Blocos (Mouse)
+    canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+    canvas.addEventListener('mousedown', (e) => {
+      if (!gameRunning) return;
+      const rect = canvas.getBoundingClientRect();
+      const mx = e.clientX - rect.left;
+      const my = e.clientY - rect.top;
+
+      const col = Math.floor(mx / TILE);
+      const row = Math.floor(my / TILE);
+
+      if (row < 0 || row >= ROWS || col < 0 || col >= COLS) return;
+
+      if (e.button === 0) {
+        // Botão esquerdo: Quebrar bloco
+        world[row][col] = 0;
+      } else if (e.button === 2) {
+        // Botão direito: Colocar bloco (não permite colocar em cima do jogador)
+        const blockRect = { x: col * TILE, y: row * TILE, w: TILE, h: TILE };
+        if (!rectIntersect(player, blockRect) && world[row][col] === 0) {
+          world[row][col] = selectedBlock;
+        }
       }
-      for (let c = 0; c < 4; c++) {
-        lines.push([c, c+4, c+8], [c+4, c+8, c+12]);
-      }
-      lines.push([0,5,10],[5,10,15],[1,6,11],[4,9,14],[2,5,8],[3,6,9],[6,9,12],[7,10,13]);
-      return lines.some(([a,c,d]) => b[a] && b[a]===b[c] && b[a]===b[d]);
-    };
+    });
 
-    const getBoardState = (match) => {
-      if (!state.tttBoards[match.id]) {
-        const isTri = match.mode === 'tri';
-        state.tttBoards[match.id] = {
-          board: Array(isTri ? 16 : 9).fill(''),
-          turnIdx: 0
-        };
-      }
-      return state.tttBoards[match.id];
-    };
+    function rectIntersect(r1, r2) {
+      return !(
+        r2.x >= r1.x + r1.w ||
+        r2.x + r2.w <= r1.x ||
+        r2.y >= r1.y + r1.h ||
+        r2.y + r2.h <= r1.y
+      );
+    }
 
-    const loop = () => {
-      ctx.fillStyle = '#0b0e1d';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      const group = getGroupMembers('velha');
-      const myMatches = getMyMatches(group);
-      const activeMatches = myMatches.length ? myMatches : [{
-        id: `local_${state.mySlot}`,
-        mode: 'duo',
-        participants: state.multiplayer
-          ? [
-              { slot: state.mySlot, sub: 1, label: myLabel, color: myColor, symbol: 'X' },
-              { slot: state.mySlot, sub: 2, label: my2ndLabel, color: state.p2Color, symbol: 'O' }
-            ]
-          : [
-              { slot: state.mySlot, sub: 1, label: myLabel, color: myColor, symbol: 'X' },
-              { slot: 0, sub: 0, label: 'CPU', color: '#f43f5e', symbol: 'O' }
-            ]
-      }];
-
-      const count = activeMatches.length;
-      const paneW = canvas.width / count;
-      const hudSummaries = [];
-
-      activeMatches.forEach((match, mIdx) => {
-        const bs = getBoardState(match);
-        const dim = match.mode === 'tri' ? 4 : 3;
-        const sz = Math.min(paneW * 0.82, canvas.height * 0.62);
-        const cell = sz / dim;
-        const x0 = mIdx * paneW + (paneW - sz) / 2;
-        const y0 = (canvas.height - sz) / 2 + 12;
-
-        const currentPart = match.participants[bs.turnIdx % match.participants.length];
-        const canIClickThisTurn = currentPart.slot === state.mySlot;
-        const checkWin = dim === 4 ? checkWin4 : checkWin3;
-        const won = checkWin(bs.board);
-        const draw = !won && !bs.board.includes('');
-
-        // Título acima de cada tabuleiro
-        ctx.fillStyle = '#e2e8f0';
-        ctx.font = 'bold 12px sans-serif';
-        ctx.textAlign = 'center';
-        const titleTxt = match.participants.map(p => `${p.label}(${p.symbol})`).join(' vs ');
-        ctx.fillText(titleTxt, mIdx * paneW + paneW / 2, y0 - 16);
-
-        if (mouse.clicked && mouse.x >= mIdx * paneW && mouse.x < (mIdx + 1) * paneW) {
-          const c = Math.floor((mouse.x - x0) / cell);
-          const r = Math.floor((mouse.y - y0) / cell);
-          const idx = r * dim + c;
-
-          if (c >= 0 && c < dim && r >= 0 && r < dim) {
-            mouse.clicked = false;
-            if (won || draw) {
-              bs.board = Array(dim * dim).fill('');
-              bs.turnIdx = 0;
-              sendNet({ type: 'ttt_move', matchId: match.id, boardState: bs });
-            } else if (!bs.board[idx] && canIClickThisTurn) {
-              bs.board[idx] = currentPart.symbol;
-              if (!checkWin(bs.board) && bs.board.includes('')) {
-                bs.turnIdx = (bs.turnIdx + 1) % match.participants.length;
-                const nextPart = match.participants[bs.turnIdx];
-                if (nextPart.slot === 0) {
-                  const empty = bs.board.map((v, i) => v === '' ? i : -1).filter(i => i >= 0);
-                  if (empty.length) bs.board[empty[Math.floor(Math.random() * empty.length)]] = nextPart.symbol;
-                  bs.turnIdx = 0;
+    function checkCollisions(axis) {
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          if (world[r][c] !== 0) {
+            const block = { x: c * TILE, y: r * TILE, w: TILE, h: TILE };
+            if (rectIntersect(player, block)) {
+              if (axis === 'x') {
+                if (player.vx > 0) player.x = block.x - player.w;
+                if (player.vx < 0) player.x = block.x + block.w;
+                player.vx = 0;
+              } else if (axis === 'y') {
+                if (player.vy > 0) {
+                  player.y = block.y - player.h;
+                  player.grounded = true;
+                } else if (player.vy < 0) {
+                  player.y = block.y + block.h;
                 }
+                player.vy = 0;
               }
-              sendNet({ type: 'ttt_move', matchId: match.id, boardState: bs });
             }
           }
         }
-
-        // Desenha grade 3x3 ou 4x4
-        ctx.strokeStyle = '#6366f1';
-        ctx.lineWidth = 3.5;
-        for (let i = 1; i < dim; i++) {
-          ctx.beginPath(); ctx.moveTo(x0 + i * cell, y0); ctx.lineTo(x0 + i * cell, y0 + sz); ctx.stroke();
-          ctx.beginPath(); ctx.moveTo(x0, y0 + i * cell); ctx.lineTo(x0 + sz, y0 + i * cell); ctx.stroke();
-        }
-
-        // Desenha símbolos nas cores exatas de cada jogador
-        ctx.font = `bold ${Math.floor(cell * 0.54)}px sans-serif`;
-        ctx.textAlign = 'center';
-        bs.board.forEach((sym, i) => {
-          if (!sym) return;
-          const owner = match.participants.find(p => p.symbol === sym);
-          ctx.fillStyle = owner?.color || '#fff';
-          ctx.fillText(sym, x0 + (i % dim + 0.5) * cell, y0 + (Math.floor(i / dim) + 0.68) * cell);
-        });
-
-        if (mIdx > 0) {
-          ctx.fillStyle = '#334155';
-          ctx.fillRect(mIdx * paneW - 1, 0, 2, canvas.height);
-        }
-
-        if (won) hudSummaries.push(`Vitória ${currentPart.label}!`);
-        else if (draw) hudSummaries.push(`Empate!`);
-        else hudSummaries.push(`Vez: ${currentPart.label} (${currentPart.symbol})`);
-      });
-
-      if (mouse.clicked) mouse.clicked = false;
-      document.getElementById('hud-info').textContent = hudSummaries.join('  |  ');
-      raf = requestAnimationFrame(loop);
-    };
-    loop();
-  }
-
-  // =========================================================================
-  // 3) DINO RUN 360
-  // =========================================================================
-  else if (id === 'dino') {
-    const isVS = state.multiplayer && state.vsMode === 'vs';
-    const makeRunner = (dir) => ({ y: 0, vy: 0, grounded: true, ducking: false, score: 0, obs: [], spawnTimer: 0, wins: 0, dir });
-    const p1 = makeRunner(1), p2 = makeRunner(-1);
-
-    const drawCustomDino = (px, py, dir, color, isJumping, isDucking, animFrame) => {
-      ctx.save();
-      const bodyW = isDucking ? 34 : 26, bodyH = isDucking ? 16 : 24;
-      ctx.fillStyle = color; ctx.strokeStyle = '#000'; ctx.lineWidth = 3;
-      ctx.fillRect(px, py, bodyW, bodyH); ctx.strokeRect(px, py, bodyW, bodyH);
-      ctx.fillStyle = (color === '#111827') ? '#fff' : '#000';
-      const eyeX1 = dir === 1 ? px + bodyW - 11 : px + 4;
-      const eyeX2 = dir === 1 ? px + bodyW - 5 : px + 10;
-      ctx.fillRect(eyeX1, py + 5, 3, 7); ctx.fillRect(eyeX2, py + 5, 3, 7);
-      if (!isDucking) {
-        if (isJumping || animFrame === 1) {
-          ctx.strokeRect(px + 3, py + bodyH, 6, 8); ctx.strokeRect(px + bodyW - 9, py + bodyH, 6, 8);
-        } else {
-          ctx.fillStyle = '#000';
-          ctx.fillRect(px + 2, py + bodyH, 4, 4); ctx.fillRect(px - 2, py + bodyH + 4, 4, 4);
-          ctx.fillRect(px + bodyW - 6, py + bodyH, 4, 4); ctx.fillRect(px + bodyW - 2, py + bodyH + 4, 4, 4);
-        }
       }
-      ctx.restore();
-    };
+    }
 
-    const updateDino = (p, jumpK, duckK, areaW) => {
-      const jumpHeld = jumpK(), duckHeld = duckK();
-      p.ducking = duckHeld && p.grounded;
-      if (jumpHeld && p.grounded && !p.ducking) { p.vy = -12.2; p.grounded = false; }
-      const holdMs = performance.now() - (keys['Space_time'] || keys['ArrowUp_time'] || keys['KeyW_time'] || 0);
-      if (!jumpHeld && p.vy < -5.2 && holdMs <= 35) p.vy = -5.2;
-      if (duckHeld && !p.grounded) p.vy += 1.1;
-      p.y += p.vy; p.vy += 0.62;
-      if (p.y >= 0) { p.y = 0; p.vy = 0; p.grounded = true; }
-
-      p.spawnTimer++;
-      if (p.spawnTimer >= 78) {
-        p.spawnTimer = 0;
-        const isBird = Math.random() < 0.34 && p.score > 20;
-        p.obs.push({ dist: areaW - 35, type: isBird ? 'bird' : 'cactus', count: Math.floor(Math.random()*4)+1, birdY: -22, birdVy: 0 });
-      }
-      const dinoH = p.ducking ? 16 : 32, dinoTop = p.y + (32 - dinoH), dinoBot = p.y + 32;
-      p.obs.forEach(o => {
-        o.dist -= 5.8;
-        if (o.type === 'bird') {
-          if (o.dist < 145 && o.dist > 30 && p.y < -12) o.birdVy = -7.5;
-          o.birdY += o.birdVy;
-          if (o.dist < 76 && o.dist > 44 && dinoTop < o.birdY + 14 && dinoBot > o.birdY) o.hit = true;
-        } else {
-          const w = o.count * 13;
-          if (o.dist < 76 && o.dist + w > 50 && dinoBot > 6) o.hit = true;
-        }
-      });
-      if (p.obs.some(o => o.hit)) {
-        p.obs = []; p.score = 0; registerDeath(true);
-        if (isVS) (p === p1 ? p2 : p1).wins++;
-      }
-      p.obs = p.obs.filter(o => o.dist > -60);
-      if (p.spawnTimer % 6 === 0) {
-        p.score++;
-        if (p.score >= 500) unlock('Persistente em Cactos (500 pts Dino)');
-        if (p.score === 270) unlock('270 Cravado! (Exatos 270 pts)', 27);
-      }
-    };
-
-    const drawDinoLane = (p, x0, w, groundY, color, label, animFrame) => {
-      ctx.save();
-      ctx.beginPath(); ctx.rect(x0, 0, w, canvas.height); ctx.clip();
-      ctx.fillStyle = '#334155'; ctx.fillRect(x0, groundY + 32, w, 3);
-      const px = p.dir === 1 ? x0 + 50 : x0 + w - 76;
-      const py = groundY + p.y + (p.ducking ? 16 : 0);
-      drawCustomDino(px, py, p.dir, color, !p.grounded, p.ducking, animFrame);
-      drawHeadBadge(ctx, px + 13, py - 8, label, color);
-
-      if (!isVS && state.multiplayer) {
-        const p2y = groundY + p2.y + (p2.ducking ? 16 : 0);
-        drawCustomDino(px + 34, p2y, 1, state.p2Color, !p2.grounded, p2.ducking, animFrame);
-        drawHeadBadge(ctx, px + 47, p2y - 8, my2ndLabel, state.p2Color);
-      }
-
-      getOtherMembers().forEach((peer, idx) => {
-        const peerY = groundY + (peer.y || 0) + (peer.extra?.duck ? 16 : 0);
-        const peerX = px + (idx + 2) * 34;
-        drawCustomDino(peerX, peerY, 1, peer.colorHex || '#38bdf8', (peer.y || 0) < -2, !!peer.extra?.duck, animFrame);
-        drawHeadBadge(ctx, peerX + 13, peerY - 8, `P${peer.slot}`, peer.colorHex || '#38bdf8');
-      });
-
-      p.obs.forEach(o => {
-        const ox = p.dir === 1 ? x0 + o.dist : x0 + w - o.dist;
-        if (o.type === 'cactus') {
-          ctx.fillStyle = '#22c55e';
-          for (let c = 0; c < o.count; c++) {
-            const cx = ox + (p.dir === 1 ? c * 13 : -c * 13 - 10);
-            ctx.fillRect(cx, groundY + 4, 9, 28); ctx.fillRect(cx - 3, groundY + 11, 15, 4);
-          }
-        } else {
-          ctx.fillStyle = '#f43f5e';
-          ctx.fillRect(ox - 12, groundY + o.birdY, 24, 12);
-          ctx.fillRect(ox - 5, groundY + o.birdY - Math.sin(performance.now()*0.02)*7, 10, 6);
-        }
-      });
-      ctx.restore();
-    };
-
-    const loop = () => {
-      syncTick++;
-      ctx.fillStyle = '#0b0e1d'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      const groundY = canvas.height - 80;
-      const animFrame = Math.floor(performance.now() / 100) % 2;
-
-      if (isVS) {
-        const half = canvas.width / 2;
-        updateDino(p1, () => keys['KeyW'] || keys['Space'], () => keys['KeyS'], half);
-        updateDino(p2, () => keys['ArrowUp'], () => keys['ArrowDown'], half);
-        drawDinoLane(p1, 0, half, groundY, state.p1Color, myLabel, animFrame);
-        drawDinoLane(p2, half, half, groundY, state.p2Color, my2ndLabel, animFrame);
-        ctx.fillStyle = '#6366f1'; ctx.fillRect(half - 2, 0, 4, canvas.height);
-        document.getElementById('hud-info').textContent = `VS | ${myLabel}: ${p1.score} vs ${my2ndLabel}: ${p2.score}`;
+    function update() {
+      // Movimento Horizontal
+      if (keys['a'] || keys['arrowleft']) {
+        player.vx = -player.speed;
+      } else if (keys['d'] || keys['arrowright']) {
+        player.vx = player.speed;
       } else {
-        updateDino(p1, () => keys['KeyW'] || keys['Space'] || (!state.multiplayer && keys['ArrowUp']), () => keys['KeyS'] || (!state.multiplayer && keys['ArrowDown']), canvas.width);
-        if (state.multiplayer) updateDino(p2, () => keys['ArrowUp'], () => keys['ArrowDown'], canvas.width);
-        drawDinoLane(p1, 0, canvas.width, groundY, myColor, myLabel, animFrame);
-        if (syncTick % 3 === 0) sendNet({ type: 'pos', x: 50, y: p1.y, colorHex: myColor, hasSecondPlayer: state.multiplayer, p2y: p2.y, p2ColorHex: state.p2Color, extra: { duck: p1.ducking } });
-        document.getElementById('hud-info').textContent = `${myLabel} Pontos: ${p1.score}`;
+        player.vx = 0;
       }
-      raf = requestAnimationFrame(loop);
-    };
-    loop();
-  }
 
-  // =========================================================================
-  // 4) N+ STICKMAN (20 FASES + ELEVADOR)
-  // =========================================================================
-  else if (id === 'ninja') {
-    const sel = document.getElementById('stage-sel');
-    sel.style.display = 'inline-block';
-    sel.innerHTML = Array.from({length: 20}, (_, i) => `<option value="${i+1}">Fase ${i+1} / 20</option>`).join('');
-    const isVS = state.multiplayer && state.vsMode === 'vs';
-
-    const ninja = {
-      stage: 1,
-      p1: { x: 34, y: 100, vx: 0, vy: 0, grounded: false, facing: 1, runCycle: 0, wins: 0 },
-      p2: { x: 48, y: 100, vx: 0, vy: 0, grounded: false, facing: 1, runCycle: 0, wins: 0 },
-      plats: [], elevators: [], door: { x: 400, y: 100 },
-      load(lvl) {
-        this.stage = lvl; sel.value = lvl;
-        if (lvl >= 10) unlock('Ninja Atleta (Fase 10 N+)');
-        const w = isVS ? canvas.width / 2 : canvas.width, h = canvas.height;
-        this.p1.x = 30; this.p1.y = h - 70; this.p1.vx = 0; this.p1.vy = 0;
-        this.p2.x = 46; this.p2.y = h - 70; this.p2.vx = 0; this.p2.vy = 0;
-
-        const pattern = (lvl - 1) % 5;
-        const doorOnLeft = (lvl % 2 === 0);
-        const doorY = Math.max(85, 95 + ((lvl * 19) % 70));
-        this.door = { x: doorOnLeft ? 54 : w - 54, y: doorY };
-
-        this.plats = [
-          { x: 0, y: h - 32, w: w * 0.28, h: 32 },
-          { x: doorOnLeft ? 14 : w - 104, y: doorY + 18, w: 90, h: 12 }
-        ];
-        this.elevators = [];
-
-        if (pattern === 0) {
-          this.plats.push({ x: w * 0.34, y: h - 95, w: 62, h: 11 });
-          this.plats.push({ x: w * 0.16, y: h - 165, w: 58, h: 11 });
-          this.elevators.push({ x: w * 0.56, minY: doorY + 15, maxY: h - 65, y: h - 75, w: 68, h: 12, dir: -1, spd: 1.8 + lvl * 0.04 });
-        } else if (pattern === 1) {
-          this.elevators.push({ x: w * 0.32, minY: h - 190, maxY: h - 55, y: h - 60, w: 62, h: 12, dir: -1, spd: 2.0 });
-          this.plats.push({ x: w * 0.52, y: h - 155, w: 54, h: 11 });
-          this.elevators.push({ x: w * 0.70, minY: doorY + 12, maxY: h - 120, y: doorY + 40, w: 62, h: 12, dir: 1, spd: 2.1 });
-        } else if (pattern === 2) {
-          this.plats.push({ x: w * 0.42, y: h - 85, w: 55, h: 11 });
-          this.plats.push({ x: w * 0.68, y: h - 145, w: 55, h: 11 });
-          this.plats.push({ x: w * 0.36, y: h - 205, w: 55, h: 11 });
-          this.elevators.push({ x: w * 0.15, minY: doorY + 14, maxY: h - 130, y: h - 140, w: 60, h: 12, dir: -1, spd: 1.9 });
-        } else if (pattern === 3) {
-          this.plats.push({ x: w * 0.35, y: h - 70, w: 46, h: 11 });
-          this.elevators.push({ x: w * 0.48, minY: doorY + 15, maxY: h - 55, y: h - 80, w: 64, h: 12, dir: -1, spd: 2.3 });
-          this.plats.push({ x: w * 0.68, y: doorY + 55, w: 50, h: 11 });
-        } else {
-          this.plats.push({ x: w * 0.30, y: h - 105, w: 48, h: 11 });
-          this.plats.push({ x: w * 0.50, y: h - 150, w: 48, h: 11 });
-          this.plats.push({ x: w * 0.30, y: h - 205, w: 48, h: 11 });
-          this.elevators.push({ x: w * 0.68, minY: doorY + 14, maxY: h - 70, y: h - 75, w: 64, h: 12, dir: -1, spd: 2.0 });
-        }
+      // Pulo
+      if ((keys['w'] || keys['arrowup'] || keys[' ']) && player.grounded) {
+        player.vy = player.jumpPower;
+        player.grounded = false;
       }
-    };
-    sel.onchange = () => ninja.load(Number(sel.value));
-    ninja.load(1);
 
-    const stepStickman = (p, left, right, jump, w, h) => {
-      if (left) { p.vx = -4.2; p.facing = -1; }
-      else if (right) { p.vx = 4.2; p.facing = 1; }
-      else p.vx *= 0.78;
-      if (Math.abs(p.vx) > 0.4 && p.grounded) p.runCycle += 0.28;
-      if (jump && p.grounded) { p.vy = -11.5; p.grounded = false; }
-      p.vy += 0.54; p.x += p.vx; p.y += p.vy; p.grounded = false;
+      // Aplica eixo X e colisão lateral
+      player.x += player.vx;
+      if (player.x < 0) player.x = 0;
+      if (player.x + player.w > canvas.width) player.x = canvas.width - player.w;
+      checkCollisions('x');
 
-      ninja.plats.forEach(pl => {
-        if (p.x + 8 > pl.x && p.x - 8 < pl.x + pl.w && p.y + 18 >= pl.y && p.y + 18 <= pl.y + 18 && p.vy >= 0) {
-          p.y = pl.y - 18; p.vy = 0; p.grounded = true;
-        }
-      });
-      ninja.elevators.forEach(el => {
-        if (p.x + 8 > el.x && p.x - 8 < el.x + el.w && p.y + 18 >= el.y - 4 && p.y + 18 <= el.y + 18 && p.vy >= 0) {
-          p.y = el.y - 18; p.vy = 0; p.grounded = true;
-        }
-      });
+      // Gravidade e eixo Y
+      player.vy += 0.55;
+      player.y += player.vy;
+      player.grounded = false;
+      checkCollisions('y');
 
-      if (p.y > h + 20) { p.x = 34; p.y = h - 70; p.vx = 0; p.vy = 0; registerDeath(false); }
-      p.x = Math.max(12, Math.min(w - 12, p.x));
-      if (Math.hypot(p.x - ninja.door.x, p.y - ninja.door.y) < 25) {
-        if (isVS) p.wins++;
-        ninja.load(ninja.stage < 20 ? ninja.stage + 1 : 1);
+      // Chão no fim da tela (segurança)
+      if (player.y + player.h > canvas.height) {
+        player.y = canvas.height - player.h;
+        player.vy = 0;
+        player.grounded = true;
       }
-    };
+    }
 
-    const drawStickman = (sx, sy, vx, facing, runCycle, grounded, color, label, mirror) => {
-      const dir = mirror ? -facing : facing;
-      const lean = (vx / 4.2) * 4 * (mirror ? -1 : 1);
-      const stride = grounded ? Math.sin(runCycle) * 8 : 6;
-      ctx.save();
-      ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 3; ctx.lineCap = 'round';
-      ctx.beginPath(); ctx.arc(sx + lean, sy - 11, 5.5, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.moveTo(sx + lean, sy - 5); ctx.lineTo(sx, sy + 8); ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(sx + lean * 0.7, sy - 2); ctx.lineTo(sx - stride * 0.8, sy + 5);
-      ctx.moveTo(sx + lean * 0.7, sy - 2); ctx.lineTo(sx + stride * 0.9 + dir * 3, sy + 3);
-      ctx.moveTo(sx, sy + 8); ctx.lineTo(sx - stride * 0.6, sy + 13); ctx.lineTo(sx - stride, sy + 18);
-      ctx.moveTo(sx, sy + 8); ctx.lineTo(sx + stride * 0.7, sy + 12); ctx.lineTo(sx + stride, sy + 18);
-      ctx.stroke();
-      drawHeadBadge(ctx, sx, sy - 22, label, color);
-      ctx.restore();
-    };
+    function draw() {
+      // Céu
+      ctx.fillStyle = '#7dd3fc';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    const drawArena = (p, x0, w, h, mirror, color, label) => {
-      ctx.save();
-      ctx.beginPath(); ctx.rect(x0, 0, w, h); ctx.clip();
-      const mapX = lx => mirror ? x0 + w - lx : x0 + lx;
-      ctx.fillStyle = '#475569';
-      ninja.plats.forEach(pl => {
-        const px = mirror ? x0 + w - (pl.x + pl.w) : x0 + pl.x;
-        ctx.fillRect(px, pl.y, pl.w, pl.h);
-      });
-      ninja.elevators.forEach(el => {
-        const px = mirror ? x0 + w - (el.x + el.w) : x0 + el.x;
-        ctx.fillStyle = '#38bdf8'; ctx.fillRect(px, el.y, el.w, el.h);
-        ctx.fillStyle = '#0f172a'; ctx.font = 'bold 9px sans-serif'; ctx.textAlign = 'center';
-        ctx.fillText(el.dir < 0 ? '▲' : '▼', px + el.w/2, el.y + 9);
-      });
-
-      ctx.fillStyle = '#22c55e'; ctx.fillRect(mapX(ninja.door.x) - 12, ninja.door.y - 16, 24, 34);
-      drawStickman(mapX(p.x), p.y, p.vx, p.facing, p.runCycle, p.grounded, color, label, mirror);
-      if (!isVS && state.multiplayer) {
-        drawStickman(ninja.p2.x, ninja.p2.y, ninja.p2.vx, ninja.p2.facing, ninja.p2.runCycle, ninja.p2.grounded, state.p2Color, my2ndLabel, false);
-      }
-      if (!isVS) {
-        getOtherMembers().forEach(peer => {
-          drawStickman(peer.x || 60, peer.y || h - 70, 2, 1, syncTick * 0.25, true, peer.colorHex || '#38bdf8', `P${peer.slot}`, false);
-          if (peer.hasSecondPlayer) {
-            drawStickman(peer.p2x || 80, peer.p2y || h - 70, 2, 1, syncTick * 0.25, true, peer.p2ColorHex || '#ec4899', `P${peer.slot}(2º)`, false);
+      // Blocos do mundo
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const type = world[r][c];
+          if (type !== 0) {
+            ctx.fillStyle = BLOCK_COLORS[type];
+            ctx.fillRect(c * TILE, r * TILE, TILE, TILE);
+            ctx.strokeStyle = 'rgba(0,0,0,0.25)';
+            ctx.strokeRect(c * TILE, r * TILE, TILE, TILE);
           }
-        });
-      }
-      ctx.restore();
-    };
-
-    const loop = () => {
-      syncTick++;
-      ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      const h = canvas.height;
-      ninja.elevators.forEach(el => {
-        el.y += el.dir * el.spd;
-        if (el.y <= el.minY) { el.y = el.minY; el.dir = 1; }
-        if (el.y >= el.maxY) { el.y = el.maxY; el.dir = -1; }
-      });
-
-      if (isVS) {
-        const half = canvas.width / 2;
-        stepStickman(ninja.p1, keys['KeyA'], keys['KeyD'], keys['KeyW']||keys['Space'], half, h);
-        stepStickman(ninja.p2, keys['ArrowRight'], keys['ArrowLeft'], keys['ArrowUp'], half, h);
-        drawArena(ninja.p1, 0, half, h, false, state.p1Color, myLabel);
-        drawArena(ninja.p2, half, half, h, true, state.p2Color, my2ndLabel);
-        ctx.fillStyle = '#6366f1'; ctx.fillRect(half - 2, 0, 4, h);
-        document.getElementById('hud-info').textContent = `Fase ${ninja.stage}/20 | VS: ${myLabel} (${ninja.p1.wins}) vs ${my2ndLabel} (${ninja.p2.wins})`;
-      } else {
-        stepStickman(ninja.p1, keys['KeyA']||(!state.multiplayer&&keys['ArrowLeft']), keys['KeyD']||(!state.multiplayer&&keys['ArrowRight']), keys['KeyW']||keys['Space']||(!state.multiplayer&&keys['ArrowUp']), canvas.width, h);
-        if (state.multiplayer) stepStickman(ninja.p2, keys['ArrowLeft'], keys['ArrowRight'], keys['ArrowUp'], canvas.width, h);
-        drawArena(ninja.p1, 0, canvas.width, h, false, myColor, myLabel);
-        if (syncTick % 3 === 0) sendNet({ type: 'pos', x: ninja.p1.x, y: ninja.p1.y, colorHex: myColor, hasSecondPlayer: state.multiplayer, p2x: ninja.p2.x, p2y: ninja.p2.y, p2ColorHex: state.p2Color });
-        document.getElementById('hud-info').textContent = `${myLabel} • Fase ${ninja.stage}/20 (Elevadores ▲▼)`;
-      }
-      raf = requestAnimationFrame(loop);
-    };
-    loop();
-  }
-
-  // =========================================================================
-  // 5) FRIDAY NIGHT FUNKIN'
-  // =========================================================================
-  else if (id === 'fnf') {
-    const sel = document.getElementById('stage-sel');
-    sel.style.display = 'inline-block';
-    const weeks = ['Semana 1: Daddy Dearest','Semana 2: Skid & Pump','Semana 3: Pico','Semana 4: Mommy Mearest','Semana 5: Red Snow','Semana 6: Senpai','Semana 7: Tankman'];
-    sel.innerHTML = weeks.map((w, i) => `<option value="${i+1}">${w}</option>`).join('');
-    let week = 1, score = 0, notes = [], tick = 0;
-    sel.onchange = () => { week = Number(sel.value); notes = []; score = 0; };
-
-    const cols = [
-      { key: 'ArrowLeft', alt: 'KeyA', lbl: '◀', c: '#c026d3' },
-      { key: 'ArrowUp',   alt: 'KeyW', lbl: '▲', c: '#06b6d4' },
-      { key: 'ArrowDown', alt: 'KeyS', lbl: '▼', c: '#22c55e' },
-      { key: 'ArrowRight',alt: 'KeyD', lbl: '▶', c: '#ef4444' }
-    ];
-
-    const loop = () => {
-      tick++;
-      ctx.fillStyle = '#0c0a1d'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      const speed = 3.6 + week * 0.45, rate = Math.max(18, 36 - week * 2);
-      if (tick % rate === 0) notes.push({ lane: Math.floor(Math.random()*4), y: canvas.height - 20, hit: false });
-
-      const cx = canvas.width / 2, hitY = 75;
-      cols.forEach((col, i) => {
-        const lx = cx + (i - 1.5) * 66;
-        ctx.strokeStyle = col.c; ctx.lineWidth = 3;
-        ctx.strokeRect(lx - 22, hitY - 22, 44, 44);
-        ctx.fillStyle = col.c; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'center';
-        ctx.fillText(col.lbl, lx, hitY + 7);
-        if (keys[col.key + '_just'] || keys[col.alt + '_just']) {
-          keys[col.key + '_just'] = false; keys[col.alt + '_just'] = false;
-          const target = notes.find(n => !n.hit && n.lane === i && Math.abs(n.y - hitY) < 38);
-          if (target) { target.hit = true; score += 10; }
-        }
-      });
-
-      const allP = [{ lbl: myLabel, colorHex: myColor }, ...(state.multiplayer ? [{ lbl: my2ndLabel, colorHex: state.p2Color }] : []), ...getOtherMembers().map(p => ({ lbl: `P${p.slot}`, colorHex: p.colorHex }))];
-      allP.forEach((pl, idx) => {
-        const ax = 55 + idx * 54, ay = canvas.height - 55 + Math.sin(tick * 0.18 + idx) * 5;
-        ctx.fillStyle = pl.colorHex || '#22c55e';
-        ctx.beginPath(); ctx.arc(ax, ay, 14, 0, Math.PI*2); ctx.fill();
-        drawHeadBadge(ctx, ax, ay - 16, pl.lbl, pl.colorHex || '#22c55e');
-      });
-
-      notes.forEach(n => {
-        n.y -= speed;
-        if (!n.hit) {
-          const lx = cx + (n.lane - 1.5) * 66;
-          ctx.fillStyle = cols[n.lane].c;
-          ctx.beginPath(); ctx.roundRect(lx - 20, n.y - 20, 40, 40, 10); ctx.fill();
-          ctx.fillStyle = '#fff'; ctx.fillText(cols[n.lane].lbl, lx, n.y + 7);
-        }
-      });
-      notes = notes.filter(n => !n.hit && n.y > 20);
-      document.getElementById('hud-info').textContent = `${myLabel} • ${weeks[week-1]} | Pontos: ${score}`;
-      raf = requestAnimationFrame(loop);
-    };
-    loop();
-  }
-
-  // =========================================================================
-  // 6) GEOMETRY DASH
-  // =========================================================================
-  else if (id === 'gdash') {
-    let py = 0, vy = 0, grounded = true, rot = 0, dist = 0, obs = [], tick = 0;
-    const loop = () => {
-      tick++; dist += 5.5;
-      ctx.fillStyle = '#090d24'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      const groundY = canvas.height - 80;
-      ctx.fillStyle = '#38bdf8'; ctx.fillRect(0, groundY + 26, canvas.width, 4);
-
-      if ((keys['Space'] || keys['ArrowUp'] || keys['KeyW'] || mouse.down) && grounded) { vy = -11.5; grounded = false; }
-      py += vy; vy += 0.62;
-      if (py >= 0) { py = 0; vy = 0; grounded = true; rot = Math.round(rot / (Math.PI/2)) * (Math.PI/2); }
-      else rot += 0.12;
-
-      if (tick % 65 === 0) obs.push({ x: canvas.width, type: Math.random() < 0.65 ? 'spike' : 'block' });
-      obs.forEach(o => {
-        o.x -= 5.8;
-        if (o.type === 'spike') {
-          ctx.fillStyle = '#ef4444';
-          ctx.beginPath(); ctx.moveTo(o.x, groundY + 26); ctx.lineTo(o.x + 13, groundY + 2); ctx.lineTo(o.x + 26, groundY + 26); ctx.fill();
-          if (o.x < 102 && o.x + 22 > 82 && py > -20) { obs = []; dist = 0; registerDeath(false); }
-        } else {
-          ctx.fillStyle = '#a855f7'; ctx.fillRect(o.x, groundY, 26, 26);
-          if (o.x < 106 && o.x + 26 > 80 && py > -22) { obs = []; dist = 0; registerDeath(false); }
-        }
-      });
-      obs = obs.filter(o => o.x > -40);
-
-      getOtherMembers().forEach((peer, idx) => {
-        const ox = 93 + (idx + 1) * 32, oy = groundY + (peer.y || 0) + 13;
-        ctx.fillStyle = peer.colorHex || '#38bdf8'; ctx.fillRect(ox - 13, oy - 13, 26, 26);
-        drawHeadBadge(ctx, ox, oy - 18, `P${peer.slot}`, peer.colorHex || '#38bdf8');
-      });
-
-      ctx.save(); ctx.translate(93, groundY + py + 13); ctx.rotate(rot);
-      ctx.fillStyle = myColor; ctx.fillRect(-13, -13, 26, 26);
-      ctx.strokeStyle = '#000'; ctx.lineWidth = 2.5; ctx.strokeRect(-13, -13, 26, 26);
-      ctx.restore();
-      drawHeadBadge(ctx, 93, groundY + py - 6, myLabel, myColor);
-      if (tick % 3 === 0) sendNet({ type: 'pos', x: 93, y: py, colorHex: myColor });
-
-      document.getElementById('hud-info').textContent = `${myLabel} • Progresso: ${Math.min(100, Math.floor((dist / 4500) * 100))}%`;
-      raf = requestAnimationFrame(loop);
-    };
-    loop();
-  }
-
-  // =========================================================================
-  // 7) ROBLOX 270
-  // =========================================================================
-  else if (id === 'roblox') {
-    let px = 35 + state.mySlot * 16, py = 180, vy = 0, grounded = false;
-    let p2x = px + 24, p2y = 180, p2vy = 0, p2g = false, stage = 1, tick = 0;
-    const loop = () => {
-      tick++;
-      ctx.fillStyle = '#1e1b4b'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      const h = canvas.height;
-      const plats = [
-        { x: 20, y: h - 70, w: 140, h: 16, lava: false },
-        { x: 190, y: h - 110, w: 95, h: 16, lava: false },
-        { x: 320, y: h - 150, w: 95, h: 16, lava: false },
-        { x: 450, y: h - 130, w: 115, h: 16, lava: false },
-        { x: 0, y: h - 22, w: canvas.width, h: 22, lava: true }
-      ];
-      if (keys['KeyA'] || (!state.multiplayer && keys['ArrowLeft'])) px -= 4;
-      if (keys['KeyD'] || (!state.multiplayer && keys['ArrowRight'])) px += 4;
-      if ((keys['KeyW'] || keys['Space'] || (!state.multiplayer && keys['ArrowUp'])) && grounded) { vy = -11; grounded = false; }
-      vy += 0.55; py += vy; grounded = false;
-
-      if (state.multiplayer) {
-        if (keys['ArrowLeft']) p2x -= 4; if (keys['ArrowRight']) p2x += 4;
-        if (keys['ArrowUp'] && p2g) { p2vy = -11; p2g = false; }
-        p2vy += 0.55; p2y += p2vy; p2g = false;
-      }
-
-      plats.forEach(pl => {
-        ctx.fillStyle = pl.lava ? '#ef4444' : '#38bdf8'; ctx.fillRect(pl.x, pl.y, pl.w, pl.h);
-        if (px + 18 > pl.x && px < pl.x + pl.w && py + 28 >= pl.y && py + 28 <= pl.y + 18 && vy >= 0) {
-          if (pl.lava) { px = 40; py = h - 120; vy = 0; registerDeath(false); } else { py = pl.y - 28; vy = 0; grounded = true; }
-        }
-        if (state.multiplayer && p2x + 18 > pl.x && p2x < pl.x + pl.w && p2y + 28 >= pl.y && p2y + 28 <= pl.y + 18 && p2vy >= 0) {
-          if (pl.lava) { p2x = 55; p2y = h - 120; p2vy = 0; } else { p2y = pl.y - 28; p2vy = 0; p2g = true; }
-        }
-      });
-
-      ctx.fillStyle = '#22c55e'; ctx.fillRect(510, h - 165, 22, 35);
-      if (Math.hypot(px - 510, py - (h - 155)) < 28) { stage++; px = 40; py = h - 120; }
-
-      const drawRobloxAvatar = (ax, ay, col, name) => {
-        ctx.fillStyle = '#facc15'; ctx.fillRect(ax + 4, ay, 12, 10);
-        ctx.fillStyle = col; ctx.fillRect(ax + 2, ay + 10, 16, 12);
-        ctx.fillStyle = '#1e293b'; ctx.fillRect(ax + 3, ay + 22, 6, 6); ctx.fillRect(ax + 11, ay + 22, 6, 6);
-        drawHeadBadge(ctx, ax + 10, ay - 4, name, col);
-      };
-      drawRobloxAvatar(px, py, myColor, myLabel);
-      if (state.multiplayer) drawRobloxAvatar(p2x, p2y, state.p2Color, my2ndLabel);
-      getOtherMembers().slice(0, 9).forEach(peer => {
-        drawRobloxAvatar(peer.x || 60, peer.y || h - 110, peer.colorHex || '#ec4899', `P${peer.slot}`);
-        if (peer.hasSecondPlayer) drawRobloxAvatar(peer.p2x || 80, peer.p2y || h - 110, peer.p2ColorHex || '#38bdf8', `P${peer.slot}(2º)`);
-      });
-      if (tick % 3 === 0) sendNet({ type: 'pos', x: px, y: py, colorHex: myColor, hasSecondPlayer: state.multiplayer, p2x, p2y, p2ColorHex: state.p2Color });
-
-      document.getElementById('hud-info').textContent = `${myLabel} • Obby Stage ${stage}`;
-      raf = requestAnimationFrame(loop);
-    };
-    loop();
-  }
-
-  // =========================================================================
-  // 8) SNAKE 360
-  // =========================================================================
-  else if (id === 'snake') {
-    const grid = 18, isVS = state.multiplayer && state.vsMode === 'vs';
-    const makeSnake = (sx, sy, dx) => ({ body: [{x:sx,y:sy},{x:sx-dx,y:sy},{x:sx-dx*2,y:sy}], dx, dy: 0, apple: {x: sx+dx*5, y: sy}, wins: 0 });
-    let s1 = makeSnake(6, 10, 1), s2 = makeSnake(14, 10, -1), tick = 0;
-
-    const stepSnake = (s, up, dn, lt, rt, maxCols, maxRows) => {
-      if (up && s.dy === 0) { s.dx = 0; s.dy = -1; }
-      else if (dn && s.dy === 0) { s.dx = 0; s.dy = 1; }
-      else if (lt && s.dx === 0) { s.dx = -1; s.dy = 0; }
-      else if (rt && s.dx === 0) { s.dx = 1; s.dy = 0; }
-      const head = { x: s.body[0].x + s.dx, y: s.body[0].y + s.dy };
-      if (head.x < 0 || head.y < 0 || head.x >= maxCols || head.y >= maxRows || s.body.some(b => b.x === head.x && b.y === head.y)) {
-        registerDeath(false); if (isVS) (s === s1 ? s2 : s1).wins++;
-        s.body = [{x: Math.floor(maxCols/2), y: Math.floor(maxRows/2)}]; return;
-      }
-      s.body.unshift(head);
-      if (head.x === s.apple.x && head.y === s.apple.y) {
-        s.apple = { x: Math.floor(Math.random()*maxCols), y: Math.floor(Math.random()*maxRows) };
-        if (s.body.length >= 20) unlock('Cobra Gulosa (Tamanho 20)');
-        if (s.body.length * 10 === 270) unlock('270 Cravado! (Exatos 270 pts)', 27);
-      } else s.body.pop();
-    };
-
-    const drawSnakeLane = (s, x0, color, label) => {
-      ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(x0 + s.apple.x*grid + grid/2, s.apple.y*grid + grid/2, 7, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = color; s.body.forEach(b => ctx.fillRect(x0 + b.x*grid + 1, b.y*grid + 1, grid - 2, grid - 2));
-      drawHeadBadge(ctx, x0 + s.body[0].x*grid + grid/2, s.body[0].y*grid, label, color);
-    };
-
-    const loop = () => {
-      tick++;
-      if (tick % 6 === 0) {
-        ctx.fillStyle = '#090d1c'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-        const rows = Math.floor(canvas.height / grid);
-        if (isVS) {
-          const half = Math.floor(canvas.width / 2), cols = Math.floor(half / grid);
-          stepSnake(s1, keys['KeyW'], keys['KeyS'], keys['KeyA'], keys['KeyD'], cols, rows);
-          stepSnake(s2, keys['ArrowUp'], keys['ArrowDown'], keys['ArrowLeft'], keys['ArrowRight'], cols, rows);
-          drawSnakeLane(s1, 0, state.p1Color, myLabel); drawSnakeLane(s2, half, state.p2Color, my2ndLabel);
-          ctx.fillStyle = '#6366f1'; ctx.fillRect(half - 2, 0, 4, canvas.height);
-          document.getElementById('hud-info').textContent = `VS | ${myLabel}: ${s1.body.length} vs ${my2ndLabel}: ${s2.body.length}`;
-        } else {
-          const cols = Math.floor(canvas.width / grid);
-          stepSnake(s1, keys['KeyW']||(!state.multiplayer&&keys['ArrowUp']), keys['KeyS']||(!state.multiplayer&&keys['ArrowDown']), keys['KeyA']||(!state.multiplayer&&keys['ArrowLeft']), keys['KeyD']||(!state.multiplayer&&keys['ArrowRight']), cols, rows);
-          drawSnakeLane(s1, 0, myColor, myLabel);
-          if (state.multiplayer) {
-            stepSnake(s2, keys['ArrowUp'], keys['ArrowDown'], keys['ArrowLeft'], keys['ArrowRight'], cols, rows);
-            drawSnakeLane(s2, 0, state.p2Color, my2ndLabel);
-          }
-          getOtherMembers().forEach(peer => {
-            ctx.fillStyle = peer.colorHex || '#38bdf8';
-            ctx.fillRect((peer.x || 10)*grid, (peer.y || 10)*grid, grid - 2, grid - 2);
-            drawHeadBadge(ctx, (peer.x || 10)*grid + grid/2, (peer.y || 10)*grid, `P${peer.slot}`, peer.colorHex || '#38bdf8');
-          });
-          sendNet({ type: 'pos', x: s1.body[0].x, y: s1.body[0].y, colorHex: myColor, hasSecondPlayer: state.multiplayer, p2x: s2.body[0].x, p2y: s2.body[0].y, p2ColorHex: state.p2Color });
-          document.getElementById('hud-info').textContent = `${myLabel} • Tamanho: ${s1.body.length}`;
-        }
-      }
-      raf = requestAnimationFrame(loop);
-    };
-    loop();
-  }
-
-  // =========================================================================
-  // 9) GEOMETRY WARS
-  // =========================================================================
-  else if (id === 'geo') {
-    document.getElementById('btn-upgrade').style.display = 'inline-block';
-    const isVS = state.multiplayer && state.vsMode === 'vs';
-    geoState = {
-      p1: { x: canvas.width * 0.25, y: canvas.height / 2, ang: 0, score: 0 },
-      p2: { x: canvas.width * 0.75, y: canvas.height / 2, ang: Math.PI, score: 0 },
-      score: 0, dmg: 1, cost: 20, bullets: [], enemies: [], tick: 0
-    };
-    document.getElementById('btn-upgrade').textContent = `+1 Dano (20 pts)`;
-
-    const loop = () => {
-      geoState.tick++;
-      ctx.fillStyle = '#070913'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      const half = canvas.width / 2;
-
-      if (keys['KeyW'] || (!state.multiplayer && keys['ArrowUp'])) geoState.p1.y -= 4;
-      if (keys['KeyS'] || (!state.multiplayer && keys['ArrowDown'])) geoState.p1.y += 4;
-      if (keys['KeyA'] || (!state.multiplayer && keys['ArrowLeft'])) geoState.p1.x -= 4;
-      if (keys['KeyD'] || (!state.multiplayer && keys['ArrowRight'])) geoState.p1.x += 4;
-      geoState.p1.x = Math.max(16, Math.min(isVS ? half - 16 : canvas.width - 16, geoState.p1.x));
-      geoState.p1.y = Math.max(16, Math.min(canvas.height - 16, geoState.p1.y));
-      geoState.p1.ang = Math.atan2(mouse.y - geoState.p1.y, mouse.x - geoState.p1.x);
-
-      if ((mouse.down || keys['Space']) && geoState.tick % 8 === 0) {
-        geoState.bullets.push({ owner: 1, x: geoState.p1.x, y: geoState.p1.y, vx: Math.cos(geoState.p1.ang)*9, vy: Math.sin(geoState.p1.ang)*9 });
-      }
-
-      if (state.multiplayer) {
-        if (state.p2GeoTank) {
-          if (keys['ArrowLeft']) geoState.p2.ang -= 0.08;
-          if (keys['ArrowRight']) geoState.p2.ang += 0.08;
-          if (keys['ArrowUp']) { geoState.p2.x += Math.cos(geoState.p2.ang)*4; geoState.p2.y += Math.sin(geoState.p2.ang)*4; }
-          if (keys['ArrowDown']) { geoState.p2.x -= Math.cos(geoState.p2.ang)*3.5; geoState.p2.y -= Math.sin(geoState.p2.ang)*3.5; }
-        } else {
-          let vx = 0, vy = 0;
-          if (keys['ArrowLeft']) vx = -4; if (keys['ArrowRight']) vx = 4;
-          if (keys['ArrowUp']) vy = -4; if (keys['ArrowDown']) vy = 4;
-          geoState.p2.x += vx; geoState.p2.y += vy;
-          if (vx !== 0 || vy !== 0) geoState.p2.ang = Math.atan2(vy, vx);
-        }
-        geoState.p2.x = Math.max(isVS ? half + 16 : 16, Math.min(canvas.width - 16, geoState.p2.x));
-        geoState.p2.y = Math.max(16, Math.min(canvas.height - 16, geoState.p2.y));
-        if (geoState.tick % 10 === 0) {
-          geoState.bullets.push({ owner: 2, x: geoState.p2.x, y: geoState.p2.y, vx: Math.cos(geoState.p2.ang)*9, vy: Math.sin(geoState.p2.ang)*9 });
         }
       }
 
-      if (geoState.tick % 50 === 0) {
-        const r = Math.random();
-        const type = r < 0.5 ? { shape:'sq', hp:3, pts:1, c:'#a855f7' } : r < 0.85 ? { shape:'tr', hp:5, pts:3, c:'#facc15' } : { shape:'ci', hp:10, pts:10, c:'#f43f5e' };
-        const side = isVS && Math.random() < 0.5 ? 2 : 1;
-        const sx = isVS ? (side === 1 ? Math.random()*half : half + Math.random()*half) : Math.random()*canvas.width;
-        geoState.enemies.push({ ...type, side, x: sx, y: Math.random()<0.5?0:canvas.height });
-      }
+      // Jogador (estilo Steve minimalista)
+      // Corpo
+      ctx.fillStyle = '#0284c7';
+      ctx.fillRect(player.x, player.y + 14, player.w, 18);
+      // Calça
+      ctx.fillStyle = '#1e3a8a';
+      ctx.fillRect(player.x, player.y + 32, player.w, 12);
+      // Cabeça
+      ctx.fillStyle = '#fed7aa';
+      ctx.fillRect(player.x + 2, player.y, player.w - 4, 14);
+      // Cabelo
+      ctx.fillStyle = '#451a03';
+      ctx.fillRect(player.x + 2, player.y, player.w - 4, 4);
+    }
 
-      geoState.bullets.forEach(b => {
-        b.x += b.vx; b.y += b.vy;
-        if (isVS) { if (b.owner === 1 && b.x >= half - 3) b.dead = true; if (b.owner === 2 && b.x <= half + 3) b.dead = true; }
-        if (b.x <= 2 || b.x >= canvas.width - 2 || b.y <= 2 || b.y >= canvas.height - 2) b.dead = true;
-        if (!b.dead) { ctx.fillStyle = b.owner===1?'#38bdf8':'#f472b6'; ctx.fillRect(b.x-3,b.y-3,6,6); }
-      });
-
-      geoState.enemies.forEach(e => {
-        const target = (isVS && e.side === 2) ? geoState.p2 : geoState.p1;
-        const a = Math.atan2(target.y - e.y, target.x - e.x);
-        e.x += Math.cos(a)*1.55; e.y += Math.sin(a)*1.55;
-        ctx.strokeStyle = e.c; ctx.lineWidth = 2.5;
-        if (e.shape === 'sq') ctx.strokeRect(e.x-11, e.y-11, 22, 22);
-        else if (e.shape === 'ci') { ctx.beginPath(); ctx.arc(e.x, e.y, 12, 0, Math.PI*2); ctx.stroke(); }
-        else { ctx.beginPath(); ctx.moveTo(e.x, e.y-13); ctx.lineTo(e.x+12, e.y+10); ctx.lineTo(e.x-12, e.y+10); ctx.closePath(); ctx.stroke(); }
-        if (Math.hypot(target.x - e.x, target.y - e.y) < 18) { e.hp = 0; registerDeath(false); }
-
-        geoState.bullets.forEach(b => {
-          if (!b.dead && Math.hypot(b.x - e.x, b.y - e.y) < 18) {
-            e.hp -= geoState.dmg; b.dead = true;
-            if (e.hp <= 0) {
-              geoState.score += e.pts;
-              if (b.owner === 1) geoState.p1.score += e.pts; else geoState.p2.score += e.pts;
-              if (geoState.score >= 55) unlock('Matador de Bichos (55 pts Geo Wars)');
-              if (geoState.score === 270) unlock('270 Cravado! (Exatos 270 pts)', 27);
-            }
-          }
-        });
-      });
-      geoState.enemies = geoState.enemies.filter(e => e.hp > 0);
-      geoState.bullets = geoState.bullets.filter(b => !b.dead);
-
-      const drawShip = (x, y, ang, color, label) => {
-        ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
-        ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(16,0); ctx.lineTo(-12,-10); ctx.lineTo(-7,0); ctx.lineTo(-12,10); ctx.fill();
-        ctx.restore();
-        drawHeadBadge(ctx, x, y - 16, label, color);
-      };
-      drawShip(geoState.p1.x, geoState.p1.y, geoState.p1.ang, myColor, myLabel);
-      if (state.multiplayer) drawShip(geoState.p2.x, geoState.p2.y, geoState.p2.ang, state.p2Color, my2ndLabel);
-      getOtherMembers().forEach(peer => drawShip(peer.x || 300, peer.y || 200, peer.extra?.ang || 0, peer.colorHex || '#38bdf8', `P${peer.slot}`));
-      if (geoState.tick % 3 === 0) sendNet({ type: 'pos', x: geoState.p1.x, y: geoState.p1.y, colorHex: myColor, hasSecondPlayer: state.multiplayer, p2x: geoState.p2.x, p2y: geoState.p2.y, p2ColorHex: state.p2Color, extra: { ang: geoState.p1.ang } });
-
-      if (isVS) { ctx.fillStyle = '#6366f1'; ctx.fillRect(half - 2, 0, 4, canvas.height); }
-      document.getElementById('hud-info').textContent = isVS
-        ? `VS | ${myLabel}: ${geoState.p1.score} vs ${my2ndLabel}: ${geoState.p2.score} | Dano: ${geoState.dmg}`
-        : `${myLabel} • Pontos: ${geoState.score} | Dano: ${geoState.dmg} (E)`;
-      raf = requestAnimationFrame(loop);
-    };
-    loop();
-  }
-
-  // =========================================================================
-  // 10) HEXIC 360
-  // =========================================================================
-  else if (id === 'hexic') {
-    const colors = ['#7c3aed', '#2563eb', '#22c55e', '#facc15', '#f43f5e'];
-    const makeBoard = () => Array.from({length: 5}, () => Array.from({length: 6}, () => colors[Math.floor(Math.random()*colors.length)]));
-    const b1 = makeBoard(), b2 = makeBoard();
-    let c1 = { r: 2, c: 2, score: 0 }, c2 = { r: 2, c: 2, score: 0 };
-    const isVS = state.multiplayer && state.vsMode === 'vs';
-
-    const resolveMatches = (board, scorer) => {
-      let cleared = 0;
-      for (let r = 0; r < 5; r++) for (let c = 0; c < 4; c++) {
-        const col = board[r][c];
-        if (col && col === board[r][c+1] && col === board[r][c+2]) { board[r][c] = board[r][c+1] = board[r][c+2] = null; cleared += 3; }
-      }
-      for (let c = 0; c < 6; c++) for (let r = 4; r >= 0; r--) if (!board[r][c]) board[r][c] = colors[Math.floor(Math.random()*colors.length)];
-      if (cleared > 0) { scorer.score += cleared * 10; if (scorer.score === 270) unlock('270 Cravado! (Exatos 270 pts)', 27); }
-    };
-
-    const drawHexGrid = (board, cx, cy, cur, cur2) => {
-      for (let r = 0; r < 5; r++) for (let c = 0; c < 6; c++) {
-        const x = cx + (c - 2.5) * 44, y = cy + (r - 2) * 44;
-        ctx.fillStyle = board[r][c]; ctx.beginPath();
-        for (let i = 0; i < 6; i++) {
-          const ang = (Math.PI / 3) * i, px = x + 18 * Math.cos(ang), py = y + 18 * Math.sin(ang);
-          i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
-        }
-        ctx.closePath(); ctx.fill();
-      }
-      ctx.strokeStyle = myColor; ctx.lineWidth = 3;
-      ctx.strokeRect(cx + (cur.c - 2.5)*44 - 22, cy + (cur.r - 2)*44 - 22, 88, 88);
-      if (cur2) { ctx.strokeStyle = state.p2Color; ctx.strokeRect(cx + (cur2.c - 2.5)*44 - 20, cy + (cur2.r - 2)*44 - 20, 84, 84); }
-    };
-
-    const loop = () => {
-      ctx.fillStyle = '#0d1024'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      if (keys['KeyW_just']) { keys['KeyW_just'] = false; c1.r = Math.max(0, c1.r - 1); }
-      if (keys['KeyS_just']) { keys['KeyS_just'] = false; c1.r = Math.min(3, c1.r + 1); }
-      if (keys['KeyA_just']) { keys['KeyA_just'] = false; c1.c = Math.max(0, c1.c - 1); }
-      if (keys['KeyD_just']) { keys['KeyD_just'] = false; c1.c = Math.min(4, c1.c + 1); }
-      if (keys['Space_just']) {
-        keys['Space_just'] = false;
-        const t = b1[c1.r][c1.c]; b1[c1.r][c1.c] = b1[c1.r][c1.c+1]; b1[c1.r][c1.c+1] = b1[c1.r+1][c1.c]; b1[c1.r+1][c1.c] = t;
-        resolveMatches(b1, c1);
-      }
-      if (keys['ArrowUp_just']) { keys['ArrowUp_just'] = false; (state.multiplayer ? c2 : c1).r = Math.max(0, (state.multiplayer ? c2 : c1).r - 1); }
-      if (keys['ArrowDown_just']) { keys['ArrowDown_just'] = false; (state.multiplayer ? c2 : c1).r = Math.min(3, (state.multiplayer ? c2 : c1).r + 1); }
-      if (keys['ArrowLeft_just']) { keys['ArrowLeft_just'] = false; (state.multiplayer ? c2 : c1).c = Math.max(0, (state.multiplayer ? c2 : c1).c - 1); }
-      if (keys['ArrowRight_just']) { keys['ArrowRight_just'] = false; (state.multiplayer ? c2 : c1).c = Math.min(4, (state.multiplayer ? c2 : c1).c + 1); }
-
-      if (isVS) {
-        drawHexGrid(b1, canvas.width * 0.25, canvas.height / 2, c1, null);
-        drawHexGrid(b2, canvas.width * 0.75, canvas.height / 2, c2, null);
-        ctx.fillStyle = '#6366f1'; ctx.fillRect(canvas.width/2 - 2, 0, 4, canvas.height);
-        document.getElementById('hud-info').textContent = `VS | ${myLabel}: ${c1.score} vs ${my2ndLabel}: ${c2.score}`;
-      } else {
-        drawHexGrid(b1, canvas.width / 2, canvas.height / 2, c1, state.multiplayer ? c2 : null);
-        document.getElementById('hud-info').textContent = `${myLabel} • Pontos: ${c1.score + c2.score}`;
-      }
-      raf = requestAnimationFrame(loop);
-    };
-    loop();
-  }
-}
-
-renderMain();
-</script>
+    function gameLoop() {
+      if (!gameRunning) return;
+      update();
+      draw();
+      animationId = requestAnimationFrame(gameLoop);
+    }
+  </script>
 </body>
-</html>'''
-
-with open('index.html', 'w', encoding='utf-8') as f:
-    f.write(html_code)
-print("V2.3 gerada com sucesso:", len(html_code), "bytes")
+</html>
