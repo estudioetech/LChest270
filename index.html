@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>LChest 270 — V2.0</title>
-  <!-- PeerJS para Multiplayer Online Real no GitHub Pages (P2P WebRTC) -->
+  <title>LChest 270 — V2.1</title>
   <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
     html, body {
-      width: 100%; height: 100%; overflow: hidden;
+      width: 100%; height: 100%; height: 100dvh; overflow: hidden;
       background: radial-gradient(circle at 50% 20%, #1a1740 0%, #0b0e1d 70%, #070913 100%);
       color: #fff; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       display: flex; flex-direction: column;
@@ -18,35 +17,35 @@
     /* TOPO RESPONSIVO */
     header {
       display: flex; align-items: center; justify-content: space-between;
-      gap: 10px; padding: 9px 14px; min-height: 60px; flex-shrink: 0;
-      background: rgba(10, 13, 28, 0.92); border-bottom: 1px solid rgba(255,255,255,0.08);
+      gap: 8px; padding: 8px 12px; min-height: 56px; flex-shrink: 0;
+      background: rgba(10, 13, 28, 0.94); border-bottom: 1px solid rgba(255,255,255,0.08);
       z-index: 20; overflow-x: auto; scrollbar-width: none;
     }
     header::-webkit-scrollbar { display: none; }
     .logo-wrap { display: flex; align-items: center; flex-shrink: 0; cursor: pointer; }
-    .nav-tabs { display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+    .nav-tabs { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
     .tab-btn {
-      background: transparent; border: none; color: #94a3b8; font-size: 13px;
-      font-weight: 700; padding: 7px 12px; border-radius: 999px; cursor: pointer;
+      background: transparent; border: none; color: #94a3b8; font-size: 12px;
+      font-weight: 700; padding: 6px 11px; border-radius: 999px; cursor: pointer;
       white-space: nowrap; flex-shrink: 0; transition: .2s;
     }
     .tab-btn.active { background: #282366; color: #fff; box-shadow: 0 0 16px rgba(99,102,241,0.45); }
     .status-pill {
-      display: flex; align-items: center; gap: 7px; font-size: 12px; flex-shrink: 0;
-      background: rgba(255,255,255,0.07); padding: 5px 11px; border-radius: 999px; white-space: nowrap;
+      display: flex; align-items: center; gap: 6px; font-size: 11px; flex-shrink: 0;
+      background: rgba(255,255,255,0.07); padding: 5px 10px; border-radius: 999px; white-space: nowrap;
     }
-    .ver-badge { background: #3b336b; color: #c4b5fd; font-weight: 800; padding: 2px 8px; border-radius: 6px; }
+    .ver-badge { background: #3b336b; color: #c4b5fd; font-weight: 800; padding: 2px 7px; border-radius: 6px; }
     .pill-btn {
       background: #1e293b; color: #e2e8f0; border: 1px solid rgba(255,255,255,0.16);
-      padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; cursor: pointer;
+      padding: 4px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; cursor: pointer;
     }
     .pill-btn.on { background: #2563eb; border-color: #60a5fa; color: #fff; }
     .pill-btn.room { background: #6d28d9; border-color: #a78bfa; color: #fff; }
 
-    /* BARRA AO VIVO DA SALA (QUEM JOGA O QUÊ + DUPLAS COM CORDA COLORIDA) */
+    /* BARRA AO VIVO DA SALA */
     #room-live-bar {
       display: none; align-items: center; justify-content: space-between; gap: 10px;
-      padding: 6px 14px; background: rgba(24, 29, 56, 0.95);
+      padding: 5px 12px; background: rgba(24, 29, 56, 0.95);
       border-bottom: 1px solid rgba(139, 92, 246, 0.35);
       overflow-x: auto; flex-shrink: 0; z-index: 18;
     }
@@ -75,46 +74,46 @@
       display: flex; align-items: center; justify-content: center; perspective: 1100px;
     }
     .carousel-track {
-      display: flex; align-items: center; gap: 18px; padding: 24px 46px;
+      display: flex; align-items: center; gap: 16px; padding: 20px 42px;
       overflow-x: auto; scroll-behavior: smooth; scroll-snap-type: x mandatory;
       width: 100%; scrollbar-width: none;
     }
     .carousel-track::-webkit-scrollbar { display: none; }
     .nav-arrow {
       position: absolute; top: 50%; transform: translateY(-50%); z-index: 15;
-      width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.22);
-      background: rgba(15, 23, 42, 0.9); color: #fff; font-size: 16px; font-weight: 900;
+      width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.22);
+      background: rgba(15, 23, 42, 0.9); color: #fff; font-size: 15px; font-weight: 900;
       cursor: pointer; display: flex; align-items: center; justify-content: center;
       box-shadow: 0 8px 20px rgba(0,0,0,0.5);
     }
-    .nav-arrow.left { left: 6px; }
-    .nav-arrow.right { right: 6px; }
+    .nav-arrow.left { left: 4px; }
+    .nav-arrow.right { right: 4px; }
 
     .game-card {
-      flex: 0 0 250px; scroll-snap-align: center;
-      background: #151a30; border-radius: 24px; padding: 15px;
+      flex: 0 0 245px; scroll-snap-align: center;
+      background: #151a30; border-radius: 24px; padding: 14px;
       border: 1px solid rgba(255,255,255,0.07); cursor: pointer;
       transition: transform .28s cubic-bezier(.22,1,.36,1), background .25s ease, box-shadow .25s ease, opacity .25s ease;
-      display: flex; flex-direction: column; gap: 9px; opacity: 0.78;
+      display: flex; flex-direction: column; gap: 8px; opacity: 0.78;
       transform: scale(0.9) rotateY(8deg);
     }
     .game-card.right-side { transform: scale(0.9) rotateY(-8deg); }
     .game-card:hover { opacity: 0.96; transform: scale(0.96) rotateY(0deg); }
     .game-card.active {
-      flex: 0 0 295px; background: #282366; opacity: 1; transform: scale(1.05) rotateY(0deg);
+      flex: 0 0 285px; background: #282366; opacity: 1; transform: scale(1.04) rotateY(0deg);
       border: 1px solid rgba(139, 92, 246, 0.55); z-index: 5;
       box-shadow: 0 22px 48px rgba(0,0,0,0.7), 0 0 35px rgba(79,70,229,0.35);
     }
     .preview-box {
-      width: 100%; height: 130px; background: #0e1120; border-radius: 16px;
+      width: 100%; height: 124px; background: #0e1120; border-radius: 16px;
       display: flex; align-items: center; justify-content: center; overflow: hidden;
     }
     .card-sub { font-size: 10px; font-weight: 800; letter-spacing: 1px; color: #a5b4fc; text-transform: uppercase; }
-    .card-title { font-size: 18px; font-weight: 800; color: #fff; line-height: 1.2; }
+    .card-title { font-size: 17px; font-weight: 800; color: #fff; line-height: 1.2; }
     .card-desc { font-size: 12px; color: #cbd5e1; line-height: 1.35; min-height: 34px; }
     .card-actions { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 2px; }
     .btn-play {
-      background: #2563eb; color: #fff; border: none; padding: 8px 15px;
+      background: #2563eb; color: #fff; border: none; padding: 8px 14px;
       border-radius: 999px; font-weight: 700; font-size: 12px; cursor: pointer; white-space: nowrap;
     }
     .btn-play:hover { background: #1d4ed8; }
@@ -124,9 +123,9 @@
       padding: 6px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; white-space: nowrap;
     }
 
-    /* CONFIGURAÇÕES, CONQUISTAS & TABELA DA SALA */
+    /* CONFIGURAÇÕES & TABELA DA SALA */
     .panel-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 14px; width: 100%; max-width: 1120px; align-self: flex-start; padding: 8px 0 24px;
     }
     .cfg-card {
@@ -142,30 +141,29 @@
       border-radius: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; width: 135px; text-align: center;
     }
 
-    /* MODAIS (SALA, LOBBY DE CORES, VOTAÇÃO & PEDIDO DE PAR) */
+    /* MODAIS */
     .modal-backdrop {
       position: fixed; inset: 0; background: rgba(7, 9, 19, 0.88); backdrop-filter: blur(8px);
-      z-index: 65; display: none; align-items: center; justify-content: center; padding: 16px;
+      z-index: 65; display: none; align-items: center; justify-content: center; padding: 14px;
     }
     .modal-box {
       background: #181d38; border: 1px solid rgba(139,92,246,0.45); border-radius: 24px;
-      padding: 22px; max-width: 580px; width: 100%; text-align: center;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.75); max-height: 92vh; overflow-y: auto;
+      padding: 20px; max-width: 580px; width: 100%; text-align: center;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.75); max-height: 92dvh; overflow-y: auto;
     }
-    .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 18px 0; }
+    .mode-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
     .mode-card {
-      background: #23294d; border: 2px solid transparent; border-radius: 18px; padding: 16px;
+      background: #23294d; border: 2px solid transparent; border-radius: 18px; padding: 14px;
       cursor: pointer; transition: .2s; display: flex; flex-direction: column; gap: 6px;
     }
     .mode-card:hover { border-color: #6366f1; background: #2c2670; transform: translateY(-2px); }
 
-    /* GRADE DAS 13 CORES PREDEFINIDAS NO LOBBY */
     .color-grid {
-      display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
-      gap: 10px; margin: 16px 0;
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(82px, 1fr));
+      gap: 9px; margin: 14px 0;
     }
     .swatch-btn {
-      position: relative; height: 56px; border-radius: 14px; border: 2px solid rgba(255,255,255,0.25);
+      position: relative; height: 52px; border-radius: 14px; border: 2px solid rgba(255,255,255,0.25);
       cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;
       font-size: 11px; font-weight: 800; transition: transform .15s, border-color .15s;
       text-shadow: 0 1px 3px rgba(0,0,0,0.85);
@@ -175,57 +173,64 @@
     .swatch-btn.taken { opacity: 0.42; cursor: not-allowed; filter: grayscale(0.25); }
     .swatch-x {
       position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-      font-size: 34px; font-weight: 900; color: #ffffff; text-shadow: 0 0 8px #000, 0 0 4px #000;
+      font-size: 32px; font-weight: 900; color: #ffffff; text-shadow: 0 0 8px #000, 0 0 4px #000;
       pointer-events: none;
     }
     .roster-bar {
-      display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 10px;
+      display: flex; flex-wrap: wrap; gap: 7px; justify-content: center; margin-top: 8px;
     }
     .roster-chip {
       display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.08);
-      padding: 5px 10px; border-radius: 999px; font-size: 12px; font-weight: 700;
+      padding: 4px 10px; border-radius: 999px; font-size: 11px; font-weight: 700;
     }
-    .chip-dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid #fff; }
+    .chip-dot { width: 11px; height: 11px; border-radius: 50%; border: 1px solid #fff; }
 
-    /* TELA DE JOGO + CONTROLES VIRTUAIS */
+    /* OVERLAY DE JOGO RESPONSIVO (CELULAR EM PÉ OU DEITADO) */
     #game-overlay {
-      position: fixed; inset: 0; background: #070913; z-index: 50;
+      position: fixed; inset: 0; width: 100%; height: 100dvh; background: #070913; z-index: 50;
       display: none; flex-direction: column;
     }
     .game-hud {
       display: flex; justify-content: space-between; align-items: center; gap: 8px;
-      padding: 8px 14px; background: #11162b; border-bottom: 1px solid rgba(255,255,255,0.1);
-      flex-shrink: 0; flex-wrap: wrap;
+      padding: 7px 12px; background: #11162b; border-bottom: 1px solid rgba(255,255,255,0.1);
+      flex-shrink: 0; flex-wrap: wrap; z-index: 55;
     }
-    #canvas-wrap { flex: 1; position: relative; width: 100%; height: 100%; overflow: hidden; }
-    canvas#gameCanvas { width: 100%; height: 100%; display: block; }
+    #canvas-wrap {
+      flex: 1; position: relative; width: 100%; min-height: 180px; overflow: hidden;
+    }
+    canvas#gameCanvas { width: 100%; height: 100%; display: block; touch-action: none; }
 
+    /* CONTROLES VIRTUAIS MOBILE (P1 EMBAIXO + P2 EM CIMA QUANDO 2P ESTIVER ATIVO) */
     .touch-layer {
-      position: fixed; bottom: 16px; left: 16px; right: 16px;
+      position: fixed; bottom: 12px; left: 12px; right: 12px;
       display: none; justify-content: space-between; align-items: flex-end; pointer-events: none; z-index: 60;
     }
-    .dpad { display: grid; grid-template-columns: repeat(3, 46px); grid-template-rows: repeat(3, 46px); gap: 4px; pointer-events: auto; }
+    .touch-layer-p2 {
+      position: fixed; top: 54px; left: 12px; right: 12px;
+      display: none; justify-content: space-between; align-items: flex-start; pointer-events: none; z-index: 60;
+    }
+    .dpad { display: grid; grid-template-columns: repeat(3, 42px); grid-template-rows: repeat(3, 42px); gap: 4px; pointer-events: auto; }
     .dpad button, .fnf-row button {
-      background: #111; color: #fff; border: 1px solid #333; border-radius: 10px;
-      font-size: 16px; font-weight: bold; transition: transform .08s, background .08s; touch-action: none;
+      background: rgba(17, 17, 26, 0.88); color: #fff; border: 1px solid #475569; border-radius: 10px;
+      font-size: 15px; font-weight: bold; transition: transform .08s, background .08s; touch-action: none;
     }
     .dpad button:hover, .dpad button.held, .fnf-row button:hover, .fnf-row button.held { background: #3b3b46; }
     .dpad button.held, .fnf-row button.held { transform: scale(0.85); }
     .fnf-row { display: none; gap: 8px; pointer-events: auto; }
-    .fnf-row button { width: 54px; height: 54px; font-size: 20px; border-radius: 14px; }
+    .fnf-row button { width: 50px; height: 50px; font-size: 18px; border-radius: 14px; }
     .joy-base {
-      display: none; width: 116px; height: 116px; border-radius: 50%;
+      display: none; width: 104px; height: 104px; border-radius: 50%;
       background: rgba(17,17,24,0.85); border: 2px solid #475569;
       position: relative; pointer-events: auto; touch-action: none;
     }
     .joy-knob {
-      width: 46px; height: 46px; border-radius: 50%; background: #6366f1;
-      position: absolute; top: 33px; left: 33px; pointer-events: none;
+      width: 42px; height: 42px; border-radius: 50%; background: #6366f1;
+      position: absolute; top: 29px; left: 29px; pointer-events: none;
     }
-    .ab-group { display: flex; gap: 12px; pointer-events: auto; }
+    .ab-group { display: flex; gap: 10px; pointer-events: auto; }
     .btn-a, .btn-b {
-      width: 58px; height: 58px; border-radius: 50%; border: none; color: #fff;
-      font-size: 19px; font-weight: 900; box-shadow: 0 6px 18px rgba(0,0,0,0.5); touch-action: none;
+      width: 52px; height: 52px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.25); color: #fff;
+      font-size: 17px; font-weight: 900; box-shadow: 0 6px 18px rgba(0,0,0,0.5); touch-action: none;
     }
     .btn-a { background: #2563eb; }
     .btn-b { background: #7c3aed; }
@@ -234,16 +239,16 @@
     #toast {
       position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(130px);
       background: linear-gradient(90deg, #1e1b4b, #312e81); border: 1px solid #818cf8;
-      padding: 11px 22px; border-radius: 999px; font-size: 13px; font-weight: 700; z-index: 95;
+      padding: 10px 20px; border-radius: 999px; font-size: 12px; font-weight: 700; z-index: 95;
       transition: transform .35s cubic-bezier(.22,1,.36,1); box-shadow: 0 10px 30px rgba(0,0,0,0.65);
-      white-space: nowrap;
+      max-width: 92vw; text-align: center;
     }
     #toast.show { transform: translateX(-50%) translateY(0); }
 
     @media (max-width: 640px) {
-      .game-card { flex: 0 0 220px; padding: 12px; }
-      .game-card.active { flex: 0 0 250px; }
-      .preview-box { height: 108px; }
+      .game-card { flex: 0 0 215px; padding: 12px; }
+      .game-card.active { flex: 0 0 245px; }
+      .preview-box { height: 104px; }
       .card-title { font-size: 16px; }
     }
   </style>
@@ -252,7 +257,7 @@
 
 <header>
   <div class="logo-wrap" onclick="switchTab('arcade')" title="LChest 270">
-    <svg width="40" height="40" viewBox="0 0 100 100">
+    <svg width="38" height="38" viewBox="0 0 100 100">
       <defs>
         <radialGradient id="bgGrad" cx="40%" cy="35%" r="65%">
           <stop offset="0%" stop-color="#7c3aed"/>
@@ -283,11 +288,10 @@
     <button class="pill-btn room" id="btn-room-top" onclick="openRoomModal()">Sala: <span id="room-code-lbl">OFF</span></button>
     <button class="pill-btn" id="btn-p2-top" onclick="toggle2P()">1P Solo</button>
     <strong style="color:#a5b4fc" id="gs-display">14.850 G</strong>
-    <span class="ver-badge">V2.0</span>
+    <span class="ver-badge">V2.1</span>
   </div>
 </header>
 
-<!-- BARRA AO VIVO: QUEM JOGA QUAL JOGO + DUPLAS INTERLIGADAS POR CORDA COLORIDA -->
 <div id="room-live-bar">
   <div class="live-groups" id="live-groups-list"></div>
   <button class="pill-btn" style="background:#312e81;border-color:#818cf8;" onclick="openPairModal()">🤝 Pedir Par (Jogo de 2)</button>
@@ -295,15 +299,15 @@
 
 <main id="main-view"></main>
 
-<!-- MODAL SALA ONLINE POR CÓDIGO (GITHUB PAGES WEBRTC + BROADCAST) -->
+<!-- MODAL SALA ONLINE -->
 <div class="modal-backdrop" id="modal-room">
   <div class="modal-box">
     <div style="font-size:11px;font-weight:800;color:#c4b5fd;letter-spacing:1px;">MULTIPLAYER ONLINE GITHUB PAGES • P1 (ANFITRIÃO) ATÉ P10</div>
     <h2 style="margin-top:6px;">Sala por Código na Internet</h2>
     <p style="font-size:12px;color:#cbd5e1;margin-top:6px;">
-      O <strong>Anfitrião (P1)</strong> manda no início dos jogos. Convidados (<strong>P2, P3...</strong>) podem pedir para jogar ou votar para sair!
+      Se alguém ligar <strong>2P Ativo</strong> na sala, ele joga como <strong>P2</strong> e <strong>P2 (2 player)</strong> no mesmo PC sem roubar a vaga do <strong>P3</strong>!
     </p>
-    <div style="margin:18px 0;display:flex;flex-direction:column;gap:12px;align-items:center;">
+    <div style="margin:16px 0;display:flex;flex-direction:column;gap:11px;align-items:center;">
       <button class="btn-play" style="background:#7c3aed;padding:10px 20px;" onclick="createHostRoom()">Criar Sala Online (Anfitrião P1)</button>
       <div id="host-code-box" style="font-size:22px;font-weight:900;letter-spacing:4px;color:#facc15;"></div>
       <div id="net-status" style="font-size:11px;color:#38bdf8;"></div>
@@ -320,26 +324,24 @@
   </div>
 </div>
 
-<!-- MODAL LOBBY DE ESCOLHA DE CORES PREDEFINIDAS (COM X NAS OCUPADAS & ORDEM DE ESCOLHA) -->
+<!-- MODAL LOBBY DE ESCOLHA DE CORES PREDEFINIDAS -->
 <div class="modal-backdrop" id="modal-lobby">
   <div class="modal-box">
-    <div style="font-size:11px;font-weight:800;color:#facc15;letter-spacing:1px;" id="lobby-subtitle">LOBBY DA PARTIDA • VOCÊ É O P1</div>
+    <div style="font-size:11px;font-weight:800;color:#facc15;letter-spacing:1px;" id="lobby-subtitle">LOBBY DA PARTIDA</div>
     <h2 style="margin-top:4px;" id="lobby-title">Escolha sua Cor</h2>
     <p style="font-size:12px;color:#cbd5e1;margin-top:4px;" id="lobby-turn-msg">
       O Anfitrião (P1) escolhe primeiro. Cores com <strong>X</strong> já foram pegas!
     </p>
-
     <div class="color-grid" id="lobby-color-grid"></div>
     <div class="roster-bar" id="lobby-roster"></div>
-
-    <div style="display:flex;gap:10px;justify-content:center;margin-top:18px;">
+    <div style="display:flex;gap:10px;justify-content:center;margin-top:16px;">
       <button class="btn-play" id="btn-confirm-color" style="padding:10px 22px;font-size:13px;" onclick="confirmLobbyChoice()">Confirmar Cor e Jogar</button>
       <button class="cfg-btn" onclick="document.getElementById('modal-lobby').style.display='none'">Cancelar</button>
     </div>
   </div>
 </div>
 
-<!-- MODAL VOTAÇÃO / DECISÃO DO ANFITRIÃO (ENTRAR OU SAIR DE JOGO) -->
+<!-- MODAL VOTAÇÃO / DECISÃO DO ANFITRIÃO -->
 <div class="modal-backdrop" id="modal-vote">
   <div class="modal-box">
     <div style="font-size:11px;font-weight:800;color:#facc15;letter-spacing:1px;" id="vote-tag">DECISÃO DA SALA</div>
@@ -353,13 +355,13 @@
   </div>
 </div>
 
-<!-- MODAL PEDIDO DE PAR PARA JOGOS DE 2 (EX: 6 NO ROBLOX, 4 FORMANDO PARES) -->
+<!-- MODAL PEDIDO DE PAR -->
 <div class="modal-backdrop" id="modal-pair">
   <div class="modal-box">
     <div style="font-size:11px;font-weight:800;color:#38bdf8;letter-spacing:1px;">FORMAR DUPLA (JOGO DE 2 JOGADORES)</div>
     <h2 style="margin-top:6px;">Pedir Par na Sala</h2>
-    <p style="font-size:12px;color:#cbd5e1;margin:6px 0 14px;">
-      Escolha um jogador livre (fora dos grupos maiores) e o jogo de 2 para ficarem lado a lado interligados por uma corda nas cores de vocês!
+    <p style="font-size:12px;color:#cbd5e1;margin:6px 0 12px;">
+      Escolha um jogador livre e o jogo de 2 para ficarem lado a lado interligados por uma corda nas cores de vocês!
     </p>
     <div style="margin-bottom:12px;">
       <label style="font-size:12px;color:#a5b4fc;">Jogo de 2: </label>
@@ -380,16 +382,16 @@
 <!-- MODAL ESCOLHA CO-OP / MODO VS (2P LOCAL) -->
 <div class="modal-backdrop" id="modal-2p">
   <div class="modal-box">
-    <div style="font-size:11px;font-weight:800;color:#a5b4fc;letter-spacing:1px;">MULTIPLAYER 2 JOGADORES LOCAL</div>
+    <div style="font-size:11px;font-weight:800;color:#a5b4fc;letter-spacing:1px;">MULTIPLAYER 2 JOGADORES</div>
     <h2 style="margin-top:6px;">Escolha o Modo de Jogo</h2>
     <div class="mode-grid">
       <div class="mode-card" onclick="confirm2PMode('coop')">
         <strong style="font-size:16px;color:#38bdf8;">🤝 MODO CO-OP</strong>
-        <span style="font-size:12px;color:#cbd5e1;">P1 e P2 jogam juntos na mesma arena.</span>
+        <span style="font-size:12px;color:#cbd5e1;">Jogam juntos na mesma arena.</span>
       </div>
       <div class="mode-card" onclick="confirm2PMode('vs')">
         <strong style="font-size:16px;color:#c084fc;">⚔️ MODO VS</strong>
-        <span style="font-size:12px;color:#cbd5e1;">Tela dividida: P1 na esquerda (→) vs P2 na direita (←).</span>
+        <span style="font-size:12px;color:#cbd5e1;">Tela dividida: esquerda (→) vs direita (←).</span>
       </div>
     </div>
     <button class="cfg-btn" onclick="document.getElementById('modal-2p').style.display='none'">Cancelar</button>
@@ -399,9 +401,9 @@
 <!-- OVERLAY DE JOGO -->
 <div id="game-overlay">
   <div class="game-hud">
-    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
       <strong id="hud-title">Jogo</strong>
-      <span id="hud-info" style="color:#a5b4fc;font-size:13px;"></span>
+      <span id="hud-info" style="color:#a5b4fc;font-size:12px;"></span>
     </div>
     <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
       <select id="stage-sel" style="display:none;background:#1e293b;color:#fff;border:1px solid #475569;padding:5px 8px;border-radius:8px;font-size:12px;"></select>
@@ -412,13 +414,13 @@
   <div id="canvas-wrap"><canvas id="gameCanvas"></canvas></div>
 </div>
 
-<!-- CONTROLES VIRTUAIS MOBILE -->
+<!-- CONTROLES VIRTUAIS MOBILE P1 (EMBAIXO) -->
 <div class="touch-layer" id="touch-layer">
   <div id="left-ctrl-slot">
     <div class="dpad" id="dpad-box">
-      <div></div><button data-key="ArrowUp">▲</button><div></div>
-      <button data-key="ArrowLeft">◀</button><div></div><button data-key="ArrowRight">▶</button>
-      <div></div><button data-key="ArrowDown">▼</button><div></div>
+      <div></div><button data-key="KeyW">▲</button><div></div>
+      <button data-key="KeyA">◀</button><div></div><button data-key="KeyD">▶</button>
+      <div></div><button data-key="KeyS">▼</button><div></div>
     </div>
     <div class="joy-base" id="joy-box"><div class="joy-knob" id="joy-knob"></div></div>
     <div class="fnf-row" id="fnf-arrows-box">
@@ -430,7 +432,20 @@
   </div>
   <div class="ab-group" id="ab-box">
     <button class="btn-a" data-key="Space">A</button>
-    <button class="btn-b" data-key="ArrowDown">B</button>
+    <button class="btn-b" data-key="KeyS">B</button>
+  </div>
+</div>
+
+<!-- CONTROLES VIRTUAIS MOBILE P2 (NO TOPO QUANDO 2P ESTÁ ATIVO!) -->
+<div class="touch-layer-p2" id="touch-layer-p2">
+  <div class="dpad" id="dpad-box-p2">
+    <div></div><button data-key="ArrowUp" id="p2-btn-up">▲</button><div></div>
+    <button data-key="ArrowLeft" id="p2-btn-lt">◀</button><div></div><button data-key="ArrowRight" id="p2-btn-rt">▶</button>
+    <div></div><button data-key="ArrowDown" id="p2-btn-dn">▼</button><div></div>
+  </div>
+  <div class="ab-group" id="ab-box-p2">
+    <button class="btn-a" id="p2-btn-a" data-key="ArrowUp">P2 A</button>
+    <button class="btn-b" id="p2-btn-b" data-key="ArrowDown">P2 B</button>
   </div>
 </div>
 
@@ -461,7 +476,7 @@ const state = {
   tab: 'arcade',
   selectedIdx: 0,
   gamerscore: 14850,
-  multiplayer: false,
+  multiplayer: false, // 2 jogadores no mesmo aparelho (ex: P2 e P2 (2 player))
   vsMode: 'coop',
   pendingGame: null,
   mobileControls: false,
@@ -477,15 +492,19 @@ const state = {
   roomCode: null,
   isHost: false,
   mySlot: 1,
-  // Cada membro guarda: { id, slot, colorHex, colorId, confirmed, activeGame, subgroupId, partnerSlot, x, y, extra }
+  /* Cada membro real da sala:
+     { id, slot, colorHex, colorId, confirmed, hasLocalP2, p2ColorHex, p2ColorId, p2Confirmed,
+       activeGame, subgroupId, partnerSlot, x, y, p2x, p2y, extra } */
   members: [{
-    id: playerId, slot: 1, colorHex: '#22c55e', colorId: 'verde',
-    confirmed: false, activeGame: null, subgroupId: 'main', partnerSlot: null, x: 80, y: 150
+    id: playerId, slot: 1, colorHex: '#22c55e', colorId: 'verde', confirmed: false,
+    hasLocalP2: false, p2ColorHex: '#3b82f6', p2ColorId: 'azul', p2Confirmed: false,
+    activeGame: null, subgroupId: 'main', partnerSlot: null, x: 80, y: 150, p2x: 110, p2y: 150
   }],
   lobbyStepSlot: 1,
+  lobbySubStep: 1, // 1 = escolhendo cor do principal (Pn), 2 = escolhendo cor do Pn (2 player)
   tempSelectedColorId: 'verde',
-  activeVote: null, // { voteId, kind: 'enter'|'exit', requesterSlot, targetGame, subgroupId, votes: { [slot]: boolean } }
-  pendingPairReq: null // { fromSlot, toSlot, gameId }
+  activeVote: null,
+  tttState: null // Estado sincronizado do Jogo da Velha online
 };
 
 const GAMES = [
@@ -505,7 +524,7 @@ const GAMES = [
   },
   {
     id: 'ninja', sub: 'PLATAFORMA 20 FASES', title: 'N+ Stickman (20 Fases)', is2P: true,
-    desc: 'Stickman com corrida articulada, 20 fases e chão sob a porta.',
+    desc: '20 fases totalmente diferentes com elevadores que sobem e descem!',
     badge: '20 Fases 2P',
     art: `<svg width="170" height="96" viewBox="0 0 180 100">
       <circle cx="48" cy="28" r="7" fill="#fff"/>
@@ -515,7 +534,7 @@ const GAMES = [
       <line x1="46" y1="54" x2="37" y2="68" stroke="#fff" stroke-width="3"/>
       <line x1="46" y1="54" x2="56" y2="68" stroke="#fff" stroke-width="3"/>
       <rect x="115" y="26" width="16" height="22" fill="#22c55e"/>
-      <rect x="102" y="48" width="44" height="8" rx="4" fill="#475569"/>
+      <rect x="102" y="48" width="44" height="8" rx="4" fill="#38bdf8"/>
       <rect x="20" y="70" width="140" height="9" rx="4" fill="#475569"/>
     </svg>`
   },
@@ -563,8 +582,8 @@ const GAMES = [
   },
   {
     id: 'velha', sub: 'CLÁSSICO ESTRATÉGIA', title: 'Jogo da Velha', is2P: true,
-    desc: 'Jogo de 2! Forme par na sala e apareça lado a lado com corda colorida.',
-    badge: 'Jogo de 2',
+    desc: 'Turnos sincronizados online (X vs O nas cores escolhidas) ou 2P local!',
+    badge: 'Online Turnos',
     art: `<svg width="170" height="96" viewBox="0 0 180 100">
       <line x1="74" y1="20" x2="74" y2="80" stroke="#64748b" stroke-width="3"/>
       <line x1="106" y1="20" x2="106" y2="80" stroke="#64748b" stroke-width="3"/>
@@ -606,7 +625,7 @@ const GAMES = [
 ];
 
 /* ==================== REDE MULTIPLAYER REAL (GITHUB PAGES PEERJS + BROADCAST LOCAL) ==================== */
-const localChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('lchest270_v20') : null;
+const localChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('lchest270_v21') : null;
 let peer = null;
 let hostConn = null;
 const clientConns = new Map();
@@ -635,25 +654,33 @@ function sendNet(payload) {
 function handleRoomPacket(msg) {
   if (!state.roomCode || msg.code !== state.roomCode || msg.sender === playerId) return;
 
-  // Se o anfitrião recebeu de um convidado, retransmite para os outros clientes PeerJS
   if (state.isHost && msg.type !== 'join_req') {
     clientConns.forEach((c, pid) => { if (pid !== msg.sender && c.open) c.send(msg); });
   }
 
   if (msg.type === 'join_req' && state.isHost) {
+    // Atribui sempre o próximo slot livre real (P1, P2, P3...) mesmo se P2 tiver P2 (2 player) local!
     let existing = state.members.find(m => m.id === msg.sender);
     if (!existing && state.members.length < 10) {
       const usedSlots = new Set(state.members.map(m => m.slot));
       let nextSlot = 2;
       while (usedSlots.has(nextSlot)) nextSlot++;
       existing = {
-        id: msg.sender, slot: nextSlot, colorHex: null, colorId: null,
-        confirmed: false, activeGame: null, subgroupId: 'main', partnerSlot: null, x: 90 + nextSlot * 22, y: 150
+        id: msg.sender, slot: nextSlot, colorHex: null, colorId: null, confirmed: false,
+        hasLocalP2: !!msg.hasLocalP2, p2ColorHex: null, p2ColorId: null, p2Confirmed: false,
+        activeGame: null, subgroupId: 'main', partnerSlot: null, x: 90 + nextSlot * 22, y: 150, p2x: 110 + nextSlot * 22, p2y: 150
       };
       state.members.push(existing);
       state.members.sort((a, b) => a.slot - b.slot);
     }
     syncRoomState();
+  }
+  else if (msg.type === 'member_update') {
+    const m = state.members.find(x => x.id === msg.sender);
+    if (m) Object.assign(m, msg.patch);
+    if (state.isHost) syncRoomState();
+    refreshLiveBar();
+    if (document.getElementById('modal-lobby').style.display === 'flex') renderLobby();
   }
   else if (msg.type === 'state_sync') {
     state.members = msg.members;
@@ -661,7 +688,6 @@ function handleRoomPacket(msg) {
     if (me) state.mySlot = me.slot;
     refreshLiveBar();
 
-    // Sincroniza entrada no Lobby ou mudança de jogo decidida pelo anfitrião/grupo
     if (me && me.activeGame && !currentGame && document.getElementById('modal-lobby').style.display !== 'flex') {
       openColorLobby(me.activeGame, true);
     } else if (me && !me.activeGame && currentGame) {
@@ -671,10 +697,21 @@ function handleRoomPacket(msg) {
   }
   else if (msg.type === 'color_pick') {
     const m = state.members.find(x => x.id === msg.sender);
-    if (m) { m.colorId = msg.colorId; m.colorHex = msg.colorHex; m.confirmed = true; }
+    if (m) {
+      if (msg.subSlot === 2) {
+        m.p2ColorId = msg.colorId; m.p2ColorHex = msg.colorHex; m.p2Confirmed = true;
+      } else {
+        m.colorId = msg.colorId; m.colorHex = msg.colorHex; m.confirmed = true;
+      }
+    }
     if (state.isHost) syncRoomState();
     refreshLiveBar();
     if (document.getElementById('modal-lobby').style.display === 'flex') renderLobby();
+  }
+  else if (msg.type === 'ttt_move') {
+    if (state.tttState && msg.tttState) {
+      state.tttState = msg.tttState;
+    }
   }
   else if (msg.type === 'vote_start') {
     state.activeVote = msg.vote;
@@ -693,7 +730,6 @@ function handleRoomPacket(msg) {
   }
   else if (msg.type === 'pair_req') {
     if (msg.toSlot === state.mySlot) {
-      state.pendingPairReq = msg;
       const accept = confirm(`P${msg.fromSlot} pediu para formar PAR com você em ${GAMES.find(g=>g.id===msg.gameId)?.title || msg.gameId}! Aceitar?`);
       sendNet({ type: 'pair_reply', fromSlot: msg.fromSlot, toSlot: state.mySlot, gameId: msg.gameId, accepted: accept });
     }
@@ -717,8 +753,11 @@ function handleRoomPacket(msg) {
   else if (msg.type === 'pos') {
     const m = state.members.find(x => x.id === msg.sender);
     if (m) {
-      m.x = msg.x; m.y = msg.y; m.extra = msg.extra;
+      m.x = msg.x; m.y = msg.y;
+      if (msg.p2x !== undefined) { m.p2x = msg.p2x; m.p2y = msg.p2y; }
+      m.extra = msg.extra;
       if (msg.colorHex) m.colorHex = msg.colorHex;
+      if (msg.p2ColorHex) m.p2ColorHex = msg.p2ColorHex;
     }
   }
 }
@@ -741,8 +780,9 @@ function createHostRoom() {
   state.isHost = true;
   state.mySlot = 1;
   state.members = [{
-    id: playerId, slot: 1, colorHex: state.p1Color, colorId: 'verde',
-    confirmed: false, activeGame: null, subgroupId: 'main', partnerSlot: null, x: 80, y: 150
+    id: playerId, slot: 1, colorHex: state.p1Color, colorId: 'verde', confirmed: false,
+    hasLocalP2: state.multiplayer, p2ColorHex: state.p2Color, p2ColorId: 'azul', p2Confirmed: false,
+    activeGame: null, subgroupId: 'main', partnerSlot: null, x: 80, y: 150, p2x: 110, p2y: 150
   }];
   document.getElementById('host-code-box').textContent = code;
   document.getElementById('net-status').textContent = 'Conectando rede GitHub Pages (PeerJS)...';
@@ -760,7 +800,7 @@ function createHostRoom() {
       });
     });
     peer.on('error', () => {
-      document.getElementById('net-status').textContent = 'Modo Local/Aba pronto (PeerJS offline).';
+      document.getElementById('net-status').textContent = 'Modo Local/Aba pronto.';
     });
   }
   refreshLiveBar();
@@ -774,7 +814,7 @@ function joinCodeRoom() {
   state.isHost = false;
   document.getElementById('net-status').textContent = `Conectando à sala ${val}...`;
 
-  sendNet({ type: 'join_req' });
+  sendNet({ type: 'join_req', hasLocalP2: state.multiplayer });
 
   if (window.Peer) {
     if (peer) peer.destroy();
@@ -783,7 +823,7 @@ function joinCodeRoom() {
       hostConn = peer.connect('LCHEST270_' + val);
       hostConn.on('open', () => {
         document.getElementById('net-status').textContent = `Conectado online à sala ${val}!`;
-        hostConn.send({ code: val, sender: playerId, type: 'join_req' });
+        hostConn.send({ code: val, sender: playerId, type: 'join_req', hasLocalP2: state.multiplayer });
       });
       hostConn.on('data', data => handleRoomPacket(data));
     });
@@ -796,20 +836,21 @@ function leaveRoom() {
   clientConns.clear(); hostConn = null;
   state.roomCode = null; state.isHost = false; state.mySlot = 1;
   state.members = [{
-    id: playerId, slot: 1, colorHex: state.p1Color, colorId: 'verde',
-    confirmed: false, activeGame: null, subgroupId: 'main', partnerSlot: null, x: 80, y: 150
+    id: playerId, slot: 1, colorHex: state.p1Color, colorId: 'verde', confirmed: false,
+    hasLocalP2: state.multiplayer, p2ColorHex: state.p2Color, p2ColorId: 'azul', p2Confirmed: false,
+    activeGame: null, subgroupId: 'main', partnerSlot: null, x: 80, y: 150, p2x: 110, p2y: 150
   }];
   document.getElementById('host-code-box').textContent = '';
   document.getElementById('net-status').textContent = '';
   refreshLiveBar();
 }
 
-/* ==================== VOTAÇÃO DE ENTRADA/SAÍDA & DIVISÃO EM SUB-GRUPOS ==================== */
+/* ==================== VOTAÇÃO DE ENTRADA/SAÍDA (APENAS PLAYERS REAIS VOTAM) ==================== */
 function startVote(kind, targetGame) {
   const me = getMyMember();
   const vote = {
     voteId: 'V_' + Date.now(),
-    kind, // 'enter' ou 'exit'
+    kind,
     requesterSlot: state.mySlot,
     targetGame,
     subgroupId: me?.subgroupId || 'main',
@@ -835,9 +876,7 @@ function openVoteModal() {
   } else {
     document.getElementById('vote-tag').textContent = 'VOTAÇÃO PARA SAIR DO JOGO';
     document.getElementById('vote-title').textContent = `P${v.requesterSlot} pediu para sair de ${gTitle}`;
-    document.getElementById('vote-desc').textContent = v.requesterSlot === 1
-      ? `O Anfitrião (P1) pediu para sair. Todos precisam concordar (quem votar NÃO fica no jogo, quem votar SIM sai para escolher outro):`
-      : `O Anfitrião e os demais decidem: quem votar SIM sai para escolher outro jogo; quem votar NÃO continua jogando!`;
+    document.getElementById('vote-desc').textContent = `Quem votar SIM sai para escolher outro jogo; quem votar NÃO continua jogando!`;
   }
   updateVoteModal();
 }
@@ -845,6 +884,7 @@ function openVoteModal() {
 function updateVoteModal() {
   const v = state.activeVote;
   if (!v) return;
+  // Apenas players reais (P1, P2, P3...) votam; o Pn (2 player) não vota separado
   const lines = state.members.map(m => {
     const val = v.votes[m.slot];
     return `P${m.slot}: ${val === true ? '✅ SIM' : val === false ? '❌ NÃO' : '⏳ Aguardando'}`;
@@ -875,7 +915,9 @@ function checkVoteResolution() {
     const hostAgreed = v.votes[1] === true;
     const yesCount = relevant.filter(m => v.votes[m.slot] === true).length;
     if (hostAgreed && yesCount >= Math.ceil(relevant.length / 2)) {
-      state.members.forEach(m => { m.activeGame = v.targetGame; m.subgroupId = 'main'; m.confirmed = false; m.partnerSlot = null; });
+      state.members.forEach(m => {
+        m.activeGame = v.targetGame; m.subgroupId = 'main'; m.confirmed = false; m.p2Confirmed = false; m.partnerSlot = null;
+      });
       notice = `Anfitrião e sala aprovaram ${GAMES.find(g=>g.id===v.targetGame)?.title}!`;
       syncRoomState();
       openColorLobby(v.targetGame, true);
@@ -883,20 +925,16 @@ function checkVoteResolution() {
       notice = `Pedido para jogar recusado pelo Anfitrião/Sala.`;
     }
   } else {
-    // Votação de SAÍDA
     const yesMembers = relevant.filter(m => v.votes[m.slot] === true);
     const noMembers = relevant.filter(m => v.votes[m.slot] === false);
-
     if (noMembers.length === 0) {
-      // Todos concordaram em sair!
-      relevant.forEach(m => { m.activeGame = null; m.confirmed = false; m.partnerSlot = null; m.subgroupId = 'main'; });
+      relevant.forEach(m => { m.activeGame = null; m.confirmed = false; m.p2Confirmed = false; m.partnerSlot = null; m.subgroupId = 'main'; });
       notice = `Todos concordaram em sair do jogo!`;
       if (currentGame) closeGame(true);
     } else if (yesMembers.length > 1) {
-      // Mais de 1 pessoa quis sair: quem falou NÃO fica no jogo; quem falou SIM sai em um subgrupo próprio para decidir entre si!
       const newSub = 'sub_' + Date.now();
-      yesMembers.forEach(m => { m.activeGame = null; m.confirmed = false; m.partnerSlot = null; m.subgroupId = newSub; });
-      notice = `${yesMembers.map(m=>'P'+m.slot).join(', ')} saíram para decidir outro jogo; ${noMembers.map(m=>'P'+m.slot).join(', ')} continuam jogando!`;
+      yesMembers.forEach(m => { m.activeGame = null; m.confirmed = false; m.p2Confirmed = false; m.partnerSlot = null; m.subgroupId = newSub; });
+      notice = `${yesMembers.map(m=>'P'+m.slot).join(', ')} saíram para decidir outro jogo; ${noMembers.map(m=>'P'+m.slot).join(', ')} continuam!`;
       if (yesMembers.some(m => m.slot === state.mySlot) && currentGame) closeGame(true);
     } else {
       notice = `Saída negada: nem todos concordaram.`;
@@ -910,10 +948,9 @@ function checkVoteResolution() {
   if (notice) showToast(notice);
 }
 
-/* ==================== PEDIDO DE PAR & BARRA AO VIVO COM CORDA COLORIDA ==================== */
+/* ==================== PEDIDO DE PAR & BARRA AO VIVO ==================== */
 function openPairModal() {
   if (!state.roomCode) { showToast('Entre ou crie uma sala primeiro!'); return; }
-  const me = getMyMember();
   const candidates = state.members.filter(m => m.slot !== state.mySlot && (!m.activeGame || m.subgroupId !== 'main'));
   const box = document.getElementById('pair-candidates-list');
   if (!candidates.length) {
@@ -955,11 +992,11 @@ function renderPairWithRopeSVG(m1, m2) {
 
 function refreshLiveBar() {
   document.getElementById('sala-tab-cnt').textContent = state.members.length;
-  document.getElementById('room-code-lbl').textContent = state.roomCode ? `${state.roomCode} (P${state.mySlot} • ${state.members.length}J)` : 'OFF';
+  document.getElementById('room-code-lbl').textContent = state.roomCode ? `${state.roomCode} (P${state.mySlot}${state.multiplayer?'+2P':''})` : 'OFF';
   const info = document.getElementById('room-members-info');
   if (info) {
     info.textContent = state.roomCode
-      ? `Sala ${state.roomCode} • Você é P${state.mySlot} • Conectados: ${state.members.map(m => 'P' + m.slot).join(', ')}`
+      ? `Sala ${state.roomCode} • Você é P${state.mySlot}${state.multiplayer ? ` e P${state.mySlot} (2 player)` : ''} • Conectados: ${state.members.map(m => 'P' + m.slot + (m.hasLocalP2 ? ' + P' + m.slot + '(2P)' : '')).join(', ')}`
       : '';
   }
 
@@ -967,7 +1004,6 @@ function refreshLiveBar() {
   if (!state.roomCode) { bar.style.display = 'none'; return; }
   bar.style.display = 'flex';
 
-  // Agrupa jogadores por jogo ativo e destaca pares com corda colorida lado a lado
   const byGame = new Map();
   state.members.forEach(m => {
     const key = m.activeGame || 'lobby';
@@ -993,53 +1029,52 @@ function refreshLiveBar() {
       renderedSlots.add(m.slot);
       const c = m.colorHex || '#475569';
       parts.push(`<span class="p-badge" style="background:${c};color:${c==='#f8fafc'||c==='#facc15'||c==='#e7d3b0'?'#000':'#fff'}">P${m.slot}</span>`);
+      if (m.hasLocalP2) {
+        const c2 = m.p2ColorHex || '#3b82f6';
+        parts.push(`<span class="p-badge" style="background:${c2};color:${c2==='#f8fafc'||c2==='#facc15'||c2==='#e7d3b0'?'#000':'#fff'}">P${m.slot} (2 player)</span>`);
+      }
     });
-    html.push(`<div class="group-pill"><strong>${gTitle} (${list.length}):</strong> ${parts.join(' ')}</div>`);
+    html.push(`<div class="group-pill"><strong>${gTitle}:</strong> ${parts.join(' ')}</div>`);
   });
   document.getElementById('live-groups-list').innerHTML = html.join('');
   if (state.tab === 'sala') renderMain();
 }
 
-/* ==================== LOBBY DE ESCOLHA DE CORES PREDEFINIDAS ==================== */
+/* ==================== LOBBY DE ESCOLHA DE CORES PREDEFINIDAS (INCLUINDO Pn E Pn (2 player)) ==================== */
 function openColorLobby(gameId, fromSync = false) {
   state.pendingGame = gameId;
   const me = getMyMember();
+  if (me) me.hasLocalP2 = state.multiplayer;
 
   if (state.roomCode && !fromSync) {
-    // Se for o Anfitrião (P1), entra direto na seleção de cor e sincroniza a sala!
     if (state.isHost) {
       state.members.forEach(m => {
         if (m.subgroupId === (me?.subgroupId || 'main')) {
-          m.activeGame = gameId; m.confirmed = false; m.colorId = null; m.colorHex = null;
+          m.activeGame = gameId; m.confirmed = false; m.p2Confirmed = false; m.colorId = null; m.colorHex = null;
         }
       });
       syncRoomState();
     } else if (me && me.subgroupId !== 'main') {
-      // Subgrupo de quem saiu junto decide entre si qual jogo jogar
       state.members.forEach(m => {
         if (m.subgroupId === me.subgroupId) {
-          m.activeGame = gameId; m.confirmed = false; m.colorId = null; m.colorHex = null;
+          m.activeGame = gameId; m.confirmed = false; m.p2Confirmed = false; m.colorId = null; m.colorHex = null;
         }
       });
       sendNet({ type: 'state_sync', members: state.members });
     } else {
-      // Outro player pede para o anfitrião entrar no jogo!
       startVote('enter', gameId);
       return;
     }
   } else if (!state.roomCode) {
-    state.members.forEach(m => { m.confirmed = false; m.colorId = null; m.colorHex = null; });
-    if (state.multiplayer) {
-      state.members = [
-        { id: playerId, slot: 1, colorId: null, colorHex: null, confirmed: false, activeGame: gameId, subgroupId: 'main', x: 80, y: 150 },
-        { id: 'LOCAL_P2', slot: 2, colorId: null, colorHex: null, confirmed: false, activeGame: gameId, subgroupId: 'main', x: 120, y: 150 }
-      ];
-    } else {
-      state.members = [{ id: playerId, slot: 1, colorId: null, colorHex: null, confirmed: false, activeGame: gameId, subgroupId: 'main', x: 80, y: 150 }];
-    }
+    state.members = [{
+      id: playerId, slot: 1, colorId: null, colorHex: null, confirmed: false,
+      hasLocalP2: state.multiplayer, p2ColorId: null, p2ColorHex: null, p2Confirmed: false,
+      activeGame: gameId, subgroupId: 'main', x: 80, y: 150, p2x: 110, p2y: 150
+    }];
   }
 
   state.lobbyStepSlot = 1;
+  state.lobbySubStep = 1;
   state.tempSelectedColorId = 'verde';
   document.getElementById('modal-lobby').style.display = 'flex';
   renderLobby();
@@ -1052,26 +1087,36 @@ function renderLobby() {
     .sort((a, b) => a.slot - b.slot);
   const sorted = groupMembers.length ? groupMembers : [...state.members].sort((a, b) => a.slot - b.slot);
 
-  const nextUnconfirmed = sorted.find(m => !m.confirmed);
-  const activeSlot = nextUnconfirmed ? nextUnconfirmed.slot : sorted[sorted.length - 1].slot;
-  state.lobbyStepSlot = activeSlot;
+  // Encontra o próximo slot (e se ele tem 2P local, escolhe Pn primeiro e depois Pn (2 player))
+  let activeMember = sorted.find(m => !m.confirmed || (m.hasLocalP2 && !m.p2Confirmed));
+  if (!activeMember) activeMember = sorted[sorted.length - 1];
+  const activeSlot = activeMember.slot;
+  const subStep = !activeMember.confirmed ? 1 : (activeMember.hasLocalP2 && !activeMember.p2Confirmed ? 2 : 1);
 
-  const isLocal2P = state.multiplayer && !state.roomCode;
-  const isMyTurn = isLocal2P ? true : (state.mySlot === activeSlot);
+  state.lobbyStepSlot = activeSlot;
+  state.lobbySubStep = subStep;
+
+  const isMyTurn = (state.mySlot === activeSlot);
+  const targetLabel = subStep === 1 ? `P${activeSlot}` : `P${activeSlot} (2 player)`;
 
   document.getElementById('lobby-subtitle').textContent = state.roomCode
-    ? `SALA ${state.roomCode} • VOCÊ É O P${state.mySlot}`
-    : (isLocal2P ? `MODO 2P LOCAL • ESCOLHENDO: P${activeSlot}` : `MODO SOLO • VOCÊ É O P1`);
+    ? `SALA ${state.roomCode} • VOCÊ É O P${state.mySlot}${state.multiplayer ? ' + P' + state.mySlot + ' (2 player)' : ''}`
+    : (state.multiplayer ? `MODO 2P LOCAL • P1 E P1 (2 player)` : `MODO SOLO • VOCÊ É O P1`);
 
-  document.getElementById('lobby-title').textContent = isLocal2P
-    ? `Escolha a cor do P${activeSlot}`
-    : (isMyTurn ? `Sua vez (P${state.mySlot}): Escolha sua Cor` : `Aguardando P${activeSlot} escolher...`);
+  document.getElementById('lobby-title').textContent = isMyTurn
+    ? `Sua vez: Escolha a cor de ${targetLabel}`
+    : `Aguardando ${targetLabel} escolher...`;
 
   document.getElementById('lobby-turn-msg').innerHTML = isMyTurn
     ? `Cores com <strong>X</strong> já foram escolhidas por outro jogador.`
     : `O <strong>Anfitrião (P1)</strong> escolhe primeiro e depois os próximos na ordem!`;
 
-  const takenColors = new Set(state.members.filter(m => m.confirmed && m.colorId).map(m => m.colorId));
+  const takenColors = new Set();
+  state.members.forEach(m => {
+    if (m.confirmed && m.colorId) takenColors.add(m.colorId);
+    if (m.hasLocalP2 && m.p2Confirmed && m.p2ColorId) takenColors.add(m.p2ColorId);
+  });
+
   if (takenColors.has(state.tempSelectedColorId)) {
     const firstFree = PRESET_COLORS.find(c => !takenColors.has(c.id));
     if (firstFree) state.tempSelectedColorId = firstFree.id;
@@ -1089,17 +1134,26 @@ function renderLobby() {
     </button>`;
   }).join('');
 
-  document.getElementById('lobby-roster').innerHTML = sorted.map(m => `
-    <div class="roster-chip">
+  const rosterChips = [];
+  sorted.forEach(m => {
+    rosterChips.push(`<div class="roster-chip">
       <span class="chip-dot" style="background:${m.colorHex || '#475569'}"></span>
-      <span>P${m.slot}: ${m.confirmed ? (PRESET_COLORS.find(c=>c.id===m.colorId)?.name || 'Pronto') : (m.slot === activeSlot ? 'Escolhendo...' : 'Aguardando')}</span>
-    </div>`).join('');
+      <span>P${m.slot}: ${m.confirmed ? (PRESET_COLORS.find(c=>c.id===m.colorId)?.name || 'Pronto') : 'Escolhendo...'}</span>
+    </div>`);
+    if (m.hasLocalP2) {
+      rosterChips.push(`<div class="roster-chip">
+        <span class="chip-dot" style="background:${m.p2ColorHex || '#475569'}"></span>
+        <span>P${m.slot} (2 player): ${m.p2Confirmed ? (PRESET_COLORS.find(c=>c.id===m.p2ColorId)?.name || 'Pronto') : 'Aguardando'}</span>
+      </div>`);
+    }
+  });
+  document.getElementById('lobby-roster').innerHTML = rosterChips.join('');
 
   const btnConfirm = document.getElementById('btn-confirm-color');
   btnConfirm.disabled = !isMyTurn || takenColors.has(state.tempSelectedColorId);
-  btnConfirm.textContent = isLocal2P && activeSlot === 1
-    ? 'Confirmar Cor do P1'
-    : 'Confirmar Cor e Entrar na Partida';
+  btnConfirm.textContent = (activeMember.hasLocalP2 && subStep === 1)
+    ? `Confirmar Cor de P${activeSlot}`
+    : `Confirmar Cor e Entrar na Partida`;
 }
 
 function selectLobbyColor(colorId, isTaken) {
@@ -1111,21 +1165,23 @@ function selectLobbyColor(colorId, isTaken) {
 function confirmLobbyChoice() {
   const chosen = PRESET_COLORS.find(c => c.id === state.tempSelectedColorId);
   if (!chosen) return;
-  const isLocal2P = state.multiplayer && !state.roomCode;
-
-  if (isLocal2P) {
-    const targetMember = state.members.find(m => m.slot === state.lobbyStepSlot);
-    if (targetMember) { targetMember.colorId = chosen.id; targetMember.colorHex = chosen.hex; targetMember.confirmed = true; }
-    if (state.lobbyStepSlot === 1) { state.p1Color = chosen.hex; renderLobby(); return; }
-    else { state.p2Color = chosen.hex; document.getElementById('modal-lobby').style.display = 'none'; startGame(state.pendingGame); return; }
-  }
-
   const me = getMyMember();
-  if (me) {
-    me.colorId = chosen.id; me.colorHex = chosen.hex; me.confirmed = true; me.activeGame = state.pendingGame;
+
+  if (state.lobbySubStep === 1) {
+    state.p1Color = chosen.hex;
+    if (me) { me.colorId = chosen.id; me.colorHex = chosen.hex; me.confirmed = true; me.activeGame = state.pendingGame; }
+    sendNet({ type: 'color_pick', subSlot: 1, colorId: chosen.id, colorHex: chosen.hex });
+    if (me && me.hasLocalP2) {
+      if (state.isHost) syncRoomState();
+      renderLobby();
+      return;
+    }
+  } else {
+    state.p2Color = chosen.hex;
+    if (me) { me.p2ColorId = chosen.id; me.p2ColorHex = chosen.hex; me.p2Confirmed = true; me.activeGame = state.pendingGame; }
+    sendNet({ type: 'color_pick', subSlot: 2, colorId: chosen.id, colorHex: chosen.hex });
   }
-  state.p1Color = chosen.hex;
-  sendNet({ type: 'color_pick', colorId: chosen.id, colorHex: chosen.hex });
+
   if (state.isHost) syncRoomState();
   refreshLiveBar();
   document.getElementById('modal-lobby').style.display = 'none';
@@ -1138,6 +1194,16 @@ function toggle2P() {
   const btn = document.getElementById('btn-p2-top');
   btn.textContent = state.multiplayer ? '2P Ativo' : '1P Solo';
   btn.classList.toggle('on', state.multiplayer);
+
+  const me = getMyMember();
+  if (me) {
+    me.hasLocalP2 = state.multiplayer;
+    if (state.roomCode) {
+      sendNet({ type: 'member_update', patch: { hasLocalP2: state.multiplayer } });
+      if (state.isHost) syncRoomState();
+    }
+  }
+  refreshLiveBar();
   if (state.tab === 'sistema') renderMain();
 }
 
@@ -1219,10 +1285,17 @@ function renderMain() {
         const c = m.colorHex || '#475569';
         items.push(`<div style="display:flex;align-items:center;gap:8px;margin:5px 0;">
           <span class="p-badge" style="background:${c};color:${c==='#f8fafc'||c==='#facc15'||c==='#e7d3b0'?'#000':'#fff'}">P${m.slot}</span>
-          <span style="font-size:12px;">${m.slot === 1 ? 'Anfitrião' : 'Convidado'} • Grupo: ${m.subgroupId}</span>
+          <span style="font-size:12px;">${m.slot === 1 ? 'Anfitrião' : 'Convidado'}</span>
         </div>`);
+        if (m.hasLocalP2) {
+          const c2 = m.p2ColorHex || '#3b82f6';
+          items.push(`<div style="display:flex;align-items:center;gap:8px;margin:5px 0 5px 16px;">
+            <span class="p-badge" style="background:${c2};color:${c2==='#f8fafc'||c2==='#facc15'||c2==='#e7d3b0'?'#000':'#fff'}">P${m.slot} (2 player)</span>
+            <span style="font-size:11px;color:#94a3b8;">Mesmo PC (Setas)</span>
+          </div>`);
+        }
       });
-      cardsHtml += `<div class="cfg-card"><strong>🎮 ${gTitle} (${list.length} jogador${list.length>1?'es':''})</strong>${items.join('')}</div>`;
+      cardsHtml += `<div class="cfg-card"><strong>🎮 ${gTitle}</strong>${items.join('')}</div>`;
     });
     main.innerHTML = `<div class="panel-grid">
       <div class="cfg-card">
@@ -1254,11 +1327,11 @@ function renderMain() {
         <button class="cfg-btn" onclick="openRoomModal()">${state.roomCode ? `Sala Ativa: ${state.roomCode} (Você: P${state.mySlot})` : 'Criar ou Entrar com Código'}</button>
       </div>
       <div class="cfg-card">
-        <strong>Jogadores Local (1P / 2P)</strong>
-        <button class="cfg-btn" onclick="toggle2P()">${state.multiplayer ? '2 Jogadores (CO-OP / VS)' : '1 Jogador'}</button>
+        <strong>Jogadores no Mesmo Aparelho (1P / 2P)</strong>
+        <button class="cfg-btn" onclick="toggle2P()">${state.multiplayer ? '2 Jogadores Ativo (WASD + Setas / 2 Controles Mobile)' : '1 Jogador'}</button>
       </div>
       <div class="cfg-card">
-        <strong>Controles na Tela (Mobile)</strong>
+        <strong>Controles na Tela (Mobile — inclui 2º Controle para P2!)</strong>
         <button class="cfg-btn" onclick="state.mobileControls=!state.mobileControls; renderMain()">${state.mobileControls ? 'Ativado' : 'Desativado (Modo PC)'}</button>
       </div>
       <div class="cfg-card">
@@ -1277,7 +1350,7 @@ function renderMain() {
   }
 }
 
-/* ==================== INPUTS & CONTROLES VIRTUAIS ==================== */
+/* ==================== INPUTS & CONTROLES VIRTUAIS (P1 + P2 NO MOBILE) ==================== */
 const keys = {};
 let mouse = { x: 400, y: 300, down: false, clicked: false };
 let raf = null, currentGame = null, secTimer = null;
@@ -1293,7 +1366,7 @@ window.addEventListener('keydown', e => {
 });
 window.addEventListener('keyup', e => { keys[e.code] = false; });
 
-document.querySelectorAll('#dpad-box button, #ab-box button, #fnf-arrows-box button').forEach(btn => {
+document.querySelectorAll('#dpad-box button, #ab-box button, #fnf-arrows-box button, #dpad-box-p2 button, #ab-box-p2 button').forEach(btn => {
   const k = btn.dataset.key;
   btn.addEventListener('pointerdown', e => { e.preventDefault(); btn.classList.add('held'); setKey(k, true); });
   const rel = () => { btn.classList.remove('held'); setKey(k, false); };
@@ -1309,30 +1382,39 @@ joyBox.addEventListener('pointermove', e => {
   const r = joyBox.getBoundingClientRect();
   const dx = e.clientX - (r.left + r.width / 2);
   const dy = e.clientY - (r.top + r.height / 2);
-  const dist = Math.min(34, Math.hypot(dx, dy));
+  const dist = Math.min(30, Math.hypot(dx, dy));
   const ang = Math.atan2(dy, dx);
-  joyKnob.style.left = (33 + Math.cos(ang) * dist) + 'px';
-  joyKnob.style.top = (33 + Math.sin(ang) * dist) + 'px';
-  setKey('ArrowLeft', dx < -12); setKey('ArrowRight', dx > 12);
-  setKey('ArrowUp', dy < -12); setKey('ArrowDown', dy > 12);
+  joyKnob.style.left = (29 + Math.cos(ang) * dist) + 'px';
+  joyKnob.style.top = (29 + Math.sin(ang) * dist) + 'px';
+  setKey('KeyA', dx < -12); setKey('KeyD', dx > 12);
+  setKey('KeyW', dy < -12); setKey('KeyS', dy > 12);
 });
 joyBox.addEventListener('pointerup', () => {
-  joyKnob.style.left = '33px'; joyKnob.style.top = '33px';
-  ['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].forEach(k => setKey(k, false));
+  joyKnob.style.left = '29px'; joyKnob.style.top = '29px';
+  ['KeyA','KeyD','KeyW','KeyS'].forEach(k => setKey(k, false));
 });
 
+/* REDIMENSIONAMENTO SEGURO PARA CELULAR (RETRATO / PAISAGEM) */
 function resizeCanvas() {
   const wrap = document.getElementById('canvas-wrap');
   const canvas = document.getElementById('gameCanvas');
   if (!wrap || !canvas) return;
-  canvas.width = Math.max(300, wrap.clientWidth);
-  canvas.height = Math.max(240, wrap.clientHeight);
+  const w = wrap.clientWidth || window.innerWidth;
+  const h = wrap.clientHeight || (window.innerHeight - 60);
+  if (w > 20 && h > 20) {
+    canvas.width = w;
+    canvas.height = h;
+  }
 }
 window.addEventListener('resize', resizeCanvas);
+window.addEventListener('orientationchange', () => setTimeout(resizeCanvas, 120));
+if ('ResizeObserver' in window) {
+  new ResizeObserver(() => resizeCanvas()).observe(document.getElementById('canvas-wrap'));
+}
 
 function requestLaunch(id, idx) {
   state.selectedIdx = idx;
-  if (state.multiplayer && !state.roomCode && TWO_PLAYER_GAMES.has(id)) {
+  if (state.multiplayer && TWO_PLAYER_GAMES.has(id)) {
     state.pendingGame = id;
     document.getElementById('modal-2p').style.display = 'flex';
   } else {
@@ -1362,6 +1444,7 @@ function closeGame(fromSync = false) {
   currentGame = null;
   document.getElementById('game-overlay').style.display = 'none';
   document.getElementById('touch-layer').style.display = 'none';
+  document.getElementById('touch-layer-p2').style.display = 'none';
   document.getElementById('btn-upgrade').style.display = 'none';
   document.getElementById('stage-sel').style.display = 'none';
   if (!fromSync && prevGame) {
@@ -1383,15 +1466,19 @@ function registerDeath(isDino = false) {
 }
 
 function drawHeadBadge(ctx, x, y, label, color) {
+  ctx.save();
+  ctx.font = 'bold 10px sans-serif';
+  const w = Math.max(28, ctx.measureText(label).width + 10);
   ctx.fillStyle = color;
   ctx.strokeStyle = '#000'; ctx.lineWidth = 1.5;
-  ctx.beginPath(); ctx.roundRect(x - 14, y - 16, 28, 14, 5); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.roundRect(x - w / 2, y - 16, w, 14, 5); ctx.fill(); ctx.stroke();
   ctx.fillStyle = (color === '#f8fafc' || color === '#facc15' || color === '#e7d3b0') ? '#000' : '#fff';
-  ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+  ctx.textAlign = 'center';
   ctx.fillText(label, x, y - 6);
+  ctx.restore();
 }
 
-/* ==================== MOTOR DOS 10 JOGOS COM MOVIMENTO SINCRONIZADO ==================== */
+/* ==================== MOTOR DOS 10 JOGOS ==================== */
 let geoState = null;
 function buyGeoUpgrade() {
   if (!geoState || geoState.score < geoState.cost) return;
@@ -1404,18 +1491,34 @@ function buyGeoUpgrade() {
 function startGame(id) {
   currentGame = id;
   const myColor = state.p1Color;
+  const myP2Color = state.p2Color;
   const myLabel = `P${state.mySlot}`;
+  const myP2Label = `P${state.mySlot} (2 player)`;
   const me = getMyMember();
   if (me) me.activeGame = id;
   refreshLiveBar();
 
   const g = GAMES.find(x => x.id === id);
-  document.getElementById('hud-title').textContent = `${g.title} [${myLabel}${state.roomCode ? ' • Sala ' + state.roomCode : ''}]`;
+  document.getElementById('hud-title').textContent = `${g.title} [${myLabel}${state.multiplayer ? ' & ' + myP2Label : ''}]`;
   document.getElementById('game-overlay').style.display = 'flex';
 
+  // Configura controles Mobile (incluindo o 2º controle colorido no topo para o 2º player!)
   const tl = document.getElementById('touch-layer');
+  const tl2 = document.getElementById('touch-layer-p2');
   tl.style.display = state.mobileControls ? 'flex' : 'none';
   tl.style.flexDirection = state.invertSides ? 'row-reverse' : 'row';
+
+  if (state.mobileControls && state.multiplayer) {
+    tl2.style.display = 'flex';
+    tl2.style.flexDirection = state.invertSides ? 'row-reverse' : 'row';
+    document.querySelectorAll('#dpad-box-p2 button, #ab-box-p2 button').forEach(b => {
+      b.style.background = myP2Color;
+      b.style.color = (myP2Color === '#f8fafc' || myP2Color === '#facc15' || myP2Color === '#e7d3b0') ? '#000' : '#fff';
+    });
+  } else {
+    tl2.style.display = 'none';
+  }
+
   const dpadEl = document.getElementById('dpad-box');
   const joyEl = document.getElementById('joy-box');
   const fnfEl = document.getElementById('fnf-arrows-box');
@@ -1426,13 +1529,18 @@ function startGame(id) {
 
   const canvas = document.getElementById('gameCanvas');
   resizeCanvas();
+  requestAnimationFrame(resizeCanvas);
   const ctx = canvas.getContext('2d');
-  canvas.onmousemove = e => { const r = canvas.getBoundingClientRect(); mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top; };
-  canvas.onmousedown = e => {
-    const r = canvas.getBoundingClientRect(); mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top;
-    mouse.down = true; mouse.clicked = true;
+
+  const getPointerPos = e => {
+    const r = canvas.getBoundingClientRect();
+    const cx = e.touches ? e.touches[0].clientX : e.clientX;
+    const cy = e.touches ? e.touches[0].clientY : e.clientY;
+    return { x: cx - r.left, y: cy - r.top };
   };
-  canvas.onmouseup = () => mouse.down = false;
+  canvas.onpointermove = e => { const p = getPointerPos(e); mouse.x = p.x; mouse.y = p.y; };
+  canvas.onpointerdown = e => { const p = getPointerPos(e); mouse.x = p.x; mouse.y = p.y; mouse.down = true; mouse.clicked = true; };
+  canvas.onpointerup = () => mouse.down = false;
 
   clearInterval(secTimer);
   secTimer = setInterval(() => {
@@ -1485,7 +1593,7 @@ function startGame(id) {
       if (p.spawnTimer >= 78) {
         p.spawnTimer = 0;
         const isBird = Math.random() < 0.34 && p.score > 20;
-        p.obs.push({ dist: areaW - 35, type: isBird ? 'bird' : 'cactus', count: Math.floor(Math.random()*4)+1, birdY: -22, birdVy: 0 });
+        p.obs.push({ dist: Math.max(220, areaW - 35), type: isBird ? 'bird' : 'cactus', count: Math.floor(Math.random()*4)+1, birdY: -22, birdVy: 0 });
       }
       const dinoH = p.ducking ? 16 : 32, dinoTop = p.y + (32 - dinoH), dinoBot = p.y + 32;
       p.obs.forEach(o => {
@@ -1515,14 +1623,20 @@ function startGame(id) {
       ctx.save();
       ctx.beginPath(); ctx.rect(x0, 0, w, canvas.height); ctx.clip();
       ctx.fillStyle = '#334155'; ctx.fillRect(x0, groundY + 32, w, 3);
-      const px = p.dir === 1 ? x0 + 50 : x0 + w - 76;
+      const px = p.dir === 1 ? x0 + 44 : x0 + w - 70;
       const py = groundY + p.y + (p.ducking ? 16 : 0);
       drawCustomDino(px, py, p.dir, color, !p.grounded, p.ducking, animFrame);
       drawHeadBadge(ctx, px + 13, py - 8, label, color);
 
+      if (!isVS && state.multiplayer) {
+        const p2y = groundY + p2.y + (p2.ducking ? 16 : 0);
+        drawCustomDino(px + 34, p2y, 1, myP2Color, !p2.grounded, p2.ducking, animFrame);
+        drawHeadBadge(ctx, px + 47, p2y - 8, myP2Label, myP2Color);
+      }
+
       getOtherMembers().forEach((peer, idx) => {
         const peerY = groundY + (peer.y || 0) + (peer.extra?.duck ? 16 : 0);
-        const peerX = px + (idx + 1) * 34;
+        const peerX = px + (idx + 2) * 34;
         drawCustomDino(peerX, peerY, 1, peer.colorHex || '#38bdf8', (peer.y || 0) < -2, !!peer.extra?.duck, animFrame);
         drawHeadBadge(ctx, peerX + 13, peerY - 8, `P${peer.slot}`, peer.colorHex || '#38bdf8');
       });
@@ -1547,656 +1661,100 @@ function startGame(id) {
     const loop = () => {
       syncTick++;
       ctx.fillStyle = '#0b0e1d'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      const groundY = canvas.height - 80;
+      const groundY = Math.max(120, canvas.height - 80);
       const animFrame = Math.floor(performance.now() / 100) % 2;
 
       if (isVS) {
         const half = canvas.width / 2;
         updateDino(p1, () => keys['KeyW'] || keys['Space'], () => keys['KeyS'], half);
         updateDino(p2, () => keys['ArrowUp'], () => keys['ArrowDown'], half);
-        drawDinoLane(p1, 0, half, groundY, state.p1Color, 'P1', animFrame);
-        drawDinoLane(p2, half, half, groundY, state.p2Color, 'P2', animFrame);
+        drawDinoLane(p1, 0, half, groundY, myColor, myLabel, animFrame);
+        drawDinoLane(p2, half, half, groundY, myP2Color, myP2Label, animFrame);
         ctx.fillStyle = '#6366f1'; ctx.fillRect(half - 2, 0, 4, canvas.height);
-        document.getElementById('hud-info').textContent = `VS | P1: ${p1.score} (${p1.wins}V) vs P2: ${p2.score} (${p2.wins}V)`;
+        document.getElementById('hud-info').textContent = `VS | ${myLabel}: ${p1.score} vs ${myP2Label}: ${p2.score}`;
       } else {
-        updateDino(p1, () => keys['KeyW'] || keys['ArrowUp'] || keys['Space'], () => keys['KeyS'] || keys['ArrowDown'], canvas.width);
+        updateDino(p1, () => keys['KeyW'] || (!state.multiplayer && keys['ArrowUp']) || keys['Space'], () => keys['KeyS'] || (!state.multiplayer && keys['ArrowDown']), canvas.width);
+        if (state.multiplayer) updateDino(p2, () => keys['ArrowUp'], () => keys['ArrowDown'], canvas.width);
         drawDinoLane(p1, 0, canvas.width, groundY, myColor, myLabel, animFrame);
-        if (syncTick % 3 === 0) sendNet({ type: 'pos', x: 50, y: p1.y, colorHex: myColor, extra: { duck: p1.ducking } });
-        document.getElementById('hud-info').textContent = `${myLabel} Pontos: ${p1.score} | Pular: Espaço/W/↑ | Abaixar: S/↓/B`;
+        if (syncTick % 3 === 0) sendNet({ type: 'pos', x: 44, y: p1.y, p2x: 78, p2y: p2.y, colorHex: myColor, p2ColorHex: myP2Color, extra: { duck: p1.ducking } });
+        document.getElementById('hud-info').textContent = `${myLabel}: ${p1.score} pts`;
       }
       raf = requestAnimationFrame(loop);
     };
     loop();
   }
 
-  /* 2. N+ STICKMAN (20 FASES) */
+  /* 2. N+ STICKMAN — 20 FASES TOTALMENTE DIFERENTES + ELEVADOR QUE SOBE E DESCE */
   else if (id === 'ninja') {
     const sel = document.getElementById('stage-sel');
     sel.style.display = 'inline-block';
     sel.innerHTML = Array.from({length: 20}, (_, i) => `<option value="${i+1}">Fase ${i+1} / 20</option>`).join('');
     const isVS = state.multiplayer && state.vsMode === 'vs';
 
+    // Gerador determinístico de 20 layouts de plataformas únicos + elevadores móveis verticais
+    const buildStageLayout = (lvl, w, h) => {
+      const floorY = h - 32;
+      const plats = [{ x: 0, y: floorY, w: w, h: 32, mov: false }];
+      const lifts = [];
+      const coins = [];
+      let door = { x: w - 60, y: 95 };
+
+      const pattern = (lvl - 1) % 5;
+      if (pattern === 0) {
+        // Escadaria em zigue-zague com elevador central subindo para o topo
+        plats.push({ x: w * 0.14, y: floorY - 68, w: w * 0.22, h: 12 });
+        plats.push({ x: w * 0.06, y: floorY - 140, w: w * 0.20, h: 12 });
+        lifts.push({ x: w * 0.42, baseY: floorY - 130, range: Math.max(55, h * 0.22), speed: 0.025 + lvl * 0.001, phase: 0, w: 72, h: 12, curY: floorY - 130, prevY: floorY - 130 });
+        plats.push({ x: w * 0.68, y: Math.max(115, floorY - 235), w: w * 0.28, h: 12 });
+        door = { x: w * 0.85, y: Math.max(97, floorY - 253) };
+        coins.push({ x: w * 0.16, y: floorY - 160 }, { x: w * 0.46, y: floorY - 190 });
+      } else if (pattern === 1) {
+        // Torre vertical: sobe pela direita e atravessa no alto para a esquerda
+        plats.push({ x: w * 0.55, y: floorY - 65, w: w * 0.35, h: 12 });
+        lifts.push({ x: w * 0.74, baseY: floorY - 150, range: Math.max(60, h * 0.24), speed: 0.03, phase: 1.2, w: 68, h: 12, curY: floorY - 150, prevY: floorY - 150 });
+        plats.push({ x: w * 0.36, y: Math.max(120, floorY - 220), w: w * 0.22, h: 12 });
+        plats.push({ x: w * 0.06, y: Math.max(105, floorY - 235), w: w * 0.22, h: 12 });
+        door = { x: w * 0.14, y: Math.max(87, floorY - 253) };
+        coins.push({ x: w * 0.65, y: floorY - 85 }, { x: w * 0.45, y: Math.max(100, floorY - 240) });
+      } else if (pattern === 2) {
+        // Dois elevadores alternados (sobe e desce em tempos opostos) sobre abismos
+        lifts.push({ x: w * 0.24, baseY: floorY - 105, range: Math.max(50, h * 0.18), speed: 0.032, phase: 0, w: 66, h: 12, curY: floorY - 105, prevY: floorY - 105 });
+        plats.push({ x: w * 0.45, y: floorY - 145, w: w * 0.14, h: 12 });
+        lifts.push({ x: w * 0.64, baseY: floorY - 175, range: Math.max(55, h * 0.20), speed: 0.032, phase: Math.PI, w: 66, h: 12, curY: floorY - 175, prevY: floorY - 175 });
+        plats.push({ x: w * 0.80, y: Math.max(110, floorY - 245), w: w * 0.18, h: 12 });
+        door = { x: w * 0.89, y: Math.max(92, floorY - 263) };
+        coins.push({ x: w * 0.52, y: floorY - 165 }, { x: w * 0.68, y: floorY - 225 });
+      } else if (pattern === 3) {
+        // Ilhas flutuantes estreitas + salto de precisão no topo
+        plats.push({ x: w * 0.18, y: floorY - 62, w: 64, h: 12 });
+        plats.push({ x: w * 0.38, y: floorY - 122, w: 64, h: 12 });
+        plats.push({ x: w * 0.16, y: floorY - 182, w: 70, h: 12 });
+        lifts.push({ x: w * 0.42, baseY: floorY - 195, range: 52, speed: 0.035, phase: 0.6, w: 64, h: 12, curY: floorY - 195, prevY: floorY - 195 });
+        plats.push({ x: w * 0.66, y: Math.max(105, floorY - 245), w: w * 0.28, h: 12 });
+        door = { x: w * 0.84, y: Math.max(87, floorY - 263) };
+        coins.push({ x: w * 0.20, y: floorY - 202 }, { x: w * 0.72, y: Math.max(85, floorY - 265) });
+      } else {
+        // Labirinto de plataformas altas com elevador no canto esquerdo e ponte superior
+        lifts.push({ x: w * 0.10, baseY: floorY - 125, range: Math.max(65, h * 0.24), speed: 0.028, phase: 0, w: 72, h: 12, curY: floorY - 125, prevY: floorY - 125 });
+        plats.push({ x: w * 0.30, y: Math.max(115, floorY - 215), w: w * 0.20, h: 12 });
+        plats.push({ x: w * 0.56, y: Math.max(135, floorY - 195), w: w * 0.16, h: 12 });
+        plats.push({ x: w * 0.76, y: Math.max(105, floorY - 245), w: w * 0.22, h: 12 });
+        door = { x: w * 0.88, y: Math.max(87, floorY - 263) };
+        coins.push({ x: w * 0.38, y: Math.max(95, floorY - 235) }, { x: w * 0.62, y: Math.max(115, floorY - 215) });
+      }
+      return { plats, lifts, door, coins };
+    };
+
     const ninja = {
       stage: 1,
-      p1: { x: 40, y: 100, vx: 0, vy: 0, grounded: false, facing: 1, runCycle: 0, wins: 0 },
-      p2: { x: 40, y: 100, vx: 0, vy: 0, grounded: false, facing: 1, runCycle: 0, wins: 0 },
-      plats: [], door: { x: 400, y: 100 }, coins: [],
+      p1: { x: 34, y: 100, vx: 0, vy: 0, grounded: false, facing: 1, runCycle: 0, wins: 0 },
+      p2: { x: 54, y: 100, vx: 0, vy: 0, grounded: false, facing: 1, runCycle: 0, wins: 0 },
+      plats: [], lifts: [], door: { x: 400, y: 100 }, coins: [],
       load(lvl) {
         this.stage = lvl; sel.value = lvl;
         if (lvl >= 10) unlock('Ninja Atleta (Fase 10 N+)');
         const w = isVS ? canvas.width / 2 : canvas.width, h = canvas.height;
-        this.p1.x = 34; this.p1.y = h - 70; this.p1.vx = 0; this.p1.vy = 0;
-        this.p2.x = 34; this.p2.y = h - 70; this.p2.vx = 0; this.p2.vy = 0;
-        const doorY = Math.max(110, h - 190 - (lvl % 4) * 22);
-        this.door = { x: w - 64, y: doorY };
-        this.plats = [
-          { x: 0, y: h - 36, w: w, h: 36 },
-          { x: w * 0.20, y: h - 105, w: Math.max(85, w * 0.22), h: 12 },
-          { x: w * 0.48, y: h - 165, w: Math.max(85, w * 0.22), h: 12 },
-          { x: w - 115, y: doorY + 18, w: 115, h: 14 }
-        ];
-        this.coins = [{ x: w * 0.30, y: h - 125 }, { x: w * 0.58, y: h - 185 }];
-      }
-    };
-    sel.onchange = () => ninja.load(Number(sel.value));
-    ninja.load(1);
-
-    const stepStickman = (p, left, right, jump, w) => {
-      if (left) { p.vx = -4.2; p.facing = -1; }
-      else if (right) { p.vx = 4.2; p.facing = 1; }
-      else p.vx *= 0.78;
-      if (Math.abs(p.vx) > 0.4 && p.grounded) p.runCycle += 0.28;
-      if (jump && p.grounded) { p.vy = -11.4; p.grounded = false; }
-      p.vy += 0.54; p.x += p.vx; p.y += p.vy; p.grounded = false;
-      ninja.plats.forEach(pl => {
-        if (p.x + 9 > pl.x && p.x - 9 < pl.x + pl.w && p.y + 18 >= pl.y && p.y + 18 <= pl.y + 18 && p.vy >= 0) {
-          p.y = pl.y - 18; p.vy = 0; p.grounded = true;
-        }
-      });
-      p.x = Math.max(14, Math.min(w - 14, p.x));
-      if (Math.hypot(p.x - ninja.door.x, p.y - ninja.door.y) < 26) {
-        if (isVS) p.wins++;
-        ninja.load(ninja.stage < 20 ? ninja.stage + 1 : 1);
-      }
-    };
-
-    const drawStickman = (sx, sy, vx, facing, runCycle, grounded, color, label, mirror) => {
-      const dir = mirror ? -facing : facing;
-      const lean = (vx / 4.2) * 4 * (mirror ? -1 : 1);
-      const stride = grounded ? Math.sin(runCycle) * 8 : 6;
-      ctx.save();
-      ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = 3; ctx.lineCap = 'round';
-      ctx.beginPath(); ctx.arc(sx + lean, sy - 11, 5.5, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.moveTo(sx + lean, sy - 5); ctx.lineTo(sx, sy + 8); ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(sx + lean * 0.7, sy - 2); ctx.lineTo(sx - stride * 0.8, sy + 5);
-      ctx.moveTo(sx + lean * 0.7, sy - 2); ctx.lineTo(sx + stride * 0.9 + dir * 3, sy + 3);
-      ctx.moveTo(sx, sy + 8); ctx.lineTo(sx - stride * 0.6, sy + 13); ctx.lineTo(sx - stride, sy + 18);
-      ctx.moveTo(sx, sy + 8); ctx.lineTo(sx + stride * 0.7, sy + 12); ctx.lineTo(sx + stride, sy + 18);
-      ctx.stroke();
-      drawHeadBadge(ctx, sx, sy - 22, label, color);
-      ctx.restore();
-    };
-
-    const drawArena = (p, x0, w, h, mirror, color, label) => {
-      ctx.save();
-      ctx.beginPath(); ctx.rect(x0, 0, w, h); ctx.clip();
-      const mapX = lx => mirror ? x0 + w - lx : x0 + lx;
-      ctx.fillStyle = '#475569';
-      ninja.plats.forEach(pl => {
-        const px = mirror ? x0 + w - (pl.x + pl.w) : x0 + pl.x;
-        ctx.fillRect(px, pl.y, pl.w, pl.h);
-      });
-      ctx.fillStyle = '#22c55e'; ctx.fillRect(mapX(ninja.door.x) - 12, ninja.door.y - 16, 24, 34);
-      ninja.coins.forEach(c => { ctx.fillStyle = '#facc15'; ctx.beginPath(); ctx.arc(mapX(c.x), c.y, 6, 0, Math.PI*2); ctx.fill(); });
-      drawStickman(mapX(p.x), p.y, p.vx, p.facing, p.runCycle, p.grounded, color, label, mirror);
-      if (!isVS) {
-        getOtherMembers().forEach(peer => {
-          drawStickman(peer.x || 60, peer.y || h - 70, 2, 1, syncTick * 0.25, true, peer.colorHex || '#38bdf8', `P${peer.slot}`, false);
-        });
-      }
-      ctx.restore();
-    };
-
-    const loop = () => {
-      syncTick++;
-      ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      const h = canvas.height;
-      if (isVS) {
-        const half = canvas.width / 2;
-        stepStickman(ninja.p1, keys['KeyA'], keys['KeyD'], keys['KeyW']||keys['Space'], half);
-        stepStickman(ninja.p2, keys['ArrowRight'], keys['ArrowLeft'], keys['ArrowUp'], half);
-        drawArena(ninja.p1, 0, half, h, false, state.p1Color, 'P1');
-        drawArena(ninja.p2, half, half, h, true, state.p2Color, 'P2');
-        ctx.fillStyle = '#6366f1'; ctx.fillRect(half - 2, 0, 4, h);
-        document.getElementById('hud-info').textContent = `Fase ${ninja.stage}/20 | VS: P1 (${ninja.p1.wins}) vs P2 (${ninja.p2.wins})`;
-      } else {
-        stepStickman(ninja.p1, keys['KeyA']||(!state.multiplayer&&keys['ArrowLeft']), keys['KeyD']||(!state.multiplayer&&keys['ArrowRight']), keys['KeyW']||keys['Space']||(!state.multiplayer&&keys['ArrowUp']), canvas.width);
-        drawArena(ninja.p1, 0, canvas.width, h, false, myColor, myLabel);
-        if (state.multiplayer && !state.roomCode) {
-          stepStickman(ninja.p2, keys['ArrowLeft'], keys['ArrowRight'], keys['ArrowUp'], canvas.width);
-          drawStickman(ninja.p2.x, ninja.p2.y, ninja.p2.vx, ninja.p2.facing, ninja.p2.runCycle, ninja.p2.grounded, state.p2Color, 'P2', false);
-        }
-        if (syncTick % 3 === 0) sendNet({ type: 'pos', x: ninja.p1.x, y: ninja.p1.y, colorHex: myColor });
-        document.getElementById('hud-info').textContent = `${myLabel} • Fase ${ninja.stage} / 20`;
-      }
-      raf = requestAnimationFrame(loop);
-    };
-    loop();
-  }
-
-  /* 3. FRIDAY NIGHT FUNKIN' */
-  else if (id === 'fnf') {
-    const sel = document.getElementById('stage-sel');
-    sel.style.display = 'inline-block';
-    const weeks = ['Semana 1: Daddy Dearest','Semana 2: Skid & Pump','Semana 3: Pico','Semana 4: Mommy Mearest','Semana 5: Red Snow','Semana 6: Senpai','Semana 7: Tankman'];
-    sel.innerHTML = weeks.map((w, i) => `<option value="${i+1}">${w}</option>`).join('');
-    let week = 1, score = 0, combo = 0, notes = [], tick = 0;
-    sel.onchange = () => { week = Number(sel.value); notes = []; score = 0; };
-
-    const cols = [
-      { key: 'ArrowLeft', alt: 'KeyA', lbl: '◀', c: '#c026d3' },
-      { key: 'ArrowUp',   alt: 'KeyW', lbl: '▲', c: '#06b6d4' },
-      { key: 'ArrowDown', alt: 'KeyS', lbl: '▼', c: '#22c55e' },
-      { key: 'ArrowRight',alt: 'KeyD', lbl: '▶', c: '#ef4444' }
-    ];
-
-    const loop = () => {
-      tick++;
-      ctx.fillStyle = '#0c0a1d'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      const speed = 3.6 + week * 0.45, rate = Math.max(18, 36 - week * 2);
-      if (tick % rate === 0) notes.push({ lane: Math.floor(Math.random()*4), y: canvas.height - 20, hit: false });
-
-      const cx = canvas.width / 2, hitY = 75;
-      cols.forEach((col, i) => {
-        const lx = cx + (i - 1.5) * 66;
-        ctx.strokeStyle = col.c; ctx.lineWidth = 3;
-        ctx.strokeRect(lx - 22, hitY - 22, 44, 44);
-        ctx.fillStyle = col.c; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'center';
-        ctx.fillText(col.lbl, lx, hitY + 7);
-        if (keys[col.key + '_just'] || keys[col.alt + '_just']) {
-          keys[col.key + '_just'] = false; keys[col.alt + '_just'] = false;
-          const target = notes.find(n => !n.hit && n.lane === i && Math.abs(n.y - hitY) < 38);
-          if (target) { target.hit = true; score += 10; combo++; }
-        }
-      });
-
-      const allP = [{ slot: state.mySlot, colorHex: myColor }, ...getOtherMembers()];
-      allP.forEach((pl, idx) => {
-        const ax = 60 + idx * 54, ay = canvas.height - 55 + Math.sin(tick * 0.18 + idx) * 5;
-        ctx.fillStyle = pl.colorHex || '#22c55e';
-        ctx.beginPath(); ctx.arc(ax, ay, 14, 0, Math.PI*2); ctx.fill();
-        drawHeadBadge(ctx, ax, ay - 16, `P${pl.slot}`, pl.colorHex || '#22c55e');
-      });
-
-      notes.forEach(n => {
-        n.y -= speed;
-        if (!n.hit) {
-          const lx = cx + (n.lane - 1.5) * 66;
-          ctx.fillStyle = cols[n.lane].c;
-          ctx.beginPath(); ctx.roundRect(lx - 20, n.y - 20, 40, 40, 10); ctx.fill();
-          ctx.fillStyle = '#fff'; ctx.fillText(cols[n.lane].lbl, lx, n.y + 7);
-        }
-      });
-      notes = notes.filter(n => !n.hit && n.y > 20);
-      document.getElementById('hud-info').textContent = `${myLabel} • ${weeks[week-1]} | Pontos: ${score} | Combo: ${combo}x`;
-      raf = requestAnimationFrame(loop);
-    };
-    loop();
-  }
-
-  /* 4. GEOMETRY DASH */
-  else if (id === 'gdash') {
-    let py = 0, vy = 0, grounded = true, rot = 0, dist = 0, obs = [], tick = 0;
-    const loop = () => {
-      tick++; dist += 5.5;
-      ctx.fillStyle = '#090d24'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      const groundY = canvas.height - 80;
-      ctx.fillStyle = '#38bdf8'; ctx.fillRect(0, groundY + 26, canvas.width, 4);
-
-      if ((keys['Space'] || keys['ArrowUp'] || keys['KeyW'] || mouse.down) && grounded) { vy = -11.5; grounded = false; }
-      py += vy; vy += 0.62;
-      if (py >= 0) { py = 0; vy = 0; grounded = true; rot = Math.round(rot / (Math.PI/2)) * (Math.PI/2); }
-      else rot += 0.12;
-
-      if (tick % 65 === 0) obs.push({ x: canvas.width, type: Math.random() < 0.65 ? 'spike' : 'block' });
-      obs.forEach(o => {
-        o.x -= 5.8;
-        if (o.type === 'spike') {
-          ctx.fillStyle = '#ef4444';
-          ctx.beginPath(); ctx.moveTo(o.x, groundY + 26); ctx.lineTo(o.x + 13, groundY + 2); ctx.lineTo(o.x + 26, groundY + 26); ctx.fill();
-          if (o.x < 102 && o.x + 22 > 82 && py > -20) { obs = []; dist = 0; registerDeath(false); }
-        } else {
-          ctx.fillStyle = '#a855f7'; ctx.fillRect(o.x, groundY, 26, 26);
-          if (o.x < 106 && o.x + 26 > 80 && py > -22) { obs = []; dist = 0; registerDeath(false); }
-        }
-      });
-      obs = obs.filter(o => o.x > -40);
-
-      getOtherMembers().forEach((peer, idx) => {
-        const ox = 93 + (idx + 1) * 32, oy = groundY + (peer.y || 0) + 13;
-        ctx.fillStyle = peer.colorHex || '#38bdf8'; ctx.fillRect(ox - 13, oy - 13, 26, 26);
-        drawHeadBadge(ctx, ox, oy - 18, `P${peer.slot}`, peer.colorHex || '#38bdf8');
-      });
-
-      ctx.save(); ctx.translate(93, groundY + py + 13); ctx.rotate(rot);
-      ctx.fillStyle = myColor; ctx.fillRect(-13, -13, 26, 26);
-      ctx.strokeStyle = '#000'; ctx.lineWidth = 2.5; ctx.strokeRect(-13, -13, 26, 26);
-      ctx.restore();
-      drawHeadBadge(ctx, 93, groundY + py - 6, myLabel, myColor);
-      if (tick % 3 === 0) sendNet({ type: 'pos', x: 93, y: py, colorHex: myColor });
-
-      const pct = Math.min(100, Math.floor((dist / 4500) * 100));
-      document.getElementById('hud-info').textContent = `${myLabel} • Progresso: ${pct}%`;
-      raf = requestAnimationFrame(loop);
-    };
-    loop();
-  }
-
-  /* 5. MINECRAFT 270 */
-  else if (id === 'minecraft') {
-    const sel = document.getElementById('stage-sel');
-    sel.style.display = 'inline-block';
-    const blocks = [
-      { id: 1, name: 'Grama', c: '#22c55e' }, { id: 2, name: 'Terra', c: '#78350f' },
-      { id: 3, name: 'Pedra', c: '#64748b' }, { id: 4, name: 'Madeira', c: '#b45309' },
-      { id: 5, name: 'Diamante', c: '#38bdf8' }
-    ];
-    sel.innerHTML = blocks.map(b => `<option value="${b.id}">Bloco: ${b.name}</option>`).join('');
-    let curBlock = 1; sel.onchange = () => curBlock = Number(sel.value);
-
-    const cols = 30, rows = 15, sz = 28;
-    const world = Array.from({length: rows}, (_, r) => Array.from({length: cols}, () => r === 9 ? 1 : r > 9 ? 2 : 0));
-    let px = 80 + state.mySlot * 24, py = 160, vy = 0, grounded = false, tick = 0;
-
-    const loop = () => {
-      tick++;
-      ctx.fillStyle = '#0ea5e9'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      if (keys['KeyA'] || keys['ArrowLeft']) px -= 3.5;
-      if (keys['KeyD'] || keys['ArrowRight']) px += 3.5;
-      if ((keys['KeyW'] || keys['ArrowUp'] || keys['Space']) && grounded) { vy = -9.5; grounded = false; }
-      vy += 0.5; py += vy;
-      const gx = Math.max(0, Math.min(cols - 1, Math.floor((px + 10) / sz)));
-      const gyFoot = Math.max(0, Math.min(rows - 1, Math.floor((py + 26) / sz)));
-      if (world[gyFoot] && world[gyFoot][gx] > 0 && vy >= 0) { py = gyFoot * sz - 26; vy = 0; grounded = true; }
-      else grounded = false;
-
-      if (mouse.clicked) {
-        mouse.clicked = false;
-        const bx = Math.floor(mouse.x / sz), by = Math.floor(mouse.y / sz);
-        if (world[by] && world[by][bx] !== undefined) world[by][bx] = world[by][bx] > 0 ? 0 : curBlock;
-      }
-
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          const v = world[r][c];
-          if (v > 0) { ctx.fillStyle = blocks.find(b => b.id === v).c; ctx.fillRect(c * sz, r * sz, sz - 1, sz - 1); }
-        }
-      }
-
-      ctx.fillStyle = myColor; ctx.fillRect(px, py, 20, 26);
-      drawHeadBadge(ctx, px + 10, py - 4, myLabel, myColor);
-      getOtherMembers().slice(0, 9).forEach(peer => {
-        const ox = peer.x || 120, oy = peer.y || 160;
-        ctx.fillStyle = peer.colorHex || '#facc15';
-        ctx.fillRect(ox, oy, 20, 26);
-        drawHeadBadge(ctx, ox + 10, oy - 4, `P${peer.slot}`, peer.colorHex || '#facc15');
-      });
-      if (tick % 3 === 0) sendNet({ type: 'pos', x: px, y: py, colorHex: myColor });
-
-      document.getElementById('hud-info').textContent = `${myLabel} • Sala: ${Math.min(10, getOtherMembers().length + 1)}/10 | Clique constrói/quebra`;
-      raf = requestAnimationFrame(loop);
-    };
-    loop();
-  }
-
-  /* 6. ROBLOX 270 OBBY */
-  else if (id === 'roblox') {
-    let px = 35 + state.mySlot * 16, py = 180, vy = 0, grounded = false, stage = 1, tick = 0;
-    const loop = () => {
-      tick++;
-      ctx.fillStyle = '#1e1b4b'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      const h = canvas.height;
-      const plats = [
-        { x: 20, y: h - 70, w: 140, h: 16, lava: false },
-        { x: 190, y: h - 110, w: 95, h: 16, lava: false },
-        { x: 320, y: h - 150, w: 95, h: 16, lava: false },
-        { x: 450, y: h - 130, w: 115, h: 16, lava: false },
-        { x: 0, y: h - 22, w: canvas.width, h: 22, lava: true }
-      ];
-      if (keys['KeyA'] || keys['ArrowLeft']) px -= 4;
-      if (keys['KeyD'] || keys['ArrowRight']) px += 4;
-      if ((keys['KeyW'] || keys['ArrowUp'] || keys['Space']) && grounded) { vy = -11; grounded = false; }
-      vy += 0.55; py += vy; grounded = false;
-
-      plats.forEach(pl => {
-        ctx.fillStyle = pl.lava ? '#ef4444' : '#38bdf8';
-        ctx.fillRect(pl.x, pl.y, pl.w, pl.h);
-        if (px + 18 > pl.x && px < pl.x + pl.w && py + 28 >= pl.y && py + 28 <= pl.y + 18 && vy >= 0) {
-          if (pl.lava) { px = 40; py = h - 120; vy = 0; registerDeath(false); }
-          else { py = pl.y - 28; vy = 0; grounded = true; }
-        }
-      });
-
-      ctx.fillStyle = '#22c55e'; ctx.fillRect(510, h - 165, 22, 35);
-      if (Math.hypot(px - 510, py - (h - 155)) < 28) { stage++; px = 40; py = h - 120; }
-
-      const drawRobloxAvatar = (ax, ay, col, name) => {
-        ctx.fillStyle = '#facc15'; ctx.fillRect(ax + 4, ay, 12, 10);
-        ctx.fillStyle = col; ctx.fillRect(ax + 2, ay + 10, 16, 12);
-        ctx.fillStyle = '#1e293b'; ctx.fillRect(ax + 3, ay + 22, 6, 6); ctx.fillRect(ax + 11, ay + 22, 6, 6);
-        drawHeadBadge(ctx, ax + 10, ay - 4, name, col);
-      };
-      drawRobloxAvatar(px, py, myColor, myLabel);
-      getOtherMembers().slice(0, 9).forEach(peer => {
-        drawRobloxAvatar(peer.x || 60, peer.y || h - 110, peer.colorHex || '#ec4899', `P${peer.slot}`);
-      });
-      if (tick % 3 === 0) sendNet({ type: 'pos', x: px, y: py, colorHex: myColor });
-
-      document.getElementById('hud-info').textContent = `${myLabel} • Obby Stage ${stage} | Jogando Roblox: ${getOtherMembers().length + 1}`;
-      raf = requestAnimationFrame(loop);
-    };
-    loop();
-  }
-
-  /* 7. JOGO DA VELHA */
-  else if (id === 'velha') {
-    let board = Array(9).fill(''), turn = 'X', status = `${myLabel} (X) começa`;
-    const checkWin = b => [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]].some(([a,c,d]) => b[a] && b[a]===b[c] && b[a]===b[d]);
-
-    const loop = () => {
-      ctx.fillStyle = '#0b0e1d'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      const sz = Math.min(canvas.width, canvas.height) * 0.65, cell = sz / 3;
-      const x0 = (canvas.width - sz) / 2, y0 = (canvas.height - sz) / 2;
-
-      if (mouse.clicked) {
-        mouse.clicked = false;
-        const c = Math.floor((mouse.x - x0) / cell), r = Math.floor((mouse.y - y0) / cell), idx = r * 3 + c;
-        if (c >= 0 && c < 3 && r >= 0 && r < 3) {
-          if (checkWin(board) || !board.includes('')) { board = Array(9).fill(''); turn = 'X'; status = 'Vez de X'; }
-          else if (!board[idx]) {
-            board[idx] = turn;
-            if (checkWin(board)) status = `Vitória de ${turn}! Clique para reiniciar`;
-            else if (!board.includes('')) status = 'Empate! Clique para reiniciar';
-            else {
-              turn = turn === 'X' ? 'O' : 'X';
-              if (!state.multiplayer && !state.roomCode && turn === 'O') {
-                const empty = board.map((v,i)=>v===''?i:-1).filter(i=>i>=0);
-                if (empty.length) board[empty[Math.floor(Math.random()*empty.length)]] = 'O';
-                if (checkWin(board)) status = 'Vitória de O! Clique para reiniciar';
-                turn = 'X';
-              } else status = `Vez de ${turn}`;
-            }
-          }
-        }
-      }
-
-      ctx.strokeStyle = '#6366f1'; ctx.lineWidth = 4;
-      for (let i = 1; i <= 2; i++) {
-        ctx.beginPath(); ctx.moveTo(x0 + i*cell, y0); ctx.lineTo(x0 + i*cell, y0 + sz); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(x0, y0 + i*cell); ctx.lineTo(x0 + sz, y0 + i*cell); ctx.stroke();
-      }
-      ctx.font = `bold ${Math.floor(cell*0.55)}px sans-serif`; ctx.textAlign = 'center';
-      const p2Col = getOtherMembers()[0]?.colorHex || state.p2Color;
-      board.forEach((v, i) => {
-        if (!v) return;
-        ctx.fillStyle = v === 'X' ? myColor : p2Col;
-        ctx.fillText(v, x0 + (i%3 + 0.5)*cell, y0 + (Math.floor(i/3) + 0.68)*cell);
-      });
-      document.getElementById('hud-info').textContent = status;
-      raf = requestAnimationFrame(loop);
-    };
-    loop();
-  }
-
-  /* 8. SNAKE 360 */
-  else if (id === 'snake') {
-    const grid = 18, isVS = state.multiplayer && state.vsMode === 'vs';
-    const makeSnake = (sx, sy, dx) => ({ body: [{x:sx,y:sy},{x:sx-dx,y:sy},{x:sx-dx*2,y:sy}], dx, dy: 0, apple: {x: sx+dx*5, y: sy}, wins: 0 });
-    let s1 = makeSnake(6, 10, 1), s2 = makeSnake(14, 10, -1), tick = 0;
-
-    const stepSnake = (s, up, dn, lt, rt, maxCols, maxRows) => {
-      if (up && s.dy === 0) { s.dx = 0; s.dy = -1; }
-      else if (dn && s.dy === 0) { s.dx = 0; s.dy = 1; }
-      else if (lt && s.dx === 0) { s.dx = -1; s.dy = 0; }
-      else if (rt && s.dx === 0) { s.dx = 1; s.dy = 0; }
-      const head = { x: s.body[0].x + s.dx, y: s.body[0].y + s.dy };
-      if (head.x < 0 || head.y < 0 || head.x >= maxCols || head.y >= maxRows || s.body.some(b => b.x === head.x && b.y === head.y)) {
-        registerDeath(false); if (isVS) (s === s1 ? s2 : s1).wins++;
-        s.body = [{x: Math.floor(maxCols/2), y: Math.floor(maxRows/2)}]; return;
-      }
-      s.body.unshift(head);
-      if (head.x === s.apple.x && head.y === s.apple.y) {
-        s.apple = { x: Math.floor(Math.random()*maxCols), y: Math.floor(Math.random()*maxRows) };
-        if (s.body.length >= 20) unlock('Cobra Gulosa (Tamanho 20)');
-        if (s.body.length * 10 === 270) unlock('270 Cravado! (Exatos 270 pts)', 27);
-      } else s.body.pop();
-    };
-
-    const drawSnakeLane = (s, x0, color, label) => {
-      ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(x0 + s.apple.x*grid + grid/2, s.apple.y*grid + grid/2, 7, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = color; s.body.forEach(b => ctx.fillRect(x0 + b.x*grid + 1, b.y*grid + 1, grid - 2, grid - 2));
-      drawHeadBadge(ctx, x0 + s.body[0].x*grid + grid/2, s.body[0].y*grid, label, color);
-    };
-
-    const loop = () => {
-      tick++;
-      if (tick % 6 === 0) {
-        ctx.fillStyle = '#090d1c'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-        const rows = Math.floor(canvas.height / grid);
-        if (isVS) {
-          const half = Math.floor(canvas.width / 2), cols = Math.floor(half / grid);
-          stepSnake(s1, keys['KeyW'], keys['KeyS'], keys['KeyA'], keys['KeyD'], cols, rows);
-          stepSnake(s2, keys['ArrowUp'], keys['ArrowDown'], keys['ArrowLeft'], keys['ArrowRight'], cols, rows);
-          drawSnakeLane(s1, 0, state.p1Color, 'P1'); drawSnakeLane(s2, half, state.p2Color, 'P2');
-          ctx.fillStyle = '#6366f1'; ctx.fillRect(half - 2, 0, 4, canvas.height);
-          document.getElementById('hud-info').textContent = `VS | P1: ${s1.body.length} (${s1.wins}V) vs P2: ${s2.body.length} (${s2.wins}V)`;
-        } else {
-          const cols = Math.floor(canvas.width / grid);
-          stepSnake(s1, keys['KeyW']||(!state.multiplayer&&keys['ArrowUp']), keys['KeyS']||(!state.multiplayer&&keys['ArrowDown']), keys['KeyA']||(!state.multiplayer&&keys['ArrowLeft']), keys['KeyD']||(!state.multiplayer&&keys['ArrowRight']), cols, rows);
-          drawSnakeLane(s1, 0, myColor, myLabel);
-          if (state.multiplayer && !state.roomCode) {
-            stepSnake(s2, keys['ArrowUp'], keys['ArrowDown'], keys['ArrowLeft'], keys['ArrowRight'], cols, rows);
-            drawSnakeLane(s2, 0, state.p2Color, 'P2');
-          }
-          getOtherMembers().forEach(peer => {
-            ctx.fillStyle = peer.colorHex || '#38bdf8';
-            ctx.fillRect((peer.x || 10)*grid, (peer.y || 10)*grid, grid - 2, grid - 2);
-            drawHeadBadge(ctx, (peer.x || 10)*grid + grid/2, (peer.y || 10)*grid, `P${peer.slot}`, peer.colorHex || '#38bdf8');
-          });
-          sendNet({ type: 'pos', x: s1.body[0].x, y: s1.body[0].y, colorHex: myColor });
-          document.getElementById('hud-info').textContent = `${myLabel} • Tamanho: ${s1.body.length} (Conquista: 20)`;
-        }
-      }
-      raf = requestAnimationFrame(loop);
-    };
-    loop();
-  }
-
-  /* 9. GEOMETRY WARS: RETRO */
-  else if (id === 'geo') {
-    document.getElementById('btn-upgrade').style.display = 'inline-block';
-    const isVS = state.multiplayer && state.vsMode === 'vs';
-    geoState = {
-      p1: { x: canvas.width * 0.25, y: canvas.height / 2, ang: 0, score: 0 },
-      p2: { x: canvas.width * 0.75, y: canvas.height / 2, ang: Math.PI, score: 0 },
-      score: 0, dmg: 1, cost: 20, bullets: [], enemies: [], tick: 0
-    };
-    document.getElementById('btn-upgrade').textContent = `+1 Dano (20 pts)`;
-
-    const loop = () => {
-      geoState.tick++;
-      ctx.fillStyle = '#070913'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      const half = canvas.width / 2;
-
-      if (keys['KeyW'] || (!state.multiplayer && keys['ArrowUp'])) geoState.p1.y -= 4;
-      if (keys['KeyS'] || (!state.multiplayer && keys['ArrowDown'])) geoState.p1.y += 4;
-      if (keys['KeyA'] || (!state.multiplayer && keys['ArrowLeft'])) geoState.p1.x -= 4;
-      if (keys['KeyD'] || (!state.multiplayer && keys['ArrowRight'])) geoState.p1.x += 4;
-      geoState.p1.x = Math.max(16, Math.min(isVS ? half - 16 : canvas.width - 16, geoState.p1.x));
-      geoState.p1.y = Math.max(16, Math.min(canvas.height - 16, geoState.p1.y));
-      geoState.p1.ang = Math.atan2(mouse.y - geoState.p1.y, mouse.x - geoState.p1.x);
-
-      if ((mouse.down || keys['Space']) && geoState.tick % 8 === 0) {
-        geoState.bullets.push({ owner: 1, x: geoState.p1.x, y: geoState.p1.y, vx: Math.cos(geoState.p1.ang)*9, vy: Math.sin(geoState.p1.ang)*9 });
-      }
-
-      if (state.multiplayer && !state.roomCode) {
-        if (state.p2GeoTank) {
-          if (keys['ArrowLeft']) geoState.p2.ang -= 0.08;
-          if (keys['ArrowRight']) geoState.p2.ang += 0.08;
-          if (keys['ArrowUp']) { geoState.p2.x += Math.cos(geoState.p2.ang)*4; geoState.p2.y += Math.sin(geoState.p2.ang)*4; }
-          if (keys['ArrowDown']) { geoState.p2.x -= Math.cos(geoState.p2.ang)*3.5; geoState.p2.y -= Math.sin(geoState.p2.ang)*3.5; }
-        } else {
-          let vx = 0, vy = 0;
-          if (keys['ArrowLeft']) vx = -4; if (keys['ArrowRight']) vx = 4;
-          if (keys['ArrowUp']) vy = -4; if (keys['ArrowDown']) vy = 4;
-          geoState.p2.x += vx; geoState.p2.y += vy;
-          if (vx !== 0 || vy !== 0) geoState.p2.ang = Math.atan2(vy, vx);
-        }
-        geoState.p2.x = Math.max(isVS ? half + 16 : 16, Math.min(canvas.width - 16, geoState.p2.x));
-        geoState.p2.y = Math.max(16, Math.min(canvas.height - 16, geoState.p2.y));
-        if (geoState.tick % 10 === 0) {
-          geoState.bullets.push({ owner: 2, x: geoState.p2.x, y: geoState.p2.y, vx: Math.cos(geoState.p2.ang)*9, vy: Math.sin(geoState.p2.ang)*9 });
-        }
-      }
-
-      if (geoState.tick % 50 === 0) {
-        const r = Math.random();
-        const type = r < 0.5 ? { shape:'sq', hp:3, pts:1, c:'#a855f7' } : r < 0.85 ? { shape:'tr', hp:5, pts:3, c:'#facc15' } : { shape:'ci', hp:10, pts:10, c:'#f43f5e' };
-        const side = isVS && Math.random() < 0.5 ? 2 : 1;
-        const sx = isVS ? (side === 1 ? Math.random()*half : half + Math.random()*half) : Math.random()*canvas.width;
-        geoState.enemies.push({ ...type, side, x: sx, y: Math.random()<0.5?0:canvas.height });
-      }
-
-      geoState.bullets.forEach(b => {
-        b.x += b.vx; b.y += b.vy;
-        if (isVS) {
-          if (b.owner === 1 && b.x >= half - 3) b.dead = true;
-          if (b.owner === 2 && b.x <= half + 3) b.dead = true;
-        }
-        if (b.x <= 2 || b.x >= canvas.width - 2 || b.y <= 2 || b.y >= canvas.height - 2) b.dead = true;
-        if (!b.dead) { ctx.fillStyle = b.owner===1?'#38bdf8':'#f472b6'; ctx.fillRect(b.x-3,b.y-3,6,6); }
-      });
-
-      geoState.enemies.forEach(e => {
-        const target = (isVS && e.side === 2) ? geoState.p2 : geoState.p1;
-        const a = Math.atan2(target.y - e.y, target.x - e.x);
-        e.x += Math.cos(a)*1.55; e.y += Math.sin(a)*1.55;
-        ctx.strokeStyle = e.c; ctx.lineWidth = 2.5;
-        if (e.shape === 'sq') ctx.strokeRect(e.x-11, e.y-11, 22, 22);
-        else if (e.shape === 'ci') { ctx.beginPath(); ctx.arc(e.x, e.y, 12, 0, Math.PI*2); ctx.stroke(); }
-        else { ctx.beginPath(); ctx.moveTo(e.x, e.y-13); ctx.lineTo(e.x+12, e.y+10); ctx.lineTo(e.x-12, e.y+10); ctx.closePath(); ctx.stroke(); }
-        if (Math.hypot(target.x - e.x, target.y - e.y) < 18) { e.hp = 0; registerDeath(false); }
-
-        geoState.bullets.forEach(b => {
-          if (!b.dead && Math.hypot(b.x - e.x, b.y - e.y) < 18) {
-            e.hp -= geoState.dmg; b.dead = true;
-            if (e.hp <= 0) {
-              geoState.score += e.pts;
-              if (b.owner === 1) geoState.p1.score += e.pts; else geoState.p2.score += e.pts;
-              if (geoState.score >= 55) unlock('Matador de Bichos (55 pts Geo Wars)');
-              if (geoState.score === 270) unlock('270 Cravado! (Exatos 270 pts)', 27);
-            }
-          }
-        });
-      });
-      geoState.enemies = geoState.enemies.filter(e => e.hp > 0);
-      geoState.bullets = geoState.bullets.filter(b => !b.dead);
-
-      const drawShip = (x, y, ang, color, label) => {
-        ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
-        ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(16,0); ctx.lineTo(-12,-10); ctx.lineTo(-7,0); ctx.lineTo(-12,10); ctx.fill();
-        ctx.restore();
-        drawHeadBadge(ctx, x, y - 16, label, color);
-      };
-      drawShip(geoState.p1.x, geoState.p1.y, geoState.p1.ang, myColor, myLabel);
-      if (state.multiplayer && !state.roomCode) drawShip(geoState.p2.x, geoState.p2.y, geoState.p2.ang, state.p2Color, 'P2');
-      getOtherMembers().forEach(peer => drawShip(peer.x || 300, peer.y || 200, peer.extra?.ang || 0, peer.colorHex || '#38bdf8', `P${peer.slot}`));
-      if (geoState.tick % 3 === 0) sendNet({ type: 'pos', x: geoState.p1.x, y: geoState.p1.y, colorHex: myColor, extra: { ang: geoState.p1.ang } });
-
-      if (isVS) { ctx.fillStyle = '#6366f1'; ctx.fillRect(half - 2, 0, 4, canvas.height); }
-      document.getElementById('hud-info').textContent = isVS
-        ? `VS | P1: ${geoState.p1.score} vs P2: ${geoState.p2.score} | Dano: ${geoState.dmg} (E)`
-        : `${myLabel} • Pontos: ${geoState.score} | Dano: ${geoState.dmg} | Tecla E = Upgrade`;
-      raf = requestAnimationFrame(loop);
-    };
-    loop();
-  }
-
-  /* 10. HEXIC 360 */
-  else if (id === 'hexic') {
-    const colors = ['#7c3aed', '#2563eb', '#22c55e', '#facc15', '#f43f5e'];
-    const makeBoard = () => Array.from({length: 5}, () => Array.from({length: 6}, () => colors[Math.floor(Math.random()*colors.length)]));
-    const b1 = makeBoard(), b2 = makeBoard();
-    let c1 = { r: 2, c: 2, score: 0 }, c2 = { r: 2, c: 2, score: 0 };
-    const isVS = state.multiplayer && state.vsMode === 'vs';
-
-    const resolveMatches = (board, scorer) => {
-      let cleared = 0;
-      for (let r = 0; r < 5; r++) {
-        for (let c = 0; c < 4; c++) {
-          const col = board[r][c];
-          if (col && col === board[r][c+1] && col === board[r][c+2]) {
-            board[r][c] = board[r][c+1] = board[r][c+2] = null; cleared += 3;
-          }
-        }
-      }
-      for (let c = 0; c < 6; c++) {
-        for (let r = 4; r >= 0; r--) if (!board[r][c]) board[r][c] = colors[Math.floor(Math.random()*colors.length)];
-      }
-      if (cleared > 0) { scorer.score += cleared * 10; if (scorer.score === 270) unlock('270 Cravado! (Exatos 270 pts)', 27); }
-    };
-
-    const drawHexGrid = (board, cx, cy, cur, cur2) => {
-      for (let r = 0; r < 5; r++) {
-        for (let c = 0; c < 6; c++) {
-          const x = cx + (c - 2.5) * 44, y = cy + (r - 2) * 44;
-          ctx.fillStyle = board[r][c]; ctx.beginPath();
-          for (let i = 0; i < 6; i++) {
-            const ang = (Math.PI / 3) * i, px = x + 18 * Math.cos(ang), py = y + 18 * Math.sin(ang);
-            i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
-          }
-          ctx.closePath(); ctx.fill();
-        }
-      }
-      ctx.strokeStyle = myColor; ctx.lineWidth = 3;
-      ctx.strokeRect(cx + (cur.c - 2.5)*44 - 22, cy + (cur.r - 2)*44 - 22, 88, 88);
-      if (cur2) { ctx.strokeStyle = state.p2Color; ctx.strokeRect(cx + (cur2.c - 2.5)*44 - 20, cy + (cur2.r - 2)*44 - 20, 84, 84); }
-    };
-
-    const loop = () => {
-      ctx.fillStyle = '#0d1024'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      if (keys['KeyW_just']) { keys['KeyW_just'] = false; c1.r = Math.max(0, c1.r - 1); }
-      if (keys['KeyS_just']) { keys['KeyS_just'] = false; c1.r = Math.min(3, c1.r + 1); }
-      if (keys['KeyA_just']) { keys['KeyA_just'] = false; c1.c = Math.max(0, c1.c - 1); }
-      if (keys['KeyD_just']) { keys['KeyD_just'] = false; c1.c = Math.min(4, c1.c + 1); }
-      if (keys['Space_just']) {
-        keys['Space_just'] = false;
-        const t = b1[c1.r][c1.c]; b1[c1.r][c1.c] = b1[c1.r][c1.c+1]; b1[c1.r][c1.c+1] = b1[c1.r+1][c1.c]; b1[c1.r+1][c1.c] = t;
-        resolveMatches(b1, c1);
-      }
-      if (keys['ArrowUp_just']) { keys['ArrowUp_just'] = false; (state.multiplayer ? c2 : c1).r = Math.max(0, (state.multiplayer ? c2 : c1).r - 1); }
-      if (keys['ArrowDown_just']) { keys['ArrowDown_just'] = false; (state.multiplayer ? c2 : c1).r = Math.min(3, (state.multiplayer ? c2 : c1).r + 1); }
-      if (keys['ArrowLeft_just']) { keys['ArrowLeft_just'] = false; (state.multiplayer ? c2 : c1).c = Math.max(0, (state.multiplayer ? c2 : c1).c - 1); }
-      if (keys['ArrowRight_just']) { keys['ArrowRight_just'] = false; (state.multiplayer ? c2 : c1).c = Math.min(4, (state.multiplayer ? c2 : c1).c + 1); }
-
-      if (isVS) {
-        drawHexGrid(b1, canvas.width * 0.25, canvas.height / 2, c1, null);
-        drawHexGrid(b2, canvas.width * 0.75, canvas.height / 2, c2, null);
-        ctx.fillStyle = '#6366f1'; ctx.fillRect(canvas.width/2 - 2, 0, 4, canvas.height);
-        document.getElementById('hud-info').textContent = `VS | P1: ${c1.score} vs P2: ${c2.score}`;
-      } else {
-        drawHexGrid(b1, canvas.width / 2, canvas.height / 2, c1, state.multiplayer && !state.roomCode ? c2 : null);
-        document.getElementById('hud-info').textContent = `${myLabel} • Pontos: ${c1.score + c2.score}`;
-      }
-      raf = requestAnimationFrame(loop);
-    };
-    loop();
-  }
-}
-
-renderMain();
-</script>
-</body>
-</html>
+        const built = buildStageLayout(lvl, w, h);
+        this.plats = built.plats; this.lifts = built.lifts; this.door = built.door; this.coins = built.coins;
+        this.p1.x = 34; this.p1.y = h - 55; this.p1.vx = 0; this.p1.vy = 0;
+        this.p2.x = 58; this.p2.y = h - 55; this.p2.vx = 0; this.p2.vy = 0;
