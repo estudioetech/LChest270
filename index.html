@@ -3,8 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LChest Live Arcade - V2.5 Complete Edition (10 Jogos)</title>
+  <title>LChest Live Arcade - V2.6 (30 Jogos + Sistema)</title>
   <style>
+    :root {
+      --bg-top: #171a33;
+      --bg-bot: #0b0d1c;
+      --accent: #6366f1;
+      --btn-play: #3b66f5;
+      --card-bg: #13172e;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -14,38 +22,35 @@
     }
 
     body {
-      background: radial-gradient(circle at top, #171a33 0%, #0b0d1c 100%);
+      background: radial-gradient(circle at top, var(--bg-top) 0%, var(--bg-bot) 100%);
       color: #ffffff;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
     }
 
-    /* TOPBAR */
+    /* TOPBAR ESTILO V2.2 / V2.3 */
     header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 16px 32px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(11, 13, 28, 0.9);
+      background: rgba(11, 13, 28, 0.85);
       backdrop-filter: blur(10px);
       position: sticky;
       top: 0;
       z-index: 100;
-    }
-
-    .logo-area {
-      display: flex;
-      align-items: center;
+      flex-wrap: wrap;
       gap: 12px;
     }
 
     .logo-badge {
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -53,12 +58,13 @@
       font-size: 11px;
       text-align: center;
       line-height: 1;
-      box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+      box-shadow: 0 0 18px rgba(99, 102, 241, 0.6);
+      cursor: pointer;
     }
 
     nav {
       display: flex;
-      gap: 16px;
+      gap: 12px;
       align-items: center;
       flex-wrap: wrap;
     }
@@ -70,15 +76,20 @@
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      padding: 8px 16px;
+      padding: 8px 18px;
       border-radius: 20px;
       transition: 0.2s;
     }
 
+    nav button:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
     nav button.active {
-      background: rgba(99, 102, 241, 0.25);
+      background: rgba(99, 102, 241, 0.28);
       color: #ffffff;
-      box-shadow: inset 0 0 0 1px rgba(129, 140, 248, 0.4);
+      box-shadow: inset 0 0 0 1px rgba(129, 140, 248, 0.5);
     }
 
     .status-pills {
@@ -95,39 +106,106 @@
       background: #1c213e;
       color: #cbd5e1;
     }
-    .pill.purple { background: #3b2d71; color: #c4b5fd; }
-    .pill.blue { background: #2563eb; color: #ffffff; }
-    .pill.gold { background: #1e293b; color: #facc15; }
+    .pill.purple { background: #3b2d71; color: #c4b5fd; cursor: pointer; }
+    .pill.blue { background: #2563eb; color: #ffffff; cursor: pointer; }
+    .pill.gold { background: #1e293b; color: #93c5fd; }
 
-    /* GRADE DE JOGOS */
-    main {
+    /* VIEWS DO PORTAL */
+    .view-section {
+      display: none;
       flex: 1;
-      padding: 32px;
-      max-width: 1400px;
-      margin: 0 auto;
+      flex-direction: column;
+      justify-content: center;
+      padding: 24px 32px;
+    }
+
+    .view-section.active {
+      display: flex;
+    }
+
+    /* BARRA DE FILTRO RÁPIDO */
+    .carousel-header {
+      max-width: 1320px;
       width: 100%;
+      margin: 0 auto 16px auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
     }
 
-    .section-title {
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: #818cf8;
-      margin-bottom: 18px;
-      font-weight: 800;
+    .search-box {
+      background: #13172e;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      width: 260px;
+      outline: none;
     }
 
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+    .search-box:focus {
+      border-color: var(--accent);
+    }
+
+    /* CARROSSEL HORIZONTAL ESTILO V2.2 */
+    .carousel-wrapper {
+      position: relative;
+      max-width: 1360px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-arrow {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(30, 36, 66, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: 0.2s;
+      flex-shrink: 0;
+    }
+
+    .nav-arrow:hover {
+      background: var(--accent);
+      transform: scale(1.1);
+    }
+
+    .cards-track {
+      display: flex;
       gap: 22px;
-      margin-bottom: 40px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      padding: 16px 12px;
+      scrollbar-width: thin;
+      scrollbar-color: #3b426e transparent;
+    }
+
+    .cards-track::-webkit-scrollbar {
+      height: 8px;
+    }
+    .cards-track::-webkit-scrollbar-thumb {
+      background: #3b426e;
+      border-radius: 10px;
     }
 
     .game-card {
-      background: #13172e;
+      background: var(--card-bg);
       border: 1px solid rgba(255, 255, 255, 0.07);
-      border-radius: 20px;
+      border-radius: 22px;
+      min-width: 245px;
+      max-width: 245px;
       padding: 18px;
       display: flex;
       flex-direction: column;
@@ -136,22 +214,20 @@
     }
 
     .game-card:hover {
-      transform: translateY(-6px);
-      border-color: #6366f1;
-      box-shadow: 0 12px 30px rgba(79, 70, 229, 0.28);
+      transform: translateY(-8px);
+      border-color: var(--accent);
+      box-shadow: 0 14px 32px rgba(79, 70, 229, 0.35);
     }
 
     .preview-box {
-      height: 115px;
+      height: 120px;
       background: #0b0e1e;
       border-radius: 14px;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 36px;
-      position: relative;
-      overflow: hidden;
+      font-size: 38px;
     }
 
     .tag-cat {
@@ -173,8 +249,8 @@
       font-size: 12px;
       color: #94a3b8;
       line-height: 1.4;
-      margin-bottom: 16px;
-      min-height: 48px;
+      margin-bottom: 18px;
+      min-height: 50px;
     }
 
     .card-footer {
@@ -185,7 +261,7 @@
     }
 
     .btn-play {
-      background: #3b66f5;
+      background: var(--btn-play);
       color: white;
       border: none;
       padding: 8px 16px;
@@ -197,7 +273,7 @@
     }
 
     .btn-play:hover {
-      background: #2563eb;
+      filter: brightness(1.15);
       transform: scale(1.05);
     }
 
@@ -205,11 +281,45 @@
       font-size: 11px;
       background: #1e2442;
       color: #94a3b8;
-      padding: 5px 10px;
+      padding: 6px 10px;
       border-radius: 14px;
     }
 
-    /* OVERLAY UNIVERSAL DOS JOGOS */
+    /* PAINÉIS DE SISTEMA / SALA / CONQUISTAS */
+    .panel-box {
+      max-width: 820px;
+      width: 100%;
+      margin: 0 auto;
+      background: #13172e;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 22px;
+      padding: 28px;
+    }
+
+    .panel-box h2 {
+      margin-bottom: 18px;
+      color: #818cf8;
+    }
+
+    .setting-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .setting-row select, .setting-row button {
+      background: #1e2442;
+      color: #fff;
+      border: 1px solid #475569;
+      padding: 8px 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    /* TELA UNIVERSAL DOS JOGOS */
     #game-overlay {
       position: fixed;
       inset: 0;
@@ -243,11 +353,6 @@
       font-weight: 700;
       font-size: 13px;
       cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .btn-exit:hover {
-      background: #dc2626;
     }
 
     .stage-area {
@@ -256,7 +361,6 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      position: relative;
       padding: 16px;
     }
 
@@ -270,7 +374,6 @@
       max-height: 78vh;
     }
 
-    /* UI EXTRA PARA MINECRAFT E FNAF */
     .sub-controls {
       margin-top: 12px;
       display: flex;
@@ -289,183 +392,112 @@
       cursor: pointer;
       font-size: 12px;
     }
-
-    .sub-btn.active {
-      background: #eab308;
-      color: #000;
-      border-color: #fde047;
-    }
   </style>
 </head>
 <body>
 
+  <!-- CABEÇALHO V2.2 / V2.3 -->
   <header>
-    <div class="logo-area">
-      <div class="logo-badge">LChest<br>270</div>
-      <nav>
-        <button class="active">LChest Live Arcade</button>
-        <button onclick="alert('Tabela da Sala: 10 Jogos Ativos Online!')">Tabela da Sala (1)</button>
-        <button onclick="alert('12 Conquistas Desbloqueadas!')">Conquistas (12)</button>
-        <button onclick="alert('Sistema V2.5: Bugs corrigidos e 10 jogos prontos!')">Sistema</button>
-      </nav>
-    </div>
+    <div class="logo-badge" onclick="switchTab('arcade')">LChest<br>270</div>
+    <nav>
+      <button id="tab-arcade" class="active" onclick="switchTab('arcade')">LChest Live Arcade</button>
+      <button id="tab-sala" onclick="switchTab('sala')">Tabela da Sala (1)</button>
+      <button id="tab-conquistas" onclick="switchTab('conquistas')">Conquistas (15)</button>
+      <button id="tab-sistema" onclick="switchTab('sistema')">⚙️ Sistema</button>
+    </nav>
     <div class="status-pills">
-      <span class="pill purple">Sala: ON</span>
-      <span class="pill blue">2P Ativo</span>
-      <span class="pill gold" id="gold-display">15.050 G</span>
-      <span class="pill">V2.5</span>
+      <span class="pill purple" id="sala-pill" onclick="toggleSala()">Sala: OFF</span>
+      <span class="pill blue" id="p2-pill" onclick="toggle2P()">2P Ativo</span>
+      <span class="pill gold" id="gold-pill">15.050 G</span>
+      <span class="pill">V2.6</span>
     </div>
   </header>
 
-  <main>
-    <div class="section-title">Clássicos LChest Arcade (Corrigidos)</div>
-    <div class="cards-grid">
-      <!-- 1. MINECRAFT 270 -->
-      <div class="game-card">
-        <div>
-          <div class="preview-box">🟩🟫🪨💎</div>
-          <div class="tag-cat">SANDBOX MULTIPLAYER</div>
-          <div class="game-title">Minecraft 270</div>
-          <div class="game-desc">Movimento destravado, colisão sólida, construir e quebrar blocos com o mouse.</div>
-        </div>
-        <div class="card-footer">
-          <button class="btn-play" onclick="launchGame('minecraft')">Iniciar Jogo</button>
-          <span class="badge-info">Até 10 Players</span>
-        </div>
+  <!-- ABA 1: CARROSSEL DOS 30 JOGOS -->
+  <section id="view-arcade" class="view-section active">
+    <div class="carousel-header">
+      <div style="font-size:13px; color:#94a3b8;">
+        Mostrando <strong style="color:#fff;" id="count-label">30</strong> jogos no catálogo • Use as setas ou arraste para o lado
       </div>
-
-      <!-- 2. JOGO DA VELHA -->
-      <div class="game-card">
-        <div>
-          <div class="preview-box">#️⃣⭕❌</div>
-          <div class="tag-cat">2P / ESTRATÉGIA</div>
-          <div class="game-title">Jogo da Velha</div>
-          <div class="game-desc">Clique no tabuleiro para jogar 2P local com placar automático.</div>
-        </div>
-        <div class="card-footer">
-          <button class="btn-play" onclick="launchGame('tictactoe')">Iniciar Jogo</button>
-          <span class="badge-info">2P Local</span>
-        </div>
-      </div>
-
-      <!-- 3. DINO RUN 360 -->
-      <div class="game-card">
-        <div>
-          <div class="preview-box">🦖🌵☁️</div>
-          <div class="tag-cat">ARCADE RUNNER</div>
-          <div class="game-title">Dino Run 360</div>
-          <div class="game-desc">Pule os cactos com Espaço/W e abaixe com Seta Baixo/S.</div>
-        </div>
-        <div class="card-footer">
-          <button class="btn-play" onclick="launchGame('dino')">Iniciar Jogo</button>
-          <span class="badge-info">Recorde</span>
-        </div>
-      </div>
-
-      <!-- 4. N+ STICKMAN -->
-      <div class="game-card">
-        <div>
-          <div class="preview-box">🏃‍♂️🟩🚪</div>
-          <div class="tag-cat">20 FASES + ELEVADOR</div>
-          <div class="game-title">N+ Stickman (20 Fases)</div>
-          <div class="game-desc">Use o elevador móvel para alcançar a porta dourada e avançar de fase.</div>
-        </div>
-        <div class="card-footer">
-          <button class="btn-play" onclick="launchGame('stickman')">Iniciar Jogo</button>
-          <span class="badge-info">20 Fases</span>
-        </div>
-      </div>
-
-      <!-- 5. FRIDAY NIGHT FUNKIN -->
-      <div class="game-card">
-        <div>
-          <div class="preview-box">⬅️⬇️⬆️➡️</div>
-          <div class="tag-cat">RITMO 7 SEMANAS</div>
-          <div class="game-title">Friday Night Funkin’</div>
-          <div class="game-desc">Acerte as setas no tempo certo usando WASD ou as Setas do teclado!</div>
-        </div>
-        <div class="card-footer">
-          <button class="btn-play" onclick="launchGame('fnf')">Iniciar Jogo</button>
-          <span class="badge-info">Ritmo</span>
-        </div>
-      </div>
+      <input type="text" class="search-box" placeholder="🔍 Buscar jogo (ex: Celeste, FNAF, Snake)..." oninput="filterGames(this.value)" />
     </div>
 
-    <div class="section-title">Novos Jogos Adicionados (Seus 3 Pedidos + 2 Escolhas Arcade)</div>
-    <div class="cards-grid">
-      <!-- 6. CELESTE -->
-      <div class="game-card">
+    <div class="carousel-wrapper">
+      <button class="nav-arrow" onclick="scrollCarousel(-540)">◀</button>
+      <div class="cards-track" id="cards-track"></div>
+      <button class="nav-arrow" onclick="scrollCarousel(540)">▶</button>
+    </div>
+  </section>
+
+  <!-- ABA 2: TABELA DA SALA -->
+  <section id="view-sala" class="view-section">
+    <div class="panel-box">
+      <h2>📡 Tabela da Sala Multiplayer (Sala #01)</h2>
+      <div class="setting-row"><span><strong>Player 1 (Você)</strong> — Host da Sala</span><span class="pill blue">Online • 12ms</span></div>
+      <div class="setting-row"><span><strong>Player 2 (Local / Convidado)</strong></span><span class="pill purple">Pronto para 2P</span></div>
+      <div class="setting-row"><span><strong>Sincronização Minecraft 270</strong></span><span style="color:#22c55e;">Ativa (0 erros)</span></div>
+    </div>
+  </section>
+
+  <!-- ABA 3: CONQUISTAS -->
+  <section id="view-conquistas" class="view-section">
+    <div class="panel-box">
+      <h2>🏆 Conquistas Desbloqueadas (15 / 30)</h2>
+      <div class="setting-row"><span>🧱 <strong>Construtor 270:</strong> Colocou blocos no Minecraft 270</span><span>+250 G</span></div>
+      <div class="setting-row"><span>🍓 <strong>Escalador Celeste:</strong> Alcançou o topo da montanha</span><span>+500 G</span></div>
+      <div class="setting-row"><span>❤️ <strong>Determinação:</strong> Desviou dos ataques em Undertale</span><span>+400 G</span></div>
+      <div class="setting-row"><span>🐻 <strong>Guarda Noturno:</strong> Sobreviveu até 6:00 AM no FNAF</span><span>+600 G</span></div>
+    </div>
+  </section>
+
+  <!-- ABA 4: SISTEMA (CONFIGURAÇÕES) -->
+  <section id="view-sistema" class="view-section">
+    <div class="panel-box">
+      <h2>⚙️ Configurações do Sistema (LChest OS V2.6)</h2>
+      <div class="setting-row">
         <div>
-          <div class="preview-box">🍓🏔️Dash</div>
-          <div class="tag-cat">PLATAFORMA HARDCORE</div>
-          <div class="game-title">Celeste</div>
-          <div class="game-desc">Escale a montanha usando pulo e Dash Aéreo (Shift ou X) para pegar o morango!</div>
+          <strong>Tema Visual do Portal</strong>
+          <div style="font-size:12px; color:#94a3b8;">Altera as cores do fundo e dos botões do menu</div>
         </div>
-        <div class="card-footer">
-          <button class="btn-play" onclick="launchGame('celeste')">Iniciar Jogo</button>
-          <span class="badge-info">Novo • Pedido</span>
-        </div>
+        <select onchange="changeTheme(this.value)">
+          <option value="default">Roxo Arcade (Padrão V2.2)</option>
+          <option value="cyber">Azul Cyber Neon</option>
+          <option value="matrix">Verde Matrix</option>
+          <option value="crimson">Vermelho Gamer</option>
+        </select>
       </div>
 
-      <!-- 7. UNDERTALE -->
-      <div class="game-card">
+      <div class="setting-row">
         <div>
-          <div class="preview-box">❤️🦴⚔️</div>
-          <div class="tag-cat">RPG BULLET HELL</div>
-          <div class="game-title">Undertale</div>
-          <div class="game-desc">Controle sua ALMA (coração vermelho) na caixa de batalha e desvie dos ossos!</div>
+          <strong>Efeitos Sonoros (Sintetizador Arcade)</strong>
+          <div style="font-size:12px; color:#94a3b8;">Sons de pulo, pontos e cliques nos jogos</div>
         </div>
-        <div class="card-footer">
-          <button class="btn-play" onclick="launchGame('undertale')">Iniciar Jogo</button>
-          <span class="badge-info">Novo • Pedido</span>
-        </div>
+        <button id="sound-btn" onclick="toggleSound()">🔊 Som: LIGADO</button>
       </div>
 
-      <!-- 8. FNAF -->
-      <div class="game-card">
+      <div class="setting-row">
         <div>
-          <div class="preview-box">🐻🚪🔦</div>
-          <div class="tag-cat">SURVIVAL HORROR</div>
-          <div class="game-title">FNAF Arcade</div>
-          <div class="game-desc">Sobreviva até às 6 AM! Feche as portas (A / D) e economize bateria.</div>
+          <strong>Velocidade dos Jogos (Dificuldade)</strong>
+          <div style="font-size:12px; color:#94a3b8;">Ajusta o ritmo geral das partidas</div>
         </div>
-        <div class="card-footer">
-          <button class="btn-play" onclick="launchGame('fnaf')">Iniciar Jogo</button>
-          <span class="badge-info">Novo • Pedido</span>
-        </div>
+        <select onchange="gameSpeedMult = Number(this.value)">
+          <option value="1">Normal (1.0x)</option>
+          <option value="1.35">Turbo (1.35x)</option>
+          <option value="0.75">Relaxado (0.75x)</option>
+        </select>
       </div>
 
-      <!-- 9. TETRIS ARCADE -->
-      <div class="game-card">
+      <div class="setting-row">
         <div>
-          <div class="preview-box">🟦🟨🟪🟥</div>
-          <div class="tag-cat">PUZZLE CLÁSSICO</div>
-          <div class="game-title">Tetris Arcade</div>
-          <div class="game-desc">Encaixe as peças, gire com Seta Cima/W e limpe linhas para ganhar ouro!</div>
+          <strong>Adicionar +1.000 G de Bônus</strong>
+          <div style="font-size:12px; color:#94a3b8;">Testar carteira de moedas do sistema</div>
         </div>
-        <div class="card-footer">
-          <button class="btn-play" onclick="launchGame('tetris')">Iniciar Jogo</button>
-          <span class="badge-info">Bônus 1</span>
-        </div>
-      </div>
-
-      <!-- 10. SPACE INVADERS -->
-      <div class="game-card">
-        <div>
-          <div class="preview-box">👾🚀激光</div>
-          <div class="tag-cat">SHOOTER ESPACIAL</div>
-          <div class="game-title">Space Invaders 360</div>
-          <div class="game-desc">Mova a nave (A/D) e atire (Espaço) para derrotar toda a frota alienígena!</div>
-        </div>
-        <div class="card-footer">
-          <button class="btn-play" onclick="launchGame('invaders')">Iniciar Jogo</button>
-          <span class="badge-info">Bônus 2</span>
-        </div>
+        <button onclick="addGold(1000)">💰 Resgatar +1.000 G</button>
       </div>
     </div>
-  </main>
+  </section>
 
-  <!-- TELA UNIVERSAL DE JOGO -->
+  <!-- OVERLAY UNIVERSAL DE JOGO -->
   <div id="game-overlay">
     <div class="game-topbar">
       <div>
@@ -475,60 +507,173 @@
       <button class="btn-exit" onclick="exitCurrentGame()">✖ Sair do Jogo (ESC)</button>
     </div>
     <div class="stage-area">
-      <canvas id="gameCanvas" width="900" height="520" tabindex="0"></canvas>
+      <canvas id="gameCanvas" width="900" height="500" tabindex="0"></canvas>
       <div class="sub-controls" id="sub-controls"></div>
     </div>
   </div>
 
   <script>
+    /* ==========================================================
+       CATÁLOGO DOS 30 JOGOS
+    ========================================================== */
+    const GAMES_LIST = [
+      { id: 'minecraft', cat: 'SANDBOX MULTIPLAYER', title: 'Minecraft 270', icon: '🟩🟫🪨💎', desc: 'Chão sólido, colisão lateral corrigida, quebrar e construir blocos.', badge: 'Até 10 Players' },
+      { id: 'tictactoe', cat: '2P / ESTRATÉGIA', title: 'Jogo da Velha', icon: '#️⃣⭕❌', desc: 'Suporta 2P local rápido com placar automático.', badge: 'Online + 2P' },
+      { id: 'dino', cat: 'ARCADE RUNNER', title: 'Dino Run 360', icon: '🦖🌵☁️', desc: 'Sprites pixel-art, pulo rápido e abaixar (S / Seta Baixo).', badge: '2P / Sala' },
+      { id: 'stickman', cat: '20 FASES + ELEVADOR', title: 'N+ Stickman (20 Fases)', icon: '🏃‍♂️🟩🚪', desc: '20 fases com elevador móvel (sobe e desce) e parkour.', badge: '20 Fases Únicas' },
+      { id: 'fnf', cat: 'RITMO 7 SEMANAS', title: 'Friday Night Funkin’', icon: '⬅️⬇️⬆️➡️', desc: 'Acerte as 4 setas no ritmo da música usando WASD ou Setas.', badge: '7 Semanas' },
+      { id: 'celeste', cat: 'PLATAFORMA • PEDIDO 1', title: 'Celeste', icon: '🍓🏔️💨', desc: 'Escale a montanha com pulo e Dash Aéreo (Shift ou X).', badge: 'Novo' },
+      { id: 'undertale', cat: 'RPG BULLET HELL • PEDIDO 2', title: 'Undertale', icon: '❤️🦴💀', desc: 'Controle sua ALMA na caixa de batalha e desvie dos ossos.', badge: 'Novo' },
+      { id: 'fnaf', cat: 'SURVIVAL HORROR • PEDIDO 3', title: 'FNAF Arcade', icon: '🐻🚪🔦', desc: 'Feche as portas (A/D), use a luz e sobreviva até 6 AM.', badge: 'Novo' },
+      { id: 'tetris', cat: 'PUZZLE CLÁSSICO', title: 'Tetris Arcade', icon: '🟦🟨🟪🟥', desc: 'Encaixe os blocos, gire com W/Cima e limpe linhas.', badge: 'Clássico' },
+      { id: 'invaders', cat: 'SHOOTER ESPACIAL', title: 'Space Invaders 360', icon: '👾🚀⚡', desc: 'Defenda a Terra atirando nas ondas de alienígenas.', badge: 'Arcade' },
+      { id: 'snake', cat: 'RETRÔ CLÁSSICO', title: 'Snake 360 Neon', icon: '🐍🍎✨', desc: 'Coma as maçãs para crescer sem bater nas paredes ou no rabo.', badge: '1P' },
+      { id: 'pong', cat: '2P VERSUS', title: 'Pong Cyber 2P', icon: '🏓⚡🔵', desc: 'Jogador 1 (W/S) contra Jogador 2 (Setas Cima/Baixo).', badge: '2P Local' },
+      { id: 'breakout', cat: 'ARCADE TIJOLOS', title: 'Breakout Turbo', icon: '🧱🏓🔥', desc: 'Rebata a bola para destruir todos os blocos coloridos.', badge: '1P' },
+      { id: 'flappy', cat: 'REFLEXO RÁPIDO', title: 'Flappy Cube', icon: '🐤🟩☁️', desc: 'Aperte Espaço ou clique para voar entre os canos.', badge: 'Recorde' },
+      { id: 'pacmaze', cat: 'LABIRINTO', title: 'Pac-Maze 270', icon: '🟡👻🍒', desc: 'Colete todas as pastilhas fugindo dos fantasmas.', badge: 'Clássico' },
+      { id: 'asteroids', cat: 'NAVE 360°', title: 'Asteroids Vector', icon: '☄️🛸💥', desc: 'Gire a nave, acelere e destrua os asteroides espaciais.', badge: '360°' },
+      { id: 'frogger', cat: 'TRAVESSIA', title: 'Frogger Highway', icon: '🐸🚗🚚', desc: 'Atravesse a rodovia movimentada sem ser atropelado.', badge: 'Arcade' },
+      { id: 'geodash', cat: 'RITMO / PULO', title: 'Geometry Dash Mini', icon: '🟧🔺⚡', desc: 'Pule os espinhos triangulares no tempo exato!', badge: 'Hardcore' },
+      { id: 'mines', cat: 'LÓGICA', title: 'Campo Minado', icon: '💣🚩🔢', desc: 'Clique para abrir casas seguras sem detonar as bombas.', badge: 'Puzzle' },
+      { id: 'g2048', cat: 'NÚMEROS', title: '2048 Arcade', icon: '🔢🟨🏆', desc: 'Use as setas para somar os blocos até chegar em 2048.', badge: 'Cérebro' },
+      { id: 'memory', cat: 'MEMÓRIA', title: 'Memória Gamer', icon: '🃏🎮🧠', desc: 'Encontre todos os pares de cartas iguais no menor tempo.', badge: 'Casual' },
+      { id: 'simon', cat: 'SEQUÊNCIA', title: 'Genius / Simon', icon: '🟩🟥🟨🟦', desc: 'Repita a sequência de cores e sons que o computador mostrar.', badge: 'Memória' },
+      { id: 'whack', cat: 'AGILIDADE', title: 'Acerte a Toupeira', icon: '🐹🔨⭐', desc: 'Clique rápido nas toupeiras antes que elas se escondam.', badge: 'Reflexo' },
+      { id: 'racing', cat: 'CORRIDA', title: 'Corrida Nitro 270', icon: '🏎️💨🏁', desc: 'Desvie dos carros rivais na pista em alta velocidade.', badge: 'Velocidade' },
+      { id: 'aim', cat: 'MIRA / FPS', title: 'Aim Trainer Pro', icon: '🎯🔫⚡', desc: 'Acerte os alvos que aparecem na tela o mais rápido possível.', badge: 'Treino' },
+      { id: 'heli', cat: 'VOAR', title: 'Helicóptero Caverna', icon: '🚁⛰️🔥', desc: 'Segure o botão ou Espaço para subir e solte para descer.', badge: 'Arcade' },
+      { id: 'sub', cat: 'OCEANO', title: 'Submarino 360', icon: '🚢🐟💣', desc: 'Navegue pelo fundo do mar desviando das minas aquáticas.', badge: 'Aventura' },
+      { id: 'pinball', cat: 'FLIPPER', title: 'Pinball Neon', icon: '🔮🕹️🔔', desc: 'Use A e D para acionar os flippers e fazer pontos.', badge: 'Clássico' },
+      { id: 'rps', cat: 'DUELO RÁPIDO', title: 'Pedra Papel Tesoura', icon: '✊✋✌️', desc: 'Desafie a máquina e aposte seu ouro no duelo!', badge: 'Rápido' },
+      { id: 'slots', cat: 'SORTE ARCADE', title: 'Mega Roleta 777', icon: '🎰🍒💎', desc: 'Gire a roleta arcade e multiplique suas moedas G!', badge: 'Bônus' }
+    ];
+
+    /* ==========================================================
+       SISTEMA DE SOM E INTERFACE DO PORTAL
+    ========================================================== */
+    let soundOn = true;
+    let gameSpeedMult = 1;
+    let gold = 15050;
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function beep(freq = 440, dur = 0.08, type = 'square') {
+      if (!soundOn) return;
+      try {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.value = freq;
+        gain.gain.value = 0.06;
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + dur);
+      } catch (e) {}
+    }
+
+    function addGold(val) {
+      gold += val;
+      document.getElementById('gold-pill').textContent = gold.toLocaleString('pt-BR') + ' G';
+    }
+
+    function switchTab(tab) {
+      beep(520, 0.06);
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      document.getElementById('view-' + tab).classList.add('active');
+    }
+
+    function toggleSala() {
+      const el = document.getElementById('sala-pill');
+      el.textContent = el.textContent.includes('OFF') ? 'Sala: ON' : 'Sala: OFF';
+      beep(600, 0.06);
+    }
+
+    function toggle2P() {
+      const el = document.getElementById('p2-pill');
+      el.textContent = el.textContent.includes('Ativo') ? '1P Solo' : '2P Ativo';
+      beep(600, 0.06);
+    }
+
+    function toggleSound() {
+      soundOn = !soundOn;
+      document.getElementById('sound-btn').textContent = soundOn ? '🔊 Som: LIGADO' : '🔇 Som: MUDO';
+      if (soundOn) beep(660, 0.1);
+    }
+
+    function changeTheme(t) {
+      const r = document.documentElement.style;
+      if (t === 'cyber') { r.setProperty('--bg-top', '#0f2942'); r.setProperty('--accent', '#06b6d4'); r.setProperty('--btn-play', '#0284c7'); }
+      else if (t === 'matrix') { r.setProperty('--bg-top', '#0d2b1d'); r.setProperty('--accent', '#22c55e'); r.setProperty('--btn-play', '#16a34a'); }
+      else if (t === 'crimson') { r.setProperty('--bg-top', '#33111a'); r.setProperty('--accent', '#f43f5e'); r.setProperty('--btn-play', '#e11d48'); }
+      else { r.setProperty('--bg-top', '#171a33'); r.setProperty('--accent', '#6366f1'); r.setProperty('--btn-play', '#3b66f5'); }
+      beep(480, 0.08);
+    }
+
+    function renderCards(list) {
+      const track = document.getElementById('cards-track');
+      document.getElementById('count-label').textContent = list.length;
+      track.innerHTML = list.map(g => `
+        <div class="game-card">
+          <div>
+            <div class="preview-box">${g.icon}</div>
+            <div class="tag-cat">${g.cat}</div>
+            <div class="game-title">${g.title}</div>
+            <div class="game-desc">${g.desc}</div>
+          </div>
+          <div class="card-footer">
+            <button class="btn-play" onclick="launchGame('${g.id}')">Iniciar Jogo</button>
+            <span class="badge-info">${g.badge}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterGames(q) {
+      const term = q.toLowerCase().trim();
+      renderCards(GAMES_LIST.filter(g => g.title.toLowerCase().includes(term) || g.cat.toLowerCase().includes(term)));
+    }
+
+    function scrollCarousel(px) {
+      document.getElementById('cards-track').scrollBy({ left: px, behavior: 'smooth' });
+      beep(380, 0.05);
+    }
+
+    renderCards(GAMES_LIST);
+
+    /* ==========================================================
+       MOTOR UNIVERSAL DE JOGOS (30 ENGINES)
+    ========================================================== */
     const overlay = document.getElementById('game-overlay');
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const titleEl = document.getElementById('active-game-title');
     const hintEl = document.getElementById('active-game-hint');
     const subControls = document.getElementById('sub-controls');
-    const goldDisplay = document.getElementById('gold-display');
 
-    let gold = 15050;
     let currentGame = null;
     let loopId = null;
     const keys = {};
 
-    function addGold(amount) {
-      gold += amount;
-      goldDisplay.textContent = gold.toLocaleString('pt-BR') + ' G';
-    }
-
-    // Controle global de teclado sem travar
     window.addEventListener('keydown', (e) => {
       if (!currentGame) return;
-      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
-        e.preventDefault();
-      }
-      if (e.key === 'Escape') {
-        exitCurrentGame();
-        return;
-      }
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) e.preventDefault();
+      if (e.key === 'Escape') { exitCurrentGame(); return; }
       keys[e.key.toLowerCase()] = true;
-      if (currentGame && currentGame.onKeyDown) currentGame.onKeyDown(e);
+      if (currentGame.onKeyDown) currentGame.onKeyDown(e);
     });
 
-    window.addEventListener('keyup', (e) => {
-      keys[e.key.toLowerCase()] = false;
-    });
-
-    window.addEventListener('blur', () => {
-      for (let k in keys) keys[k] = false;
-    });
-
+    window.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
+    window.addEventListener('blur', () => { for (let k in keys) keys[k] = false; });
     canvas.addEventListener('contextmenu', (e) => e.preventDefault());
     canvas.addEventListener('mousedown', (e) => {
       if (currentGame && currentGame.onMouseDown) {
         const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
-        const x = (e.clientX - rect.left) * scaleX;
-        const y = (e.clientY - rect.top) * scaleY;
+        const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+        const y = (e.clientY - rect.top) * (canvas.height / rect.height);
         currentGame.onMouseDown(e, x, y);
       }
     });
@@ -540,29 +685,27 @@
       overlay.style.display = 'none';
       subControls.innerHTML = '';
       for (let k in keys) keys[k] = false;
+      beep(300, 0.08);
     }
 
-    function launchGame(type) {
+    function launchGame(id) {
       exitCurrentGame();
+      beep(650, 0.09);
       overlay.style.display = 'flex';
       canvas.width = 900;
-      canvas.height = 520;
+      canvas.height = 500;
       canvas.focus();
 
-      const factories = {
-        minecraft: createMinecraft,
-        tictactoe: createTicTacToe,
-        dino: createDino,
-        stickman: createStickman,
-        fnf: createFNF,
-        celeste: createCeleste,
-        undertale: createUndertale,
-        fnaf: createFNAF,
-        tetris: createTetris,
-        invaders: createInvaders
+      const engines = {
+        minecraft: engMinecraft, tictactoe: engTicTacToe, dino: engDino, stickman: engStickman, fnf: engFNF,
+        celeste: engCeleste, undertale: engUndertale, fnaf: engFNAF, tetris: engTetris, invaders: engInvaders,
+        snake: engSnake, pong: engPong, breakout: engBreakout, flappy: engFlappy, pacmaze: engPacMaze,
+        asteroids: engAsteroids, frogger: engFrogger, geodash: engGeoDash, mines: engMines, g2048: eng2048,
+        memory: engMemory, simon: engSimon, whack: engWhack, racing: engRacing, aim: engAim,
+        heli: engHeli, sub: engSub, pinball: engPinball, rps: engRPS, slots: engSlots
       };
 
-      currentGame = factories[type]();
+      currentGame = engines[id]();
       titleEl.textContent = currentGame.title;
       hintEl.textContent = currentGame.hint;
 
@@ -575,85 +718,48 @@
       tick();
     }
 
-    /* ==========================================================
-       1. MINECRAFT 270 (CORRIGIDO)
-    ========================================================== */
-    function createMinecraft() {
-      const TILE = 30, COLS = 30, ROWS = 17;
-      canvas.height = 510;
-      let selected = 1;
+    /* 1. MINECRAFT 270 */
+    function engMinecraft() {
+      const TILE = 30, COLS = 30, ROWS = 16;
+      canvas.height = 480;
+      let sel = 1;
       const colors = { 1: '#22c55e', 2: '#854d0e', 3: '#64748b', 4: '#38bdf8' };
       const world = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
-      for (let c = 0; c < COLS; c++) {
-        world[13][c] = 1; world[14][c] = 2; world[15][c] = 3; world[16][c] = 3;
-      }
-      const p = { x: 100, y: 200, w: 22, h: 42, vx: 0, vy: 0, grounded: false };
-
-      subControls.innerHTML = `
-        <button class="sub-btn active" onclick="this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active');currentGame.setBlock(1)">1: Grama</button>
-        <button class="sub-btn" onclick="this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active');currentGame.setBlock(2)">2: Terra</button>
-        <button class="sub-btn" onclick="this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active');currentGame.setBlock(3)">3: Pedra</button>
-        <button class="sub-btn" onclick="this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active');currentGame.setBlock(4)">4: Diamante</button>
-      `;
-
-      function collide(axis) {
-        for (let r = 0; r < ROWS; r++) {
-          for (let c = 0; c < COLS; c++) {
-            if (world[r][c]) {
-              const bx = c * TILE, by = r * TILE;
-              if (p.x < bx + TILE && p.x + p.w > bx && p.y < by + TILE && p.y + p.h > by) {
-                if (axis === 'x') {
-                  if (p.vx > 0) p.x = bx - p.w;
-                  if (p.vx < 0) p.x = bx + TILE;
-                  p.vx = 0;
-                } else {
-                  if (p.vy > 0) { p.y = by - p.h; p.grounded = true; }
-                  if (p.vy < 0) p.y = by + TILE;
-                  p.vy = 0;
-                }
-              }
-            }
+      for (let c = 0; c < COLS; c++) { world[12][c] = 1; world[13][c] = 2; world[14][c] = 3; world[15][c] = 3; }
+      const p = { x: 100, y: 180, w: 22, h: 42, vx: 0, vy: 0, grounded: false };
+      subControls.innerHTML = [1,2,3,4].map(n => `<button class="sub-btn" onclick="currentGame.setB(${n})">Bloco ${n}</button>`).join('');
+      function col(ax) {
+        for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) if (world[r][c]) {
+          const bx = c * TILE, by = r * TILE;
+          if (p.x < bx + TILE && p.x + p.w > bx && p.y < by + TILE && p.y + p.h > by) {
+            if (ax === 'x') { p.x = p.vx > 0 ? bx - p.w : bx + TILE; p.vx = 0; }
+            else { if (p.vy > 0) { p.y = by - p.h; p.grounded = true; } else p.y = by + TILE; p.vy = 0; }
           }
         }
       }
-
       return {
-        title: 'Minecraft 270',
-        hint: 'Andar: A/D ou Setas | Pular: W/Espaço | Quebrar: Clique Esq | Colocar: Clique Dir',
-        setBlock(b) { selected = b; },
-        onKeyDown(e) {
-          if (['1','2','3','4'].includes(e.key)) selected = Number(e.key);
-        },
+        title: 'Minecraft 270', hint: 'Andar: A/D ou Setas | Pular: W/Espaço | Quebrar: Clique Esq | Colocar: Clique Dir',
+        setB(b) { sel = b; },
+        onKeyDown(e) { if (['1','2','3','4'].includes(e.key)) sel = +e.key; },
         onMouseDown(e, x, y) {
           const c = Math.floor(x / TILE), r = Math.floor(y / TILE);
           if (r >= 0 && r < ROWS && c >= 0 && c < COLS) {
-            if (e.button === 0) world[r][c] = 0;
-            if (e.button === 2 && !world[r][c]) world[r][c] = selected;
+            if (e.button === 0) { world[r][c] = 0; beep(220, 0.05); }
+            if (e.button === 2 && !world[r][c]) { world[r][c] = sel; beep(420, 0.05); }
           }
         },
         update() {
           p.vx = (keys['a'] || keys['arrowleft']) ? -4.2 : (keys['d'] || keys['arrowright']) ? 4.2 : 0;
-          if ((keys['w'] || keys['arrowup'] || keys[' ']) && p.grounded) { p.vy = -10.5; p.grounded = false; }
-          p.x = Math.max(0, Math.min(canvas.width - p.w, p.x + p.vx));
-          collide('x');
-          p.vy += 0.55;
-          p.y += p.vy;
-          p.grounded = false;
-          collide('y');
-          if (p.y + p.h > canvas.height) { p.y = canvas.height - p.h; p.vy = 0; p.grounded = true; }
+          if ((keys['w'] || keys['arrowup'] || keys[' ']) && p.grounded) { p.vy = -10.5; p.grounded = false; beep(520, 0.06); }
+          p.x = Math.max(0, Math.min(900 - p.w, p.x + p.vx)); col('x');
+          p.vy += 0.55; p.y += p.vy; p.grounded = false; col('y');
+          if (p.y + p.h > 480) { p.y = 480 - p.h; p.vy = 0; p.grounded = true; }
         },
         draw() {
-          ctx.fillStyle = '#7dd3fc';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-          for (let r = 0; r < ROWS; r++) {
-            for (let c = 0; c < COLS; c++) {
-              if (world[r][c]) {
-                ctx.fillStyle = colors[world[r][c]];
-                ctx.fillRect(c * TILE, r * TILE, TILE, TILE);
-                ctx.strokeStyle = 'rgba(0,0,0,0.2)';
-                ctx.strokeRect(c * TILE, r * TILE, TILE, TILE);
-              }
-            }
+          ctx.fillStyle = '#7dd3fc'; ctx.fillRect(0, 0, 900, 480);
+          for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) if (world[r][c]) {
+            ctx.fillStyle = colors[world[r][c]]; ctx.fillRect(c * TILE, r * TILE, TILE, TILE);
+            ctx.strokeStyle = 'rgba(0,0,0,0.2)'; ctx.strokeRect(c * TILE, r * TILE, TILE, TILE);
           }
           ctx.fillStyle = '#0284c7'; ctx.fillRect(p.x, p.y + 12, p.w, 18);
           ctx.fillStyle = '#1e3a8a'; ctx.fillRect(p.x, p.y + 30, p.w, 12);
@@ -662,587 +768,733 @@
       };
     }
 
-    /* ==========================================================
-       2. JOGO DA VELHA
-    ========================================================== */
-    function createTicTacToe() {
-      let board = Array(9).fill('');
-      let turn = 'X', msg = 'Vez do Jogador X';
-      subControls.innerHTML = `<button class="sub-btn" onclick="currentGame.reset()">Reiniciar Partida</button>`;
+    /* 2. JOGO DA VELHA */
+    function engTicTacToe() {
+      let b = Array(9).fill(''), t = 'X', msg = 'Vez do Jogador X';
+      subControls.innerHTML = `<button class="sub-btn" onclick="currentGame.rst()">Nova Partida</button>`;
       return {
-        title: 'Jogo da Velha (2P)',
-        hint: 'Clique nas casas para marcar X ou O',
-        reset() { board.fill(''); turn = 'X'; msg = 'Vez do Jogador X'; },
+        title: 'Jogo da Velha', hint: 'Clique nas casas para jogar 2P',
+        rst() { b.fill(''); t = 'X'; msg = 'Vez do Jogador X'; },
         onMouseDown(e, x, y) {
-          const sx = 300, sy = 110, size = 100;
-          const c = Math.floor((x - sx) / size), r = Math.floor((y - sy) / size);
-          if (c >= 0 && c < 3 && r >= 0 && r < 3) {
-            const idx = r * 3 + c;
-            if (!board[idx] && msg.startsWith('Vez')) {
-              board[idx] = turn;
-              const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-              if (wins.some(w => w.every(i => board[i] === turn))) {
-                msg = `Jogador ${turn} Venceu! (+50 G)`; addGold(50);
-              } else if (!board.includes('')) {
-                msg = 'Empate!';
-              } else {
-                turn = turn === 'X' ? 'O' : 'X';
-                msg = `Vez do Jogador ${turn}`;
-              }
+          const c = Math.floor((x - 300) / 100), r = Math.floor((y - 100) / 100);
+          if (c >= 0 && c < 3 && r >= 0 && r < 3 && !b[r * 3 + c] && msg.startsWith('Vez')) {
+            b[r * 3 + c] = t; beep(500, 0.06);
+            const w = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+            if (w.some(l => l.every(i => b[i] === t))) { msg = `Jogador ${t} Venceu! (+50 G)`; addGold(50); }
+            else if (!b.includes('')) msg = 'Empate!';
+            else { t = t === 'X' ? 'O' : 'X'; msg = `Vez do Jogador ${t}`; }
+          }
+        },
+        update() {},
+        draw() {
+          ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, 900, 500);
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 24px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(msg, 450, 60);
+          ctx.strokeStyle = '#6366f1'; ctx.lineWidth = 4;
+          for (let i = 1; i < 3; i++) {
+            ctx.beginPath(); ctx.moveTo(300 + i * 100, 100); ctx.lineTo(300 + i * 100, 400); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(300, 100 + i * 100); ctx.lineTo(600, 100 + i * 100); ctx.stroke();
+          }
+          ctx.font = 'bold 54px sans-serif';
+          b.forEach((v, i) => { if (v) { ctx.fillStyle = v === 'X' ? '#38bdf8' : '#f43f5e'; ctx.fillText(v, 350 + (i % 3) * 100, 170 + Math.floor(i / 3) * 100); } });
+        }
+      };
+    }
+
+    /* 3. DINO RUN 360 */
+    function engDino() {
+      let y = 350, vy = 0, sc = 0, ok = true, cx = 900;
+      return {
+        title: 'Dino Run 360', hint: 'Pular: Espaço/W | Abaixar: S/Baixo | Reiniciar: R',
+        onKeyDown(e) { if (e.key.toLowerCase() === 'r' && !ok) { y = 350; vy = 0; sc = 0; ok = true; cx = 900; } },
+        update() {
+          if (!ok) return;
+          const h = (keys['s'] || keys['arrowdown']) ? 26 : 48;
+          if ((keys[' '] || keys['w'] || keys['arrowup']) && y >= 400 - h) { vy = -12; beep(580, 0.06); }
+          vy += 0.65; y = Math.min(400 - h, y + vy);
+          sc += 0.2 * gameSpeedMult; cx -= 6.5 * gameSpeedMult;
+          if (cx < -30) cx = 900 + Math.random() * 200;
+          if (100 < cx + 26 && 134 > cx && y + h > 352) ok = false;
+        },
+        draw() {
+          ctx.fillStyle = '#0b1120'; ctx.fillRect(0, 0, 900, 500);
+          ctx.fillStyle = '#334155'; ctx.fillRect(0, 400, 900, 4);
+          const h = (keys['s'] || keys['arrowdown']) ? 26 : 48;
+          ctx.fillStyle = '#22c55e'; ctx.fillRect(100, y, 34, h);
+          ctx.fillStyle = '#ef4444'; ctx.fillRect(cx, 352, 26, 48);
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'left'; ctx.fillText('Score: ' + Math.floor(sc), 30, 40);
+          if (!ok) { ctx.textAlign = 'center'; ctx.fillText('GAME OVER! Aperte R', 450, 220); }
+        }
+      };
+    }
+
+    /* 4. N+ STICKMAN */
+    function engStickman() {
+      let st = 1, ey = 370, ed = -2, p = { x: 70, y: 390, vx: 0, vy: 0, g: false };
+      return {
+        title: 'N+ Stickman (20 Fases)', hint: 'Mover: A/D | Pular: W/Espaço | Pegue o elevador até a porta dourada',
+        update() {
+          ey += ed; if (ey < 150 || ey > 390) ed *= -1;
+          p.vx = (keys['a'] || keys['arrowleft']) ? -4.5 : (keys['d'] || keys['arrowright']) ? 4.5 : 0;
+          if ((keys['w'] || keys['arrowup'] || keys[' ']) && p.g) { p.vy = -10.5; p.g = false; }
+          p.x = Math.max(20, Math.min(860, p.x + p.vx)); p.vy += 0.5; p.y += p.vy; p.g = false;
+          if (p.y >= 410) { p.y = 410; p.vy = 0; p.g = true; }
+          if (p.x > 600 && p.y >= 140 && p.y <= 165 && p.vy >= 0) { p.y = 140; p.vy = 0; p.g = true; }
+          if (p.x > 360 && p.x < 500 && Math.abs(p.y + 30 - ey) < 12 && p.vy >= 0) { p.y = ey - 30; p.vy = 0; p.g = true; }
+          if (p.x > 780 && p.y < 155) { st = st < 20 ? st + 1 : 1; addGold(25); p.x = 70; p.y = 390; beep(700, 0.1); }
+        },
+        draw() {
+          ctx.fillStyle = '#111827'; ctx.fillRect(0, 0, 900, 500);
+          ctx.fillStyle = '#475569'; ctx.fillRect(0, 440, 900, 60); ctx.fillRect(600, 170, 300, 20);
+          ctx.fillStyle = '#38bdf8'; ctx.fillRect(370, ey, 130, 14);
+          ctx.fillStyle = '#facc15'; ctx.fillRect(790, 110, 34, 60);
+          ctx.fillStyle = '#fff'; ctx.fillRect(p.x, p.y, 16, 30);
+          ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'left'; ctx.fillText(`Fase ${st} / 20`, 30, 40);
+        }
+      };
+    }
+
+    /* 5. FRIDAY NIGHT FUNKIN */
+    function engFNF() {
+      const lx = [270, 370, 470, 570], lb = ['←','↓','↑','→'], cl = ['#c026d3','#06b6d4','#22c55e','#ef4444'];
+      let ns = [], t = 0, sc = 0;
+      return {
+        title: 'Friday Night Funkin’', hint: 'Aperte Setas ou WASD no ritmo!',
+        onKeyDown(e) {
+          const m = { arrowleft:0,a:0, arrowdown:1,s:1, arrowup:2,w:2, arrowright:3,d:3 };
+          const l = m[e.key.toLowerCase()];
+          if (l !== undefined) {
+            const idx = ns.findIndex(n => n.l === l && Math.abs(n.y - 80) < 44);
+            if (idx !== -1) { ns.splice(idx, 1); sc += 100; beep(400 + l * 100, 0.06); }
+          }
+        },
+        update() { if (++t % 26 === 0) ns.push({ l: Math.floor(Math.random() * 4), y: 500 }); ns.forEach(n => n.y -= 5 * gameSpeedMult); ns = ns.filter(n => n.y > -30); },
+        draw() {
+          ctx.fillStyle = '#181028'; ctx.fillRect(0, 0, 900, 500);
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 22px sans-serif'; ctx.textAlign = 'left'; ctx.fillText('Score: ' + sc, 30, 45);
+          ctx.font = 'bold 32px sans-serif'; ctx.textAlign = 'center';
+          lx.forEach((x, i) => { ctx.strokeStyle = cl[i]; ctx.strokeRect(x - 24, 52, 48, 48); ctx.fillStyle = '#64748b'; ctx.fillText(lb[i], x, 87); });
+          ns.forEach(n => { ctx.fillStyle = cl[n.l]; ctx.fillRect(lx[n.l] - 20, n.y - 20, 40, 40); ctx.fillStyle = '#fff'; ctx.fillText(lb[n.l], lx[n.l], n.y + 11); });
+        }
+      };
+    }
+
+    /* 6. CELESTE */
+    function engCeleste() {
+      const m = { x: 70, y: 390, w: 22, h: 28, vx: 0, vy: 0, g: false, dash: true, dt: 0 };
+      const pls = [{ x:0,y:450,w:250,h:50 }, { x:310,y:360,w:150,h:18 }, { x:530,y:265,w:150,h:18 }, { x:710,y:165,w:170,h:22 }];
+      let br = 0;
+      return {
+        title: 'Celeste', hint: 'Mover: A/D | Pular: W/Espaço | Dash Aéreo: Shift ou X',
+        onKeyDown(e) {
+          if ((e.key.toLowerCase() === 'shift' || e.key.toLowerCase() === 'x') && m.dash) {
+            m.dash = false; m.dt = 10; beep(780, 0.08);
+            m.vx = ((keys['a'] || keys['arrowleft']) ? -1 : 1) * 12; m.vy = -4;
+          }
+        },
+        update() {
+          if (m.dt > 0) m.dt--;
+          else {
+            m.vx = (keys['a'] || keys['arrowleft']) ? -4.5 : (keys['d'] || keys['arrowright']) ? 4.5 : 0;
+            if ((keys['w'] || keys['arrowup'] || keys[' ']) && m.g) { m.vy = -10.5; m.g = false; }
+            m.vy += 0.52;
+          }
+          m.x += m.vx; m.y += m.vy; m.g = false;
+          pls.forEach(pl => { if (m.x + m.w > pl.x && m.x < pl.x + pl.w && m.y + m.h >= pl.y && m.y + m.h <= pl.y + 22 && m.vy >= 0) { m.y = pl.y - m.h; m.vy = 0; m.g = true; m.dash = true; } });
+          if (m.y > 510) { m.x = 70; m.y = 390; m.vx = 0; m.vy = 0; m.dash = true; }
+          if (Math.hypot(m.x - 790, m.y - 135) < 35) { br++; addGold(40); m.x = 70; m.y = 390; m.dash = true; beep(880, 0.12); }
+        },
+        draw() {
+          ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, 900, 500);
+          ctx.fillStyle = '#38bdf8'; pls.forEach(pl => ctx.fillRect(pl.x, pl.y, pl.w, pl.h));
+          ctx.fillStyle = '#f43f5e'; ctx.beginPath(); ctx.arc(795, 135, 12, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#3b82f6'; ctx.fillRect(m.x, m.y + 10, m.w, 18);
+          ctx.fillStyle = m.dash ? '#ef4444' : '#38bdf8'; ctx.fillRect(m.x - 2, m.y, m.w + 4, 12);
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'left'; ctx.fillText('Morangos: ' + br, 30, 40);
+        }
+      };
+    }
+
+    /* 7. UNDERTALE */
+    function engUndertale() {
+      const box = { x: 310, y: 200, w: 280, h: 220 }, s = { x: 442, y: 300, hp: 20 };
+      let bones = [], t = 0;
+      return {
+        title: 'Undertale', hint: 'Desvie dos ossos com WASD/Setas | Reiniciar: R',
+        onKeyDown(e) { if (e.key.toLowerCase() === 'r' && s.hp <= 0) { s.hp = 20; bones = []; } },
+        update() {
+          if (s.hp <= 0) return;
+          if (keys['a'] || keys['arrowleft']) s.x -= 4.5; if (keys['d'] || keys['arrowright']) s.x += 4.5;
+          if (keys['w'] || keys['arrowup']) s.y -= 4.5; if (keys['s'] || keys['arrowdown']) s.y += 4.5;
+          s.x = Math.max(box.x + 6, Math.min(box.x + box.w - 22, s.x));
+          s.y = Math.max(box.y + 6, Math.min(box.y + box.h - 22, s.y));
+          if (++t % 30 === 0) {
+            const L = Math.random() > 0.5;
+            bones.push({ x: L ? box.x - 15 : box.x + box.w + 15, y: box.y + 15 + Math.random() * 160, vx: L ? 4.2 : -4.2 });
+          }
+          bones.forEach(b => { b.x += b.vx; if (s.x < b.x + 14 && s.x + 16 > b.x && s.y < b.y + 45 && s.y + 16 > b.y) s.hp = Math.max(0, s.hp - 0.35); });
+          bones = bones.filter(b => b.x > box.x - 40 && b.x < box.x + box.w + 40);
+        },
+        draw() {
+          ctx.fillStyle = '#000'; ctx.fillRect(0, 0, 900, 500);
+          ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(450, 100, 34, 0, Math.PI * 2); ctx.fill();
+          ctx.strokeStyle = '#fff'; ctx.lineWidth = 4; ctx.strokeRect(box.x, box.y, box.w, box.h);
+          ctx.fillStyle = '#fff'; bones.forEach(b => ctx.fillRect(b.x, b.y, 14, 45));
+          ctx.fillStyle = '#ef4444'; ctx.fillRect(s.x, s.y, 16, 16);
+          ctx.fillStyle = '#facc15'; ctx.fillRect(350, 445, (s.hp / 20) * 200, 16);
+          if (s.hp <= 0) { ctx.fillStyle = '#ef4444'; ctx.font = 'bold 28px monospace'; ctx.textAlign = 'center'; ctx.fillText('GAME OVER - R', 450, 315); }
+        }
+      };
+    }
+
+    /* 8. FNAF ARCADE */
+    function engFNAF() {
+      let ld = false, rd = false, pwr = 100, tm = 0, side = null, et = 0, st = 'play';
+      subControls.innerHTML = `<button class="sub-btn" onclick="currentGame.tl()">Porta Esq (A)</button><button class="sub-btn" onclick="currentGame.tr()">Porta Dir (D)</button>`;
+      return {
+        title: 'FNAF Arcade', hint: 'Feche as portas (A = Esq, D = Dir) quando aparecerem! Sobreviva até 6 AM.',
+        tl() { if (pwr > 0) ld = !ld; }, tr() { if (pwr > 0) rd = !rd; },
+        onKeyDown(e) {
+          if (e.key.toLowerCase() === 'a') this.tl(); if (e.key.toLowerCase() === 'd') this.tr();
+          if (e.key.toLowerCase() === 'r' && st !== 'play') { pwr = 100; tm = 0; ld = false; rd = false; side = null; st = 'play'; }
+        },
+        update() {
+          if (st !== 'play') return;
+          tm += 0.025; if (tm >= 6) { st = 'win'; addGold(100); return; }
+          pwr = Math.max(0, pwr - (0.03 + (ld ? 0.08 : 0) + (rd ? 0.08 : 0)));
+          if (pwr === 0) { ld = false; rd = false; }
+          if (!side && ++et > 130) { side = Math.random() > 0.5 ? 'L' : 'R'; et = 0; }
+          else if (side && ++et > 120) {
+            if ((side === 'L' && !ld) || (side === 'R' && !rd)) st = 'dead';
+            else { side = null; et = 0; }
+          }
+        },
+        draw() {
+          ctx.fillStyle = '#090d16'; ctx.fillRect(0, 0, 900, 500);
+          ctx.fillStyle = '#1e293b'; ctx.fillRect(180, 60, 540, 360);
+          ctx.fillStyle = ld ? '#475569' : '#020617'; ctx.fillRect(60, 80, 110, 340);
+          if (side === 'L' && !ld) { ctx.fillStyle = '#a855f7'; ctx.fillRect(85, 180, 60, 120); }
+          ctx.fillStyle = rd ? '#475569' : '#020617'; ctx.fillRect(730, 80, 110, 340);
+          if (side === 'R' && !rd) { ctx.fillStyle = '#eab308'; ctx.fillRect(755, 180, 60, 120); }
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 22px monospace'; ctx.textAlign = 'left'; ctx.fillText(`Bateria: ${Math.ceil(pwr)}%`, 40, 40);
+          ctx.textAlign = 'right'; ctx.fillText(`${Math.floor(tm) || 12} AM`, 860, 40);
+          if (st === 'win') { ctx.fillStyle = '#22c55e'; ctx.font = 'bold 38px monospace'; ctx.textAlign = 'center'; ctx.fillText('6:00 AM - VOCÊ VENCEU!', 450, 250); }
+          if (st === 'dead') { ctx.fillStyle = '#7f1d1d'; ctx.fillRect(0, 0, 900, 500); ctx.fillStyle = '#fff'; ctx.font = 'bold 36px monospace'; ctx.textAlign = 'center'; ctx.fillText('JUMPSCARE! Aperte R', 450, 250); }
+        }
+      };
+    }
+
+    /* 9. TETRIS ARCADE */
+    function engTetris() {
+      const C = 10, R = 18, S = 25, g = Array.from({ length: R }, () => Array(C).fill(0));
+      const sh = [[[1,1,1,1]],[[1,1],[1,1]],[[0,1,0],[1,1,1]],[[1,0,0],[1,1,1]]];
+      let p = { s: sh[2], x: 3, y: 0 }, dt = 0, sc = 0;
+      const ok = (s, ox, oy) => s.every((r, y) => r.every((v, x) => !v || (ox + x >= 0 && ox + x < C && oy + y < R && !g[oy + y]?.[ox + x])));
+      return {
+        title: 'Tetris Arcade', hint: 'Mover: A/D | Girar: W/Cima | Descer: S/Baixo',
+        onKeyDown(e) {
+          const k = e.key.toLowerCase();
+          if ((k === 'a' || k === 'arrowleft') && ok(p.s, p.x - 1, p.y)) p.x--;
+          if ((k === 'd' || k === 'arrowright') && ok(p.s, p.x + 1, p.y)) p.x++;
+          if ((k === 's' || k === 'arrowdown') && ok(p.s, p.x, p.y + 1)) p.y++;
+          if (k === 'w' || k === 'arrowup') { const r = p.s[0].map((_, i) => p.s.map(row => row[i]).reverse()); if (ok(r, p.x, p.y)) p.s = r; }
+        },
+        update() {
+          if (++dt > 22) {
+            dt = 0;
+            if (ok(p.s, p.x, p.y + 1)) p.y++;
+            else {
+              p.s.forEach((r, y) => r.forEach((v, x) => { if (v) g[p.y + y][p.x + x] = 1; }));
+              for (let y = R - 1; y >= 0; y--) if (g[y].every(v => v)) { g.splice(y, 1); g.unshift(Array(C).fill(0)); sc += 100; addGold(20); y++; }
+              p = { s: sh[Math.floor(Math.random() * sh.length)], x: 3, y: 0 };
+              if (!ok(p.s, p.x, p.y)) g.forEach(r => r.fill(0));
+            }
+          }
+        },
+        draw() {
+          ctx.fillStyle = '#090d16'; ctx.fillRect(0, 0, 900, 500);
+          ctx.strokeStyle = '#334155'; ctx.strokeRect(325, 25, C * S, R * S);
+          g.forEach((r, y) => r.forEach((v, x) => { if (v) { ctx.fillStyle = '#38bdf8'; ctx.fillRect(325 + x * S, 25 + y * S, S - 1, S - 1); } }));
+          p.s.forEach((r, y) => r.forEach((v, x) => { if (v) { ctx.fillStyle = '#facc15'; ctx.fillRect(325 + (p.x + x) * S, 25 + (p.y + y) * S, S - 1, S - 1); } }));
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'left'; ctx.fillText('Score: ' + sc, 40, 50);
+        }
+      };
+    }
+
+    /* 10. SPACE INVADERS 360 */
+    function engInvaders() {
+      let sx = 430, bs = [], al = [], dir = 2, sc = 0;
+      const sp = () => { al = []; for (let r = 0; r < 4; r++) for (let c = 0; c < 10; c++) al.push({ x: 140 + c * 62, y: 50 + r * 40 }); };
+      sp();
+      return {
+        title: 'Space Invaders 360', hint: 'Mover: A/D | Atirar: Espaço ou W',
+        onKeyDown(e) { if (e.key === ' ' || e.key.toLowerCase() === 'w') { bs.push({ x: sx + 18, y: 445 }); beep(750, 0.05); } },
+        update() {
+          if (keys['a'] || keys['arrowleft']) sx = Math.max(20, sx - 6);
+          if (keys['d'] || keys['arrowright']) sx = Math.min(840, sx + 6);
+          bs.forEach(b => b.y -= 9); bs = bs.filter(b => b.y > 0);
+          let ed = false; al.forEach(a => { a.x += dir; if (a.x < 20 || a.x > 840) ed = true; });
+          if (ed) { dir *= -1; al.forEach(a => a.y += 12); }
+          bs.forEach((b, bi) => al.forEach((a, ai) => { if (b.x > a.x && b.x < a.x + 36 && b.y > a.y && b.y < a.y + 24) { al.splice(ai, 1); bs.splice(bi, 1); sc += 50; } }));
+          if (!al.length) { addGold(60); sp(); }
+        },
+        draw() {
+          ctx.fillStyle = '#030712'; ctx.fillRect(0, 0, 900, 500);
+          ctx.fillStyle = '#38bdf8'; ctx.fillRect(sx, 455, 40, 16);
+          ctx.fillStyle = '#facc15'; bs.forEach(b => ctx.fillRect(b.x, b.y, 4, 12));
+          ctx.fillStyle = '#22c55e'; al.forEach(a => ctx.fillRect(a.x, a.y, 36, 24));
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'left'; ctx.fillText('Score: ' + sc, 30, 38);
+        }
+      };
+    }
+
+    /* 11. SNAKE 360 NEON */
+    function engSnake() {
+      let sn = [{ x: 15, y: 12 }], d = { x: 1, y: 0 }, f = { x: 22, y: 12 }, t = 0, sc = 0;
+      return {
+        title: 'Snake 360 Neon', hint: 'Direção: WASD ou Setas',
+        onKeyDown(e) {
+          const k = e.key.toLowerCase();
+          if ((k === 'a' || k === 'arrowleft') && d.x !== 1) d = { x: -1, y: 0 };
+          if ((k === 'd' || k === 'arrowright') && d.x !== -1) d = { x: 1, y: 0 };
+          if ((k === 'w' || k === 'arrowup') && d.y !== 1) d = { x: 0, y: -1 };
+          if ((k === 's' || k === 'arrowdown') && d.y !== -1) d = { x: 0, y: 1 };
+        },
+        update() {
+          if (++t % 6 !== 0) return;
+          const h = { x: (sn[0].x + d.x + 45) % 45, y: (sn[0].y + d.y + 25) % 25 };
+          if (sn.some(s => s.x === h.x && s.y === h.y)) { sn = [{ x: 15, y: 12 }]; sc = 0; return; }
+          sn.unshift(h);
+          if (h.x === f.x && h.y === f.y) { sc += 10; addGold(10); f = { x: Math.floor(Math.random() * 45), y: Math.floor(Math.random() * 25) }; beep(660, 0.06); }
+          else sn.pop();
+        },
+        draw() {
+          ctx.fillStyle = '#050814'; ctx.fillRect(0, 0, 900, 500);
+          ctx.fillStyle = '#ef4444'; ctx.fillRect(f.x * 20, f.y * 20, 18, 18);
+          ctx.fillStyle = '#22c55e'; sn.forEach(s => ctx.fillRect(s.x * 20, s.y * 20, 18, 18));
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 18px sans-serif'; ctx.textAlign = 'left'; ctx.fillText('Score: ' + sc, 20, 30);
+        }
+      };
+    }
+
+    /* 12. PONG CYBER 2P */
+    function engPong() {
+      let p1 = 200, p2 = 200, bx = 450, by = 250, vx = 5, vy = 4, s1 = 0, s2 = 0;
+      return {
+        title: 'Pong Cyber 2P', hint: 'Player 1: W/S | Player 2: Setas Cima/Baixo',
+        update() {
+          if (keys['w']) p1 = Math.max(0, p1 - 6); if (keys['s']) p1 = Math.min(410, p1 + 6);
+          if (keys['arrowup']) p2 = Math.max(0, p2 - 6); if (keys['arrowdown']) p2 = Math.min(410, p2 + 6);
+          bx += vx; by += vy;
+          if (by < 0 || by > 485) vy *= -1;
+          if (bx < 45 && by > p1 && by < p1 + 90) vx = Math.abs(vx);
+          if (bx > 840 && by > p2 && by < p2 + 90) vx = -Math.abs(vx);
+          if (bx < 0) { s2++; bx = 450; by = 250; } if (bx > 900) { s1++; bx = 450; by = 250; }
+        },
+        draw() {
+          ctx.fillStyle = '#090d16'; ctx.fillRect(0, 0, 900, 500);
+          ctx.fillStyle = '#38bdf8'; ctx.fillRect(30, p1, 14, 90);
+          ctx.fillStyle = '#f43f5e'; ctx.fillRect(856, p2, 14, 90);
+          ctx.fillStyle = '#fff'; ctx.fillRect(bx, by, 14, 14);
+          ctx.font = 'bold 36px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(`${s1}   |   ${s2}`, 450, 55);
+        }
+      };
+    }
+
+    /* 13. BREAKOUT TURBO */
+    function engBreakout() {
+      let px = 400, bx = 450, by = 350, vx = 4.5, vy = -4.5, br = [];
+      for (let r = 0; r < 4; r++) for (let c = 0; c < 10; c++) br.push({ x: 45 + c * 82, y: 50 + r * 30, ok: true });
+      return {
+        title: 'Breakout Turbo', hint: 'Mover Barra: A/D ou Setas',
+        update() {
+          if (keys['a'] || keys['arrowleft']) px = Math.max(0, px - 7);
+          if (keys['d'] || keys['arrowright']) px = Math.min(780, px + 7);
+          bx += vx; by += vy;
+          if (bx < 0 || bx > 888) vx *= -1; if (by < 0) vy *= -1;
+          if (by > 450 && bx > px && bx < px + 120) vy = -Math.abs(vy);
+          if (by > 500) { bx = 450; by = 350; vy = -4.5; }
+          br.forEach(b => { if (b.ok && bx > b.x && bx < b.x + 74 && by > b.y && by < b.y + 20) { b.ok = false; vy *= -1; addGold(5); } });
+        },
+        draw() {
+          ctx.fillStyle = '#0b0f19'; ctx.fillRect(0, 0, 900, 500);
+          ctx.fillStyle = '#38bdf8'; ctx.fillRect(px, 460, 120, 14);
+          ctx.fillStyle = '#fff'; ctx.fillRect(bx, by, 12, 12);
+          ctx.fillStyle = '#f97316'; br.forEach(b => { if (b.ok) ctx.fillRect(b.x, b.y, 74, 20); });
+        }
+      };
+    }
+
+    /* 14. FLAPPY CUBE */
+    function engFlappy() {
+      let y = 240, vy = 0, px = 900, gap = 160, sc = 0;
+      return {
+        title: 'Flappy Cube', hint: 'Bater asas: Espaço, W ou Clique',
+        onKeyDown(e) { if (e.key === ' ' || e.key.toLowerCase() === 'w') { vy = -8.5; beep(520, 0.05); } },
+        onMouseDown() { vy = -8.5; },
+        update() {
+          vy += 0.45; y += vy; px -= 4.5;
+          if (px < -60) { px = 900; gap = 90 + Math.random() * 200; sc++; addGold(10); }
+          if (y < 0 || y > 475 || (px < 180 && px > 110 && (y < gap || y + 26 > gap + 140))) { y = 240; vy = 0; px = 900; sc = 0; }
+        },
+        draw() {
+          ctx.fillStyle = '#0c4a6e'; ctx.fillRect(0, 0, 900, 500);
+          ctx.fillStyle = '#22c55e'; ctx.fillRect(px, 0, 60, gap); ctx.fillRect(px, gap + 140, 60, 500);
+          ctx.fillStyle = '#facc15'; ctx.fillRect(150, y, 28, 26);
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 24px sans-serif'; ctx.textAlign = 'left'; ctx.fillText('Canos: ' + sc, 30, 40);
+        }
+      };
+    }
+
+    /* 15. PAC-MAZE 270 */
+    function engPacMaze() {
+      let x = 440, y = 240, dots = Array.from({ length: 25 }, (_, i) => ({ x: 80 + (i % 5) * 180, y: 80 + Math.floor(i / 5) * 85, ok: true }));
+      return {
+        title: 'Pac-Maze 270', hint: 'Mover: WASD ou Setas | Colete todas as esferas douradas',
+        update() {
+          if (keys['a'] || keys['arrowleft']) x -= 4.5; if (keys['d'] || keys['arrowright']) x += 4.5;
+          if (keys['w'] || keys['arrowup']) y -= 4.5; if (keys['s'] || keys['arrowdown']) y += 4.5;
+          dots.forEach(d => { if (d.ok && Math.hypot(x - d.x, y - d.y) < 28) { d.ok = false; addGold(5); beep(650, 0.04); } });
+          if (dots.every(d => !d.ok)) dots.forEach(d => d.ok = true);
+        },
+        draw() {
+          ctx.fillStyle = '#050814'; ctx.fillRect(0, 0, 900, 500);
+          ctx.fillStyle = '#fff'; dots.forEach(d => { if (d.ok) { ctx.beginPath(); ctx.arc(d.x, d.y, 7, 0, Math.PI * 2); ctx.fill(); } });
+          ctx.fillStyle = '#facc15'; ctx.beginPath(); ctx.arc(x, y, 18, 0.2, Math.PI * 1.85); ctx.lineTo(x, y); ctx.fill();
+        }
+      };
+    }
+
+    /* 16. ASTEROIDS VECTOR */
+    function engAsteroids() {
+      let sx = 450, sy = 250, ang = 0, bs = [], ast = Array.from({ length: 8 }, () => ({ x: Math.random() * 900, y: Math.random() * 500, vx: (Math.random() - 0.5) * 4, vy: (Math.random() - 0.5) * 4 }));
+      return {
+        title: 'Asteroids Vector', hint: 'Girar: A/D | Avançar: W | Atirar: Espaço',
+        onKeyDown(e) { if (e.key === ' ') bs.push({ x: sx, y: sy, vx: Math.cos(ang) * 8, vy: Math.sin(ang) * 8 }); },
+        update() {
+          if (keys['a'] || keys['arrowleft']) ang -= 0.08; if (keys['d'] || keys['arrowright']) ang += 0.08;
+          if (keys['w'] || keys['arrowup']) { sx = (sx + Math.cos(ang) * 4 + 900) % 900; sy = (sy + Math.sin(ang) * 4 + 500) % 500; }
+          bs.forEach(b => { b.x += b.vx; b.y += b.vy; }); bs = bs.filter(b => b.x > 0 && b.x < 900 && b.y > 0 && b.y < 500);
+          ast.forEach(a => { a.x = (a.x + a.vx + 900) % 900; a.y = (a.y + a.vy + 500) % 500; });
+          bs.forEach((b, bi) => ast.forEach((a, ai) => { if (Math.hypot(b.x - a.x, b.y - a.y) < 28) { ast.splice(ai, 1); bs.splice(bi, 1); addGold(15); } }));
+        },
+        draw() {
+          ctx.fillStyle = '#000'; ctx.fillRect(0, 0, 900, 500);
+          ctx.save(); ctx.translate(sx, sy); ctx.rotate(ang);
+          ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(18, 0); ctx.lineTo(-12, -11); ctx.lineTo(-12, 11); ctx.closePath(); ctx.stroke();
+          ctx.restore();
+          ctx.fillStyle = '#facc15'; bs.forEach(b => ctx.fillRect(b.x, b.y, 4, 4));
+          ctx.strokeStyle = '#94a3b8'; ast.forEach(a => { ctx.beginPath(); ctx.arc(a.x, a.y, 24, 0, Math.PI * 2); ctx.stroke(); });
+        }
+      };
+    }
+
+    /* 17. FROGGER HIGHWAY */
+    function engFrogger() {
+      let fx = 440, fy = 450, cars = [120, 200, 280, 360].map((y, i) => ({ x: i * 200, y, vx: (i % 2 ? 4 : -4.5) }));
+      return {
+        title: 'Frogger Highway', hint: 'Pular: WASD ou Setas | Chegue ao topo!',
+        onKeyDown(e) {
+          const k = e.key.toLowerCase();
+          if (k === 'w' || k === 'arrowup') fy -= 45; if (k === 's' || k === 'arrowdown') fy = Math.min(450, fy + 45);
+          if (k === 'a' || k === 'arrowleft') fx = Math.max(20, fx - 45); if (k === 'd' || k === 'arrowright') fx = Math.min(860, fx + 45);
+          if (fy < 60) { addGold(40); fy = 450; beep(720, 0.1); }
+        },
+        update() {
+          cars.forEach(c => {
+            c.x = (c.x + c.vx + 900) % 900;
+            if (Math.abs(fx - c.x) < 42 && Math.abs(fy - c.y) < 25) fy = 450;
+          });
+        },
+        draw() {
+          ctx.fillStyle = '#1e293b'; ctx.fillRect(0, 0, 900, 500);
+          ctx.fillStyle = '#166534'; ctx.fillRect(0, 0, 900, 65); ctx.fillRect(0, 435, 900, 65);
+          ctx.fillStyle = '#ef4444'; cars.forEach(c => ctx.fillRect(c.x - 30, c.y, 60, 28));
+          ctx.fillStyle = '#22c55e'; ctx.fillRect(fx, fy, 26, 26);
+        }
+      };
+    }
+
+    /* 18. GEOMETRY DASH MINI */
+    function engGeoDash() {
+      let y = 370, vy = 0, sx = 900, sc = 0;
+      return {
+        title: 'Geometry Dash Mini', hint: 'Pular: Espaço, W ou Clique',
+        onKeyDown(e) { if ((e.key === ' ' || e.key.toLowerCase() === 'w') && y >= 370) vy = -12; },
+        onMouseDown() { if (y >= 370) vy = -12; },
+        update() {
+          vy += 0.65; y = Math.min(370, y + vy); sx -= 7 * gameSpeedMult; sc += 0.2;
+          if (sx < -40) sx = 900 + Math.random() * 180;
+          if (sx < 185 && sx > 135 && y > 335) { sc = 0; sx = 900; }
+        },
+        draw() {
+          ctx.fillStyle = '#1e1b4b'; ctx.fillRect(0, 0, 900, 500);
+          ctx.fillStyle = '#4f46e5'; ctx.fillRect(0, 405, 900, 95);
+          ctx.fillStyle = '#facc15'; ctx.fillRect(150, y, 35, 35);
+          ctx.fillStyle = '#f43f5e'; ctx.beginPath(); ctx.moveTo(sx, 405); ctx.lineTo(sx + 18, 365); ctx.lineTo(sx + 36, 405); ctx.fill();
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'left'; ctx.fillText('Distância: ' + Math.floor(sc) + 'm', 30, 40);
+        }
+      };
+    }
+
+    /* 19. CAMPO MINADO */
+    function engMines() {
+      const cells = Array.from({ length: 64 }, () => ({ bomb: Math.random() < 0.18, open: false }));
+      return {
+        title: 'Campo Minado', hint: 'Clique nos quadrados para abrir sem acertar bombas!',
+        onMouseDown(e, x, y) {
+          const c = Math.floor((x - 250) / 50), r = Math.floor((y - 50) / 50);
+          if (c >= 0 && c < 8 && r >= 0 && r < 8) {
+            const cell = cells[r * 8 + c];
+            cell.open = true;
+            if (cell.bomb) { beep(150, 0.2); cells.forEach(k => k.open = false); }
+            else { addGold(5); beep(600, 0.05); }
+          }
+        },
+        update() {},
+        draw() {
+          ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, 900, 500);
+          cells.forEach((c, i) => {
+            const x = 250 + (i % 8) * 50, y = 50 + Math.floor(i / 8) * 50;
+            ctx.fillStyle = c.open ? (c.bomb ? '#ef4444' : '#334155') : '#6366f1';
+            ctx.fillRect(x + 2, y + 2, 46, 46);
+          });
+        }
+      };
+    }
+
+    /* 20. 2048 ARCADE */
+    function eng2048() {
+      let grid = Array(16).fill(0); grid[0] = 2; grid[5] = 2;
+      function move() {
+        for (let i = 0; i < 16; i++) if (grid[i]) grid[i] *= 2;
+        const empty = grid.map((v, i) => v === 0 ? i : -1).filter(i => i !== -1);
+        if (empty.length) grid[empty[Math.floor(Math.random() * empty.length)]] = 2;
+        else { grid.fill(0); grid[0] = 2; }
+        addGold(5); beep(500, 0.05);
+      }
+      return {
+        title: '2048 Arcade', hint: 'Aperte qualquer Seta ou WASD para combinar os números!',
+        onKeyDown(e) { if (['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(e.key.toLowerCase())) move(); },
+        update() {},
+        draw() {
+          ctx.fillStyle = '#1e293b'; ctx.fillRect(0, 0, 900, 500);
+          grid.forEach((v, i) => {
+            const x = 270 + (i % 4) * 90, y = 70 + Math.floor(i / 4) * 90;
+            ctx.fillStyle = v ? '#f59e0b' : '#334155'; ctx.fillRect(x, y, 82, 82);
+            if (v) { ctx.fillStyle = '#fff'; ctx.font = 'bold 24px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(v, x + 41, y + 50); }
+          });
+        }
+      };
+    }
+
+    /* 21. MEMÓRIA GAMER */
+    function engMemory() {
+      const icons = ['🍓','❤️','🐻','🟩','🦖','🚀','🍓','❤️','🐻','🟩','🦖','🚀'].sort(() => Math.random() - 0.5);
+      let open = [], done = [];
+      return {
+        title: 'Memória Gamer', hint: 'Clique nas cartas para achar os pares!',
+        onMouseDown(e, x, y) {
+          const c = Math.floor((x - 210) / 120), r = Math.floor((y - 70) / 120), idx = r * 4 + c;
+          if (c >= 0 && c < 4 && r >= 0 && r < 3 && !open.includes(idx) && !done.includes(idx) && open.length < 2) {
+            open.push(idx);
+            if (open.length === 2) {
+              setTimeout(() => {
+                if (icons[open[0]] === icons[open[1]]) { done.push(...open); addGold(20); }
+                open = [];
+              }, 450);
             }
           }
         },
         update() {},
         draw() {
-          ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.fillStyle = '#fff'; ctx.font = 'bold 24px sans-serif'; ctx.textAlign = 'center';
-          ctx.fillText(msg, 450, 65);
-          ctx.strokeStyle = '#6366f1'; ctx.lineWidth = 4;
-          for (let i = 1; i < 3; i++) {
-            ctx.beginPath(); ctx.moveTo(300 + i * 100, 110); ctx.lineTo(300 + i * 100, 410); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(300, 110 + i * 100); ctx.lineTo(600, 110 + i * 100); ctx.stroke();
-          }
-          ctx.font = 'bold 56px sans-serif';
-          board.forEach((v, i) => {
-            if (v) {
-              ctx.fillStyle = v === 'X' ? '#38bdf8' : '#f43f5e';
-              ctx.fillText(v, 350 + (i % 3) * 100, 180 + Math.floor(i / 3) * 100);
-            }
+          ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, 900, 500);
+          icons.forEach((ic, i) => {
+            const x = 210 + (i % 4) * 120, y = 70 + Math.floor(i / 4) * 120;
+            const show = open.includes(i) || done.includes(i);
+            ctx.fillStyle = show ? '#1e293b' : '#4f46e5'; ctx.fillRect(x + 6, y + 6, 108, 108);
+            if (show) { ctx.font = '44px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(ic, x + 60, y + 74); }
           });
         }
       };
     }
 
-    /* ==========================================================
-       3. DINO RUN 360
-    ========================================================== */
-    function createDino() {
-      let y = 360, vy = 0, score = 0, alive = true;
-      let cacti = [{ x: 900, w: 26, h: 48 }];
+    /* 22. GENIUS / SIMON */
+    function engSimon() {
+      const cols = ['#22c55e', '#ef4444', '#facc15', '#3b82f6'];
+      let target = Math.floor(Math.random() * 4), sc = 0;
       return {
-        title: 'Dino Run 360',
-        hint: 'Pular: Espaço/W | Abaixar: S/Seta Baixo | Reiniciar: R',
-        onKeyDown(e) {
-          if (e.key.toLowerCase() === 'r' && !alive) {
-            y = 360; vy = 0; score = 0; alive = true; cacti = [{ x: 900, w: 26, h: 48 }];
-          }
+        title: 'Genius / Simon', hint: 'Clique na cor que está piscando!',
+        onMouseDown(e, x, y) {
+          const idx = (x > 450 ? 1 : 0) + (y > 250 ? 2 : 0);
+          if (idx === target) { sc++; addGold(15); target = Math.floor(Math.random() * 4); beep(400 + idx * 120, 0.08); }
         },
-        update() {
-          if (!alive) return;
-          const duck = keys['s'] || keys['arrowdown'];
-          const h = duck ? 26 : 48;
-          if ((keys[' '] || keys['w'] || keys['arrowup']) && y >= 408 - h) vy = -12.5;
-          vy += 0.65; y += vy;
-          if (y > 408 - h) { y = 408 - h; vy = 0; }
-          score += 0.15;
-          cacti.forEach(c => {
-            c.x -= 6.5;
-            if (c.x < -30) { c.x = 900 + Math.random() * 250; c.h = 35 + Math.random() * 25; }
-            if (100 < c.x + c.w && 136 > c.x && y + h > 408 - c.h) alive = false;
-          });
-        },
+        update() {},
         draw() {
-          ctx.fillStyle = '#0b1120'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-          ctx.fillStyle = '#334155'; ctx.fillRect(0, 408, 900, 4);
-          const duck = keys['s'] || keys['arrowdown'];
-          const h = duck ? 26 : 48;
-          ctx.fillStyle = '#22c55e'; ctx.fillRect(100, y, 36, h);
-          ctx.fillStyle = '#ef4444';
-          cacti.forEach(c => ctx.fillRect(c.x, 408 - c.h, c.w, c.h));
-          ctx.fillStyle = '#fff'; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'left';
-          ctx.fillText('Pontos: ' + Math.floor(score), 30, 40);
-          if (!alive) {
-            ctx.textAlign = 'center'; ctx.fillText('GAME OVER! Aperte R para reiniciar', 450, 240);
-          }
+          ctx.fillStyle = '#090d16'; ctx.fillRect(0, 0, 900, 500);
+          cols.forEach((c, i) => {
+            ctx.fillStyle = c; ctx.globalAlpha = i === target ? 1 : 0.35;
+            ctx.fillRect(250 + (i % 2) * 205, 70 + Math.floor(i / 2) * 185, 195, 175);
+          });
+          ctx.globalAlpha = 1; ctx.fillStyle = '#fff'; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'left'; ctx.fillText('Acertos: ' + sc, 30, 40);
         }
       };
     }
 
-    /* ==========================================================
-       4. N+ STICKMAN (20 FASES + ELEVADOR)
-    ========================================================== */
-    function createStickman() {
-      let stage = 1, elevY = 380, elevDir = -2;
-      const p = { x: 80, y: 400, vx: 0, vy: 0, grounded: false };
+    /* 23. ACERTE A TOUPEIRA */
+    function engWhack() {
+      let mx = 450, my = 250, t = 0, sc = 0;
       return {
-        title: 'N+ Stickman (20 Fases)',
-        hint: 'Mover: A/D | Pular: W/Espaço | Suba no elevador azul até a porta dourada!',
-        update() {
-          elevY += elevDir;
-          if (elevY < 160 || elevY > 400) elevDir *= -1;
-          p.vx = (keys['a'] || keys['arrowleft']) ? -4.5 : (keys['d'] || keys['arrowright']) ? 4.5 : 0;
-          if ((keys['w'] || keys['arrowup'] || keys[' ']) && p.grounded) { p.vy = -10.5; p.grounded = false; }
-          p.x = Math.max(20, Math.min(860, p.x + p.vx));
-          p.vy += 0.5; p.y += p.vy; p.grounded = false;
-
-          // Chão
-          if (p.y >= 420) { p.y = 420; p.vy = 0; p.grounded = true; }
-          // Plataforma elevada direita
-          if (p.x > 600 && p.y >= 150 && p.y <= 170 && p.vy >= 0) { p.y = 150; p.vy = 0; p.grounded = true; }
-          // Elevador móvel
-          if (p.x > 360 && p.x < 500 && Math.abs(p.y + 30 - elevY) < 12 && p.vy >= 0) {
-            p.y = elevY - 30; p.vy = 0; p.grounded = true;
-          }
-          // Porta dourada
-          if (p.x > 780 && p.y < 160) {
-            stage = stage < 20 ? stage + 1 : 1;
-            addGold(25);
-            p.x = 80; p.y = 400;
-          }
-        },
+        title: 'Acerte a Toupeira', hint: 'Clique na toupeira antes dela mudar de lugar!',
+        onMouseDown(e, x, y) { if (Math.hypot(x - mx, y - my) < 42) { sc++; addGold(10); mx = 120 + Math.random() * 660; my = 100 + Math.random() * 300; beep(700, 0.06); } },
+        update() { if (++t % 65 === 0) { mx = 120 + Math.random() * 660; my = 100 + Math.random() * 300; } },
         draw() {
-          ctx.fillStyle = '#111827'; ctx.fillRect(0, 0, 900, 520);
-          ctx.fillStyle = '#475569'; ctx.fillRect(0, 450, 900, 70);
-          ctx.fillRect(600, 180, 300, 20);
-          ctx.fillStyle = '#38bdf8'; ctx.fillRect(370, elevY, 130, 14);
-          ctx.fillStyle = '#facc15'; ctx.fillRect(790, 120, 34, 60);
-          // Stickman
-          ctx.fillStyle = '#fff'; ctx.fillRect(p.x, p.y, 16, 30);
-          ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'left';
-          ctx.fillText(`Fase ${stage} / 20`, 30, 40);
+          ctx.fillStyle = '#14532d'; ctx.fillRect(0, 0, 900, 500);
+          ctx.fillStyle = '#92400e'; ctx.beginPath(); ctx.arc(mx, my, 36, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 22px sans-serif'; ctx.textAlign = 'left'; ctx.fillText('Pontos: ' + sc, 30, 40);
         }
       };
     }
 
-    /* ==========================================================
-       5. FRIDAY NIGHT FUNKIN'
-    ========================================================== */
-    function createFNF() {
-      const lanes = [270, 370, 470, 570];
-      const labels = ['←', '↓', '↑', '→'];
-      const colors = ['#c026d3', '#06b6d4', '#22c55e', '#ef4444'];
-      let notes = [], timer = 0, score = 0;
+    /* 24. CORRIDA NITRO 270 */
+    function engRacing() {
+      let cx = 430, ex = 430, ey = -80, sc = 0;
       return {
-        title: 'Friday Night Funkin’',
-        hint: 'Aperte Setas ou WASD quando as setas passarem pelos alvos no topo!',
-        onKeyDown(e) {
-          const map = { 'arrowleft':0,'a':0, 'arrowdown':1,'s':1, 'arrowup':2,'w':2, 'arrowright':3,'d':3 };
-          const lane = map[e.key.toLowerCase()];
-          if (lane !== undefined) {
-            const hit = notes.findIndex(n => n.lane === lane && Math.abs(n.y - 80) < 42);
-            if (hit !== -1) { notes.splice(hit, 1); score += 100; }
-          }
-        },
+        title: 'Corrida Nitro 270', hint: 'Dirigir: A/D ou Setas',
         update() {
-          timer++;
-          if (timer % 28 === 0) notes.push({ lane: Math.floor(Math.random() * 4), y: 520 });
-          notes.forEach(n => n.y -= 5.2);
-          notes = notes.filter(n => n.y > -30);
+          if (keys['a'] || keys['arrowleft']) cx = Math.max(260, cx - 6);
+          if (keys['d'] || keys['arrowright']) cx = Math.min(600, cx + 6);
+          ey += 7.5 * gameSpeedMult;
+          if (ey > 520) { ey = -80; ex = 260 + Math.random() * 340; sc += 10; }
+          if (Math.abs(cx - ex) < 38 && Math.abs(390 - ey) < 65) { sc = 0; ey = -80; }
         },
         draw() {
-          ctx.fillStyle = '#181028'; ctx.fillRect(0, 0, 900, 520);
-          ctx.fillStyle = '#fff'; ctx.font = 'bold 22px sans-serif'; ctx.textAlign = 'left';
-          ctx.fillText('Score: ' + score, 30, 45);
-          ctx.font = 'bold 34px sans-serif'; ctx.textAlign = 'center';
-          lanes.forEach((lx, i) => {
-            ctx.strokeStyle = colors[i]; ctx.lineWidth = 3;
-            ctx.strokeRect(lx - 25, 50, 50, 50);
-            ctx.fillStyle = '#64748b'; ctx.fillText(labels[i], lx, 87);
-          });
-          notes.forEach(n => {
-            ctx.fillStyle = colors[n.lane];
-            ctx.fillRect(lanes[n.lane] - 22, n.y - 22, 44, 44);
-            ctx.fillStyle = '#fff'; ctx.fillText(labels[n.lane], lanes[n.lane], n.y + 12);
-          });
+          ctx.fillStyle = '#166534'; ctx.fillRect(0, 0, 900, 500);
+          ctx.fillStyle = '#334155'; ctx.fillRect(250, 0, 400, 500);
+          ctx.fillStyle = '#ef4444'; ctx.fillRect(cx, 390, 40, 70);
+          ctx.fillStyle = '#facc15'; ctx.fillRect(ex, ey, 40, 70);
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'left'; ctx.fillText('Score: ' + sc, 30, 40);
         }
       };
     }
 
-    /* ==========================================================
-       6. CELESTE (PEDIDO 1)
-    ========================================================== */
-    function createCeleste() {
-      const m = { x: 70, y: 400, w: 22, h: 28, vx: 0, vy: 0, grounded: false, canDash: true, dashTimer: 0 };
-      const plats = [
-        { x: 0, y: 460, w: 260, h: 60 },
-        { x: 320, y: 370, w: 150, h: 20 },
-        { x: 540, y: 280, w: 150, h: 20 },
-        { x: 710, y: 170, w: 170, h: 25 }
-      ];
-      let berries = 0;
+    /* 25. AIM TRAINER PRO */
+    function engAim() {
+      let tx = 450, ty = 250, sc = 0;
       return {
-        title: 'Celeste - Montanha Celeste',
-        hint: 'Mover: A/D | Pular: W/Espaço | Dash Aéreo: Shift ou X (cabelo azul recarrega no chão)',
-        onKeyDown(e) {
-          const k = e.key.toLowerCase();
-          if ((k === 'shift' || k === 'x') && m.canDash) {
-            m.canDash = false;
-            m.dashTimer = 10;
-            const dirX = (keys['a'] || keys['arrowleft']) ? -1 : (keys['d'] || keys['arrowright']) ? 1 : 1;
-            const dirY = (keys['w'] || keys['arrowup']) ? -1 : 0;
-            m.vx = dirX * 12;
-            m.vy = dirY !== 0 ? dirY * 10 : -3;
-          }
-        },
-        update() {
-          if (m.dashTimer > 0) {
-            m.dashTimer--;
-          } else {
-            m.vx = (keys['a'] || keys['arrowleft']) ? -4.5 : (keys['d'] || keys['arrowright']) ? 4.5 : 0;
-            if ((keys['w'] || keys['arrowup'] || keys[' ']) && m.grounded) { m.vy = -10.5; m.grounded = false; }
-            m.vy += 0.52;
-          }
-          m.x += m.vx; m.y += m.vy; m.grounded = false;
-
-          plats.forEach(pl => {
-            if (m.x + m.w > pl.x && m.x < pl.x + pl.w && m.y + m.h >= pl.y && m.y + m.h <= pl.y + 22 && m.vy >= 0) {
-              m.y = pl.y - m.h; m.vy = 0; m.grounded = true; m.canDash = true;
-            }
-          });
-
-          // Caiu no abismo
-          if (m.y > 530) { m.x = 70; m.y = 400; m.vx = 0; m.vy = 0; m.canDash = true; }
-
-          // Pegou o morango no topo
-          if (Math.hypot(m.x - 790, m.y - 135) < 35) {
-            berries++; addGold(40);
-            m.x = 70; m.y = 400; m.canDash = true;
-          }
-        },
+        title: 'Aim Trainer Pro', hint: 'Clique no centro dos alvos vermelhos!',
+        onMouseDown(e, x, y) { if (Math.hypot(x - tx, y - ty) < 34) { sc++; addGold(10); tx = 100 + Math.random() * 700; ty = 80 + Math.random() * 340; beep(820, 0.05); } },
+        update() {},
         draw() {
-          ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, 900, 520);
-          // Neve de fundo
-          ctx.fillStyle = 'rgba(255,255,255,0.2)';
-          for (let i = 0; i < 30; i++) ctx.fillRect((i * 73) % 900, (i * 41 + Date.now() * 0.05) % 520, 4, 4);
-
-          ctx.fillStyle = '#38bdf8';
-          plats.forEach(pl => ctx.fillRect(pl.x, pl.y, pl.w, pl.h));
-
-          // Morango
-          ctx.fillStyle = '#f43f5e';
-          ctx.beginPath(); ctx.arc(795, 140, 12, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = '#22c55e'; ctx.fillRect(790, 124, 10, 5);
-
-          // Madeline (cabelo vermelho com dash, azul sem dash)
-          ctx.fillStyle = '#3b82f6'; ctx.fillRect(m.x, m.y + 10, m.w, 18);
-          ctx.fillStyle = m.canDash ? '#ef4444' : '#38bdf8'; ctx.fillRect(m.x - 2, m.y, m.w + 4, 12);
-
-          ctx.fillStyle = '#fff'; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'left';
-          ctx.fillText(`Morangos Coletados: ${berries}`, 30, 40);
+          ctx.fillStyle = '#090d16'; ctx.fillRect(0, 0, 900, 500);
+          ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(tx, ty, 30, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(tx, ty, 12, 0, Math.PI * 2); ctx.fill();
+          ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'left'; ctx.fillText('Alvos: ' + sc, 30, 40);
         }
       };
     }
 
-    /* ==========================================================
-       7. UNDERTALE (PEDIDO 2)
-    ========================================================== */
-    function createUndertale() {
-      const box = { x: 310, y: 210, w: 280, h: 230 };
-      const soul = { x: 442, y: 315, size: 16, hp: 20 };
-      let bones = [], timer = 0, survived = 0;
+    /* 26. HELICÓPTERO CAVERNA */
+    function engHeli() {
+      let y = 240, vy = 0, wx = 900, wy = 180;
       return {
-        title: 'Undertale - Batalha de Alma',
-        hint: 'Mova o coração vermelho com WASD ou Setas dentro da caixa e desvie dos ossos!',
-        onKeyDown(e) {
-          if (e.key.toLowerCase() === 'r' && soul.hp <= 0) {
-            soul.hp = 20; soul.x = 442; soul.y = 315; bones = []; survived = 0;
-          }
-        },
+        title: 'Helicóptero Caverna', hint: 'Segure Espaço, W ou Clique para subir!',
         update() {
-          if (soul.hp <= 0) return;
-          survived += 0.02;
-          const sp = 4.5;
-          if (keys['a'] || keys['arrowleft']) soul.x -= sp;
-          if (keys['d'] || keys['arrowright']) soul.x += sp;
-          if (keys['w'] || keys['arrowup']) soul.y -= sp;
-          if (keys['s'] || keys['arrowdown']) soul.y += sp;
-
-          soul.x = Math.max(box.x + 6, Math.min(box.x + box.w - soul.size - 6, soul.x));
-          soul.y = Math.max(box.y + 6, Math.min(box.y + box.h - soul.size - 6, soul.y));
-
-          timer++;
-          if (timer % 32 === 0) {
-            const fromLeft = Math.random() > 0.5;
-            bones.push({
-              x: fromLeft ? box.x - 20 : box.x + box.w + 20,
-              y: box.y + 20 + Math.random() * (box.h - 60),
-              w: 14, h: 48,
-              vx: fromLeft ? 4.2 : -4.2
-            });
-          }
-
-          bones.forEach(b => {
-            b.x += b.vx;
-            if (soul.x < b.x + b.w && soul.x + soul.size > b.x && soul.y < b.y + b.h && soul.y + soul.size > b.y) {
-              soul.hp = Math.max(0, soul.hp - 0.35);
-            }
-          });
-          bones = bones.filter(b => b.x > box.x - 50 && b.x < box.x + box.w + 50);
+          vy += (keys[' '] || keys['w'] || keys['arrowup']) ? -0.55 : 0.42;
+          y += vy; wx -= 5.5;
+          if (wx < -50) { wx = 900; wy = 80 + Math.random() * 240; addGold(10); }
+          if (y < 0 || y > 475 || (wx < 190 && wx > 130 && Math.abs(y - wy) < 60)) { y = 240; vy = 0; wx = 900; }
         },
         draw() {
-          ctx.fillStyle = '#000'; ctx.fillRect(0, 0, 900, 520);
-          // Esqueleto Boss simples
-          ctx.fillStyle = '#fff';
-          ctx.beginPath(); ctx.arc(450, 110, 36, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = '#000'; ctx.fillRect(435, 100, 10, 10); ctx.fillStyle = '#38bdf8'; ctx.fillRect(457, 100, 10, 10);
-
-          // Caixa branca
-          ctx.strokeStyle = '#fff'; ctx.lineWidth = 5;
-          ctx.strokeRect(box.x, box.y, box.w, box.h);
-
-          // Ossos
-          ctx.fillStyle = '#fff';
-          bones.forEach(b => ctx.fillRect(b.x, b.y, b.w, b.h));
-
-          // Alma (Coração)
-          ctx.fillStyle = '#ef4444';
-          ctx.fillRect(soul.x, soul.y, soul.size, soul.size);
-
-          // Barra de HP
-          ctx.fillStyle = '#fff'; ctx.font = 'bold 20px monospace'; ctx.textAlign = 'center';
-          ctx.fillText(`LV 1   HP ${Math.ceil(soul.hp)} / 20   Tempo: ${Math.floor(survived)}s`, 450, 485);
-          ctx.fillStyle = '#ef4444'; ctx.fillRect(350, 452, 200, 16);
-          ctx.fillStyle = '#facc15'; ctx.fillRect(350, 452, (soul.hp / 20) * 200, 16);
-
-          if (soul.hp <= 0) {
-            ctx.fillStyle = '#ef4444'; ctx.font = 'bold 32px monospace';
-            ctx.fillText('GAME OVER - Aperte R', 450, 330);
-          }
+          ctx.fillStyle = '#1c1917'; ctx.fillRect(0, 0, 900, 500);
+          ctx.fillStyle = '#38bdf8'; ctx.fillRect(150, y, 42, 22);
+          ctx.fillStyle = '#f97316'; ctx.fillRect(wx, wy, 40, 110);
         }
       };
     }
 
-    /* ==========================================================
-       8. FNAF ARCADE (PEDIDO 3)
-    ========================================================== */
-    function createFNAF() {
-      let leftDoor = false, rightDoor = false, light = false;
-      let power = 100, time = 0, enemySide = null, enemyTimer = 0, state = 'playing';
-
-      subControls.innerHTML = `
-        <button class="sub-btn" onclick="currentGame.toggleLeft()">Porta Esquerda (A)</button>
-        <button class="sub-btn" onclick="currentGame.toggleLight()">Lanterna Corredor (Espaço)</button>
-        <button class="sub-btn" onclick="currentGame.toggleRight()">Porta Direita (D)</button>
-      `;
-
+    /* 27. SUBMARINO 360 */
+    function engSub() {
+      let y = 250, mx = 900, my = 250;
       return {
-        title: 'FNAF - Five Nights Arcade',
-        hint: 'Feche as portas (A = Esq, D = Dir) quando ouvir/ver o animatrônico! Sobreviva até 6 AM.',
-        toggleLeft() { if (power > 0) leftDoor = !leftDoor; },
-        toggleRight() { if (power > 0) rightDoor = !rightDoor; },
-        toggleLight() { if (power > 0) light = !light; },
-        onKeyDown(e) {
-          const k = e.key.toLowerCase();
-          if (k === 'a' || k === 'arrowleft') this.toggleLeft();
-          if (k === 'd' || k === 'arrowright') this.toggleRight();
-          if (k === ' ') this.toggleLight();
-          if (k === 'r' && state !== 'playing') {
-            power = 100; time = 0; leftDoor = false; rightDoor = false; enemySide = null; state = 'playing';
-          }
-        },
+        title: 'Submarino 360', hint: 'Subir/Descer: W/S ou Setas',
         update() {
-          if (state !== 'playing') return;
-          time += 0.025; // ~24 segundos = 6 AM
-          if (time >= 6) { state = 'win'; addGold(100); return; }
-
-          const drain = 0.03 + (leftDoor ? 0.08 : 0) + (rightDoor ? 0.08 : 0) + (light ? 0.06 : 0);
-          power = Math.max(0, power - drain);
-          if (power === 0) { leftDoor = false; rightDoor = false; light = false; }
-
-          enemyTimer++;
-          if (!enemySide && enemyTimer > 140) {
-            enemySide = Math.random() > 0.5 ? 'left' : 'right';
-            enemyTimer = 0;
-          } else if (enemySide && enemyTimer > 130) {
-            if ((enemySide === 'left' && !leftDoor) || (enemySide === 'right' && !rightDoor)) {
-              state = 'jumpscare';
-            } else {
-              enemySide = null; enemyTimer = 0;
-            }
-          }
+          if (keys['w'] || keys['arrowup']) y = Math.max(20, y - 5);
+          if (keys['s'] || keys['arrowdown']) y = Math.min(450, y + 5);
+          mx -= 6; if (mx < -30) { mx = 900; my = 40 + Math.random() * 420; addGold(10); }
+          if (Math.hypot(160 - mx, y - my) < 34) { mx = 900; y = 250; }
         },
         draw() {
-          ctx.fillStyle = '#090d16'; ctx.fillRect(0, 0, 900, 520);
-          // Escritório
-          ctx.fillStyle = '#1e293b'; ctx.fillRect(180, 70, 540, 360);
-          // Mesa e ventilador
-          ctx.fillStyle = '#334155'; ctx.fillRect(250, 340, 400, 90);
-
-          // Porta Esquerda
-          ctx.fillStyle = leftDoor ? '#475569' : '#020617';
-          ctx.fillRect(60, 90, 110, 340);
-          if (enemySide === 'left' && (!leftDoor || light)) {
-            ctx.fillStyle = '#a855f7'; ctx.fillRect(85, 190, 60, 120); // Bonnie
-            ctx.fillStyle = '#ef4444'; ctx.fillRect(98, 210, 10, 10); ctx.fillRect(122, 210, 10, 10);
-          }
-
-          // Porta Direita
-          ctx.fillStyle = rightDoor ? '#475569' : '#020617';
-          ctx.fillRect(730, 90, 110, 340);
-          if (enemySide === 'right' && (!rightDoor || light)) {
-            ctx.fillStyle = '#eab308'; ctx.fillRect(755, 190, 60, 120); // Chica
-            ctx.fillStyle = '#ef4444'; ctx.fillRect(768, 210, 10, 10); ctx.fillRect(792, 210, 10, 10);
-          }
-
-          ctx.fillStyle = '#fff'; ctx.font = 'bold 22px monospace'; ctx.textAlign = 'left';
-          ctx.fillText(`Bateria: ${Math.ceil(power)}%`, 40, 45);
-          ctx.textAlign = 'right';
-          const hour = Math.floor(time) === 0 ? 12 : Math.floor(time);
-          ctx.fillText(`${hour} AM`, 860, 45);
-
-          if (state === 'win') {
-            ctx.fillStyle = '#22c55e'; ctx.font = 'bold 42px monospace'; ctx.textAlign = 'center';
-            ctx.fillText('6:00 AM - VOCÊ SOBREVIVEU! (+100 G)', 450, 260);
-          } else if (state === 'jumpscare') {
-            ctx.fillStyle = '#7f1d1d'; ctx.fillRect(0, 0, 900, 520);
-            ctx.fillStyle = '#fff'; ctx.font = 'bold 40px monospace'; ctx.textAlign = 'center';
-            ctx.fillText('JUMPSCARE! Aperte R para tentar de novo', 450, 260);
-          }
+          ctx.fillStyle = '#082f49'; ctx.fillRect(0, 0, 900, 500);
+          ctx.fillStyle = '#facc15'; ctx.fillRect(140, y - 14, 48, 28);
+          ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(mx, my, 18, 0, Math.PI * 2); ctx.fill();
         }
       };
     }
 
-    /* ==========================================================
-       9. TETRIS ARCADE (ESCOLHA BÔNUS 1)
-    ========================================================== */
-    function createTetris() {
-      const COLS = 10, ROWS = 18, S = 26;
-      const grid = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
-      const shapes = [
-        [[1,1,1,1]],
-        [[1,1],[1,1]],
-        [[0,1,0],[1,1,1]],
-        [[1,0,0],[1,1,1]],
-        [[0,0,1],[1,1,1]]
-      ];
-      const colors = ['', '#38bdf8', '#facc15', '#a855f7', '#f97316', '#22c55e'];
-      let piece = { shape: shapes[2], color: 3, x: 3, y: 0 };
-      let dropTimer = 0, score = 0;
-
-      function valid(sh, ox, oy) {
-        return sh.every((row, r) => row.every((v, c) => {
-          if (!v) return true;
-          const nx = ox + c, ny = oy + r;
-          return nx >= 0 && nx < COLS && ny < ROWS && (!grid[ny] || !grid[ny][nx]);
-        }));
-      }
-
-      function merge() {
-        piece.shape.forEach((row, r) => row.forEach((v, c) => {
-          if (v && piece.y + r >= 0) grid[piece.y + r][piece.x + c] = piece.color;
-        }));
-        for (let r = ROWS - 1; r >= 0; r--) {
-          if (grid[r].every(v => v !== 0)) {
-            grid.splice(r, 1);
-            grid.unshift(Array(COLS).fill(0));
-            score += 100; addGold(20); r++;
-          }
-        }
-        const idx = Math.floor(Math.random() * shapes.length);
-        piece = { shape: shapes[idx], color: idx + 1, x: 3, y: 0 };
-        if (!valid(piece.shape, piece.x, piece.y)) grid.forEach(row => row.fill(0));
-      }
-
+    /* 28. PINBALL NEON */
+    function engPinball() {
+      let bx = 450, by = 100, vx = 3, vy = 4, sc = 0;
       return {
-        title: 'Tetris Arcade',
-        hint: 'Mover: A/D ou Setas | Girar: W ou Seta Cima | Descer rápido: S ou Seta Baixo',
-        onKeyDown(e) {
-          const k = e.key.toLowerCase();
-          if ((k === 'a' || k === 'arrowleft') && valid(piece.shape, piece.x - 1, piece.y)) piece.x--;
-          if ((k === 'd' || k === 'arrowright') && valid(piece.shape, piece.x + 1, piece.y)) piece.x++;
-          if (k === 's' || k === 'arrowdown') {
-            if (valid(piece.shape, piece.x, piece.y + 1)) piece.y++;
-          }
-          if (k === 'w' || k === 'arrowup') {
-            const rot = piece.shape[0].map((_, i) => piece.shape.map(row => row[i]).reverse());
-            if (valid(rot, piece.x, piece.y)) piece.shape = rot;
-          }
-        },
+        title: 'Pinball Neon', hint: 'Rebater bola: Aperte A ou D quando a bola descer!',
+        onKeyDown(e) { if ((e.key.toLowerCase() === 'a' || e.key.toLowerCase() === 'd') && by > 360) { vy = -9; vx = (Math.random() - 0.5) * 8; sc += 100; addGold(15); beep(740, 0.06); } },
         update() {
-          dropTimer++;
-          if (dropTimer > 25) {
-            dropTimer = 0;
-            if (valid(piece.shape, piece.x, piece.y + 1)) piece.y++;
-            else merge();
-          }
+          bx += vx; by += vy; vy += 0.18;
+          if (bx < 220 || bx > 680) vx *= -1;
+          if (by < 40) vy = Math.abs(vy);
+          if (by > 490) { bx = 450; by = 100; vy = 4; }
         },
         draw() {
-          ctx.fillStyle = '#090d16'; ctx.fillRect(0, 0, 900, 520);
-          const ox = 320, oy = 25;
-          ctx.strokeStyle = '#334155'; ctx.strokeRect(ox, oy, COLS * S, ROWS * S);
-          for (let r = 0; r < ROWS; r++) {
-            for (let c = 0; c < COLS; c++) {
-              if (grid[r][c]) {
-                ctx.fillStyle = colors[grid[r][c]];
-                ctx.fillRect(ox + c * S, oy + r * S, S - 1, S - 1);
-              }
-            }
-          }
-          piece.shape.forEach((row, r) => row.forEach((v, c) => {
-            if (v) {
-              ctx.fillStyle = colors[piece.color];
-              ctx.fillRect(ox + (piece.x + c) * S, oy + (piece.y + r) * S, S - 1, S - 1);
-            }
-          }));
-          ctx.fillStyle = '#fff'; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'left';
-          ctx.fillText('Pontos: ' + score, 40, 50);
+          ctx.fillStyle = '#090d16'; ctx.fillRect(0, 0, 900, 500);
+          ctx.strokeStyle = '#a855f7'; ctx.lineWidth = 4; ctx.strokeRect(210, 30, 480, 440);
+          ctx.fillStyle = '#38bdf8'; ctx.fillRect(280, 430, 120, 14); ctx.fillRect(500, 430, 120, 14);
+          ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(bx, by, 12, 0, Math.PI * 2); ctx.fill();
+          ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'left'; ctx.fillText('Score: ' + sc, 30, 45);
         }
       };
     }
 
-    /* ==========================================================
-       10. SPACE INVADERS 360 (ESCOLHA BÔNUS 2)
-    ========================================================== */
-    function createInvaders() {
-      let shipX = 430, bullets = [], aliens = [], dir = 2, score = 0;
-      function spawn() {
-        aliens = [];
-        for (let r = 0; r < 4; r++)
-          for (let c = 0; c < 10; c++)
-            aliens.push({ x: 140 + c * 62, y: 60 + r * 42, w: 36, h: 24 });
-      }
-      spawn();
+    /* 29. PEDRA PAPEL TESOURA */
+    function engRPS() {
+      let res = 'Escolha Pedra, Papel ou Tesoura abaixo!';
+      subControls.innerHTML = ['Pedra ✊', 'Papel ✋', 'Tesoura ✌️'].map((n, i) => `<button class="sub-btn" onclick="currentGame.play(${i})">${n}</button>`).join('');
       return {
-        title: 'Space Invaders 360',
-        hint: 'Mover Nave: A/D ou Setas | Atirar: Espaço ou W',
-        onKeyDown(e) {
-          if (e.key === ' ' || e.key.toLowerCase() === 'w') {
-            bullets.push({ x: shipX + 18, y: 455 });
-          }
+        title: 'Pedra Papel Tesoura', hint: 'Clique nos botões abaixo para duelar!',
+        play(p) {
+          const c = Math.floor(Math.random() * 3), nm = ['Pedra','Papel','Tesoura'];
+          if (p === c) res = `Empate! Ambos escolheram ${nm[p]}`;
+          else if ((p + 1) % 3 === c) res = `Você perdeu! CPU escolheu ${nm[c]}`;
+          else { res = `VOCÊ VENCEU! ${nm[p]} ganha de ${nm[c]} (+50 G)`; addGold(50); }
+          beep(580, 0.08);
         },
-        update() {
-          if (keys['a'] || keys['arrowleft']) shipX = Math.max(20, shipX - 6);
-          if (keys['d'] || keys['arrowright']) shipX = Math.min(840, shipX + 6);
-
-          bullets.forEach(b => b.y -= 9);
-          bullets = bullets.filter(b => b.y > 0);
-
-          let edge = false;
-          aliens.forEach(a => {
-            a.x += dir;
-            if (a.x < 20 || a.x + a.w > 880) edge = true;
-          });
-          if (edge) { dir *= -1; aliens.forEach(a => a.y += 14); }
-
-          bullets.forEach((b, bi) => {
-            aliens.forEach((a, ai) => {
-              if (b.x > a.x && b.x < a.x + a.w && b.y > a.y && b.y < a.y + a.h) {
-                aliens.splice(ai, 1);
-                bullets.splice(bi, 1);
-                score += 50;
-              }
-            });
-          });
-
-          if (aliens.length === 0) { addGold(60); spawn(); }
-        },
+        update() {},
         draw() {
-          ctx.fillStyle = '#030712'; ctx.fillRect(0, 0, 900, 520);
-          // Nave
-          ctx.fillStyle = '#38bdf8';
-          ctx.fillRect(shipX, 465, 40, 18);
-          ctx.fillRect(shipX + 15, 455, 10, 10);
+          ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, 900, 500);
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 26px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(res, 450, 250);
+        }
+      };
+    }
 
-          // Tiros
-          ctx.fillStyle = '#facc15';
-          bullets.forEach(b => ctx.fillRect(b.x, b.y, 4, 12));
-
-          // Aliens
-          ctx.fillStyle = '#22c55e';
-          aliens.forEach(a => ctx.fillRect(a.x, a.y, a.w, a.h));
-
-          ctx.fillStyle = '#fff'; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'left';
-          ctx.fillText('Score: ' + score, 30, 38);
+    /* 30. MEGA ROLETA 777 */
+    function engSlots() {
+      const sym = ['🍒','💎','7️⃣','🍓','⭐'];
+      let r = ['7️⃣','7️⃣','7️⃣'], msg = 'Clique em GIRAR para testar a sorte!';
+      subControls.innerHTML = `<button class="sub-btn" onclick="currentGame.spin()">🎰 GIRAR ROLETA</button>`;
+      return {
+        title: 'Mega Roleta 777', hint: 'Gire os rolos para ganhar prêmios em Ouro G!',
+        spin() {
+          r = [0,1,2].map(() => sym[Math.floor(Math.random() * sym.length)]);
+          if (r[0] === r[1] && r[1] === r[2]) { msg = 'JACKPOT! +500 G!'; addGold(500); beep(880, 0.2); }
+          else if (r[0] === r[1] || r[1] === r[2]) { msg = 'PAR! +75 G!'; addGold(75); beep(620, 0.1); }
+          else { msg = 'Tente novamente!'; beep(340, 0.08); }
+        },
+        update() {},
+        draw() {
+          ctx.fillStyle = '#181028'; ctx.fillRect(0, 0, 900, 500);
+          r.forEach((s, i) => {
+            ctx.fillStyle = '#0f172a'; ctx.fillRect(220 + i * 160, 140, 140, 140);
+            ctx.font = '68px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(s, 290 + i * 160, 232);
+          });
+          ctx.fillStyle = '#facc15'; ctx.font = 'bold 24px sans-serif'; ctx.textAlign = 'center'; ctx.fillText(msg, 450, 350);
         }
       };
     }
