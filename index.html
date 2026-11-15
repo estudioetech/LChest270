@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+html_code = '''<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>LChest 270 — V2.2</title>
+  <title>LChest 270 — V2.3</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
     html, body {
@@ -264,7 +264,7 @@
     <button class="pill-btn room" id="btn-room-top" onclick="openRoomModal()">Sala: <span id="room-code-lbl">OFF</span></button>
     <button class="pill-btn" id="btn-p2-top" onclick="toggle2P()">1P Solo</button>
     <strong style="color:#a5b4fc" id="gs-display">14.850 G</strong>
-    <span class="ver-badge">V2.2</span>
+    <span class="ver-badge">V2.3</span>
   </div>
 </header>
 
@@ -280,7 +280,7 @@
     <div style="font-size:11px;font-weight:800;color:#c4b5fd;letter-spacing:1px;">MULTIPLAYER ONLINE • P1 (ANFITRIÃO) ATÉ P10</div>
     <h2 style="margin-top:6px;">Sala por Código na Internet</h2>
     <p style="font-size:12px;color:#cbd5e1;margin-top:6px;">
-      Se ativar <strong>2P Local</strong> na sala, você controla <strong>P(X)</strong> e <strong>P(X)(2º)</strong> sem ocupar vaga do próximo jogador!
+      Modo 2P inteligente: pareia automaticamente <strong>2º Player vs 2º Player</strong>, <strong>3 pessoas (2P joga com os dois)</strong>, ou <strong>3P + 2P (divide em duas duplas)</strong>!
     </p>
     <div style="margin:16px 0;display:flex;flex-direction:column;gap:11px;align-items:center;">
       <button class="btn-play" style="background:#7c3aed;padding:10px 20px;" onclick="createHostRoom()">Criar Sala Online (Anfitrião P1)</button>
@@ -333,7 +333,7 @@
     <div style="margin:12px 0;">
       <label style="font-size:12px;color:#a5b4fc;">Jogo de 2: </label>
       <select id="pair-game-select" style="background:#0f172a;color:#fff;border:1px solid #475569;padding:6px 10px;border-radius:8px;">
-        <option value="velha">Jogo da Velha (2P Online)</option>
+        <option value="velha">Jogo da Velha (2P / 2P+2P / 3P)</option>
         <option value="snake">Snake 360 (2P)</option>
         <option value="dino">Dino Run 360 (2P)</option>
         <option value="ninja">N+ Stickman (2P)</option>
@@ -462,10 +462,35 @@ const state = {
   lobbyPickSubStep: 1,
   tempSelectedColorId: 'verde',
   activeVote: null,
-  tttState: { board: Array(9).fill(''), turn: 'X', xSlot: 1, oSlot: 2 }
+  tttBoards: {},
+  mcWorld: null,
+  mcRows: 0,
+  mcCols: 0
 };
 
 const GAMES = [
+  {
+    id: 'minecraft', sub: 'SANDBOX MULTIPLAYER', title: 'Minecraft 270', is2P: false,
+    desc: 'Chão no fim da tela, colisão lateral sólida e blocos sincronizados entre todos!',
+    badge: 'Até 10 Players',
+    art: `<svg width="160" height="90" viewBox="0 0 180 100">
+      <rect x="52" y="34" width="26" height="26" fill="#16a34a"/><rect x="52" y="42" width="26" height="18" fill="#78350f"/>
+      <rect x="78" y="34" width="26" height="26" fill="#64748b"/>
+      <rect x="104" y="34" width="26" height="26" fill="#38bdf8"/>
+    </svg>`
+  },
+  {
+    id: 'velha', sub: '2P / 2P+2P / 3P', title: 'Jogo da Velha', is2P: true,
+    desc: 'Suporta 2P local, 2º Player vs 2º Player, 2 pessoas (3 jogadores) e 3P + 2P!',
+    badge: 'Online + 2P',
+    art: `<svg width="160" height="90" viewBox="0 0 180 100">
+      <line x1="74" y1="20" x2="74" y2="80" stroke="#64748b" stroke-width="3"/>
+      <line x1="106" y1="20" x2="106" y2="80" stroke="#64748b" stroke-width="3"/>
+      <line x1="46" y1="40" x2="134" y2="40" stroke="#64748b" stroke-width="3"/>
+      <line x1="46" y1="60" x2="134" y2="60" stroke="#64748b" stroke-width="3"/>
+      <circle cx="90" cy="50" r="7" fill="none" stroke="#38bdf8" stroke-width="3"/>
+    </svg>`
+  },
   {
     id: 'dino', sub: 'ARCADE RUNNER', title: 'Dino Run 360', is2P: true,
     desc: 'Sprites pixel-art (0.10s), pulo 35ms, abaixar (↓/S/B) e 1–4 cactos.',
@@ -520,16 +545,6 @@ const GAMES = [
     </svg>`
   },
   {
-    id: 'minecraft', sub: 'SANDBOX MULTIPLAYER', title: 'Minecraft 270', is2P: false,
-    desc: 'Construa e quebre blocos com P1 até P10 na mesma partida!',
-    badge: 'Até 10 Players',
-    art: `<svg width="160" height="90" viewBox="0 0 180 100">
-      <rect x="52" y="34" width="26" height="26" fill="#16a34a"/><rect x="52" y="42" width="26" height="18" fill="#78350f"/>
-      <rect x="78" y="34" width="26" height="26" fill="#64748b"/>
-      <rect x="104" y="34" width="26" height="26" fill="#38bdf8"/>
-    </svg>`
-  },
-  {
     id: 'roblox', sub: 'OBBY MULTIPLAYER', title: 'Roblox 270 (Obby)', is2P: false,
     desc: 'Parkour obby com lava, checkpoints e P1 até P10 se mexendo juntos!',
     badge: 'Até 10 Players',
@@ -537,18 +552,6 @@ const GAMES = [
       <rect x="44" y="28" width="16" height="16" rx="3" fill="#facc15"/>
       <rect x="40" y="45" width="24" height="20" rx="2" fill="#2563eb"/>
       <rect x="85" y="54" width="60" height="10" rx="4" fill="#ef4444"/>
-    </svg>`
-  },
-  {
-    id: 'velha', sub: 'ONLINE SINCRONIZADO', title: 'Jogo da Velha', is2P: true,
-    desc: 'Tabuleiro online em tempo real: cada um joga no seu turno na sua cor!',
-    badge: 'Online 2P',
-    art: `<svg width="160" height="90" viewBox="0 0 180 100">
-      <line x1="74" y1="20" x2="74" y2="80" stroke="#64748b" stroke-width="3"/>
-      <line x1="106" y1="20" x2="106" y2="80" stroke="#64748b" stroke-width="3"/>
-      <line x1="46" y1="40" x2="134" y2="40" stroke="#64748b" stroke-width="3"/>
-      <line x1="46" y1="60" x2="134" y2="60" stroke="#64748b" stroke-width="3"/>
-      <circle cx="90" cy="50" r="7" fill="none" stroke="#38bdf8" stroke-width="3"/>
     </svg>`
   },
   {
@@ -583,18 +586,144 @@ const GAMES = [
   }
 ];
 
-const localChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('lchest270_v22') : null;
+const localChannel = ('BroadcastChannel' in window) ? new BroadcastChannel('lchest270_v23') : null;
 let peer = null, hostConn = null;
 const clientConns = new Map();
 
 function getMyMember() {
   return state.members.find(m => m.id === playerId) || state.members[0];
 }
-function getOtherMembers() {
+function getGroupMembers(gameId = null) {
   const me = getMyMember();
+  const gId = gameId || me?.activeGame;
   return state.members
-    .filter(m => m.id !== playerId && m.activeGame === me?.activeGame && m.subgroupId === me?.subgroupId)
+    .filter(m => m.activeGame === gId && m.subgroupId === (me?.subgroupId || 'main'))
     .sort((a, b) => a.slot - b.slot);
+}
+function getOtherMembers() {
+  return getGroupMembers().filter(m => m.id !== playerId);
+}
+
+// =========================================================================
+// MOTOR DE PAREAMENTO INTELIGENTE PARA 2P + ONLINE (TODAS AS REGRAS DO USUÁRIO)
+// =========================================================================
+function build2PMatches(groupMembers) {
+  const sorted = [...groupMembers].sort((a, b) => a.slot - b.slot);
+  const with2P = sorted.filter(m => m.hasSecondPlayer);
+  const solo1P = sorted.filter(m => !m.hasSecondPlayer);
+  const matches = [];
+
+  // CASO A: Exatamente 2 pessoas na partida e SÓ UMA tem o modo 2P ativo (total = 3 jogadores)
+  // Regra: "se tiver só 2 pessoas e um deles tenha o 2p ativado, o 2p fique com os dois ficando 3, mas só nesse caso"
+  if (sorted.length === 2 && with2P.length === 1 && solo1P.length === 1) {
+    const dual = with2P[0];
+    const single = solo1P[0];
+    matches.push({
+      id: `tri_${dual.slot}_${single.slot}`,
+      mode: 'tri', // 3 jogadores: P(dual) + P(dual)(2º) + P(single)
+      participants: [
+        { slot: dual.slot, sub: 1, label: `P${dual.slot}`, color: dual.colorHex || '#22c55e', symbol: 'X' },
+        { slot: single.slot, sub: 1, label: `P${single.slot}`, color: single.colorHex || '#facc15', symbol: 'O' },
+        { slot: dual.slot, sub: 2, label: `P${dual.slot}(2º)`, color: dual.p2ColorHex || '#3b82f6', symbol: '△' }
+      ]
+    });
+    return matches;
+  }
+
+  // CASO B: 3 pessoas na partida e uma delas tem 2P ativo (total = 4 jogadores -> duas duplas!)
+  // Regra: "se tiver 3p e um tiver o 2p e todos querem jogar o mesmo jogo, o segundo player do modo 2p fique com um e o normal com o outro"
+  if (sorted.length === 3 && with2P.length === 1 && solo1P.length === 2) {
+    const dual = with2P[0];
+    const sA = solo1P[0];
+    const sB = solo1P[1];
+    // Mesa 1: Principal do 2P vs Primeiro Solo
+    matches.push({
+      id: `pair_${dual.slot}s1_${sA.slot}`,
+      mode: 'duo',
+      participants: [
+        { slot: dual.slot, sub: 1, label: `P${dual.slot}`, color: dual.colorHex || '#22c55e', symbol: 'X' },
+        { slot: sA.slot, sub: 1, label: `P${sA.slot}`, color: sA.colorHex || '#ef4444', symbol: 'O' }
+      ]
+    });
+    // Mesa 2: Segundo player do 2P vs Outro Solo
+    matches.push({
+      id: `pair_${dual.slot}s2_${sB.slot}`,
+      mode: 'duo',
+      participants: [
+        { slot: dual.slot, sub: 2, label: `P${dual.slot}(2º)`, color: dual.p2ColorHex || '#3b82f6', symbol: 'X' },
+        { slot: sB.slot, sub: 1, label: `P${sB.slot}`, color: sB.colorHex || '#a855f7', symbol: 'O' }
+      ]
+    });
+    return matches;
+  }
+
+  // CASO C: Vários jogadores com 2P ativo ->
+  // Regra: "o player dois de um jogador, do modo 2p, jogue com o 2p do outro se ele tiver"
+  const poolPrimary = [];
+  const poolSecond = [];
+  sorted.forEach(m => {
+    poolPrimary.push({ slot: m.slot, sub: 1, label: `P${m.slot}`, color: m.colorHex || '#22c55e' });
+    if (m.hasSecondPlayer) {
+      poolSecond.push({ slot: m.slot, sub: 2, label: `P${m.slot}(2º)`, color: m.p2ColorHex || '#3b82f6' });
+    }
+  });
+
+  // 1) Pareia os 2º Players entre si (P1(2º) vs P2(2º), P3(2º) vs P4(2º)...)
+  while (poolSecond.length >= 2) {
+    const a = poolSecond.shift();
+    const b = poolSecond.shift();
+    matches.push({
+      id: `sec_${a.slot}_${b.slot}`,
+      mode: 'duo',
+      participants: [
+        { ...a, symbol: 'X' },
+        { ...b, symbol: 'O' }
+      ]
+    });
+  }
+
+  // 2) Pareia os Players Principais entre si (P1 vs P2, P3 vs P4...)
+  while (poolPrimary.length >= 2) {
+    const a = poolPrimary.shift();
+    const b = poolPrimary.shift();
+    matches.push({
+      id: `pri_${a.slot}_${b.slot}`,
+      mode: 'duo',
+      participants: [
+        { ...a, symbol: 'X' },
+        { ...b, symbol: 'O' }
+      ]
+    });
+  }
+
+  // 3) Se sobrou 1 principal e 1 secundário do mesmo dono (1 pessoa jogando 2P local sozinha)
+  if (poolPrimary.length === 1 && poolSecond.length === 1) {
+    matches.push({
+      id: `local_${poolPrimary[0].slot}`,
+      mode: 'duo',
+      participants: [
+        { ...poolPrimary[0], symbol: 'X' },
+        { ...poolSecond[0], symbol: 'O' }
+      ]
+    });
+  } else if (poolPrimary.length === 1) {
+    // Solo contra CPU
+    matches.push({
+      id: `solo_${poolPrimary[0].slot}`,
+      mode: 'solo',
+      participants: [
+        { ...poolPrimary[0], symbol: 'X' },
+        { slot: 0, sub: 0, label: 'CPU', color: '#f43f5e', symbol: 'O' }
+      ]
+    });
+  }
+
+  return matches;
+}
+
+function getMyMatches(groupMembers) {
+  const all = build2PMatches(groupMembers);
+  return all.filter(m => m.participants.some(p => p.slot === state.mySlot));
 }
 
 function sendNet(payload) {
@@ -645,6 +774,12 @@ function handleRoomPacket(msg) {
     }
     if (document.getElementById('modal-lobby').style.display === 'flex') renderLobby();
   }
+  else if (msg.type === 'toggle_2p') {
+    const m = state.members.find(x => x.id === msg.sender);
+    if (m) m.hasSecondPlayer = !!msg.hasSecondPlayer;
+    if (state.isHost) syncRoomState();
+    refreshLiveBar();
+  }
   else if (msg.type === 'color_pick') {
     const m = state.members.find(x => x.id === msg.sender);
     if (m) {
@@ -658,7 +793,15 @@ function handleRoomPacket(msg) {
     if (document.getElementById('modal-lobby').style.display === 'flex') renderLobby();
   }
   else if (msg.type === 'ttt_move') {
-    state.tttState = msg.tttState;
+    state.tttBoards[msg.matchId] = msg.boardState;
+  }
+  else if (msg.type === 'mc_block') {
+    if (state.mcWorld && state.mcWorld[msg.r] && state.mcWorld[msg.r][msg.c] !== undefined) {
+      state.mcWorld[msg.r][msg.c] = msg.val;
+    }
+  }
+  else if (msg.type === 'mc_world_sync') {
+    if (msg.world) state.mcWorld = msg.world;
   }
   else if (msg.type === 'vote_start') {
     state.activeVote = msg.vote;
@@ -860,7 +1003,7 @@ function checkVoteResolution() {
     }
   } else {
     const yesMembers = relevant.filter(m => v.votes[m.slot] === true);
-    const noMembers = relevant.filter(m => v.votes[m.slot] === false);
+    const noMembers = relevant.filter(m => m.votes[m.slot] === false);
     if (noMembers.length === 0) {
       relevant.forEach(m => { m.activeGame = null; m.confirmed = false; m.partnerSlot = null; m.subgroupId = 'main'; });
       notice = `Todos concordaram em sair!`;
@@ -1097,16 +1240,6 @@ function confirmLobbyChoice() {
     me.confirmed = true; me.activeGame = state.pendingGame;
   }
 
-  if (state.pendingGame === 'velha') {
-    const others = getOtherMembers();
-    state.tttState = {
-      board: Array(9).fill(''),
-      turn: 'X',
-      xSlot: state.mySlot,
-      oSlot: others.length ? others[0].slot : (state.multiplayer ? state.mySlot : 0)
-    };
-  }
-
   sendNet({
     type: 'color_pick',
     colorId: state.p1ColorId, colorHex: state.p1Color,
@@ -1126,8 +1259,8 @@ function toggle2P() {
   btn.textContent = state.multiplayer ? '2P Ativo' : '1P Solo';
   btn.classList.toggle('on', state.multiplayer);
   if (state.roomCode) {
+    sendNet({ type: 'toggle_2p', hasSecondPlayer: state.multiplayer });
     if (state.isHost) syncRoomState();
-    else sendNet({ type: 'pos', x: me?.x || 80, y: me?.y || 150, colorHex: state.p1Color, hasSecondPlayer: state.multiplayer, p2x: 110, p2y: 150, p2ColorHex: state.p2Color });
   }
   refreshLiveBar();
   if (state.tab === 'sistema') renderMain();
@@ -1450,7 +1583,337 @@ function startGame(id) {
 
   let syncTick = 0;
 
-  if (id === 'dino') {
+  // =========================================================================
+  // 1) MINECRAFT 270 — CHÃO NO FIM DA TELA + COLISÃO LATERAL E VERTICAL + SYNC DE BLOCOS
+  // =========================================================================
+  if (id === 'minecraft') {
+    const sel = document.getElementById('stage-sel');
+    sel.style.display = 'inline-block';
+    const blocks = [
+      { id: 1, name: 'Grama', c: '#22c55e' },
+      { id: 2, name: 'Terra', c: '#78350f' },
+      { id: 3, name: 'Pedra', c: '#64748b' },
+      { id: 4, name: 'Madeira', c: '#b45309' },
+      { id: 5, name: 'Diamante', c: '#38bdf8' }
+    ];
+    sel.innerHTML = blocks.map(b => `<option value="${b.id}">Bloco: ${b.name}</option>`).join('');
+    let curBlock = 1;
+    sel.onchange = () => curBlock = Number(sel.value);
+
+    const sz = 28;
+    const cols = Math.max(36, Math.ceil(Math.max(canvas.width, 1366) / sz));
+    const rows = Math.max(18, Math.ceil(Math.max(canvas.height, 768) / sz));
+    state.mcCols = cols;
+    state.mcRows = rows;
+
+    // Cria o mundo se ainda não foi sincronizado pela sala
+    if (!state.mcWorld || state.mcWorld.length !== rows || state.mcWorld[0].length !== cols) {
+      state.mcWorld = Array.from({length: rows}, (_, r) =>
+        Array.from({length: cols}, () => r === rows - 3 ? 1 : r > rows - 3 ? 2 : 0)
+      );
+      if (state.isHost && state.roomCode) {
+        sendNet({ type: 'mc_world_sync', world: state.mcWorld });
+      }
+    }
+
+    const pw = 20, ph = 26;
+    const isSolidAt = (x, y) => {
+      const c = Math.floor(x / sz);
+      const r = Math.floor(y / sz);
+      if (r < 0) return false;
+      if (r >= rows || c < 0 || c >= cols) return true;
+      return state.mcWorld[r][c] > 0;
+    };
+
+    const rectCollidesWorld = (rx, ry, rw, rh) => {
+      const m = 1;
+      return (
+        isSolidAt(rx + m, ry + m) ||
+        isSolidAt(rx + rw - m, ry + m) ||
+        isSolidAt(rx + m, ry + rh - m) ||
+        isSolidAt(rx + rw - m, ry + rh - m) ||
+        isSolidAt(rx + m, ry + rh * 0.5) ||
+        isSolidAt(rx + rw - m, ry + rh * 0.5)
+      );
+    };
+
+    const movePlayerPhysics = (pl, vx, jumpPressed) => {
+      // 1) Movimento Horizontal + Colisão Lateral Sólida (X)
+      pl.x += vx;
+      if (pl.x < 0) pl.x = 0;
+      if (pl.x + pw > cols * sz) pl.x = cols * sz - pw;
+
+      if (rectCollidesWorld(pl.x, pl.y, pw, ph)) {
+        if (vx > 0) {
+          const rightCol = Math.floor((pl.x + pw - 1) / sz);
+          pl.x = rightCol * sz - pw;
+        } else if (vx < 0) {
+          const leftCol = Math.floor(pl.x / sz);
+          pl.x = (leftCol + 1) * sz;
+        }
+      }
+
+      // 2) Pulo + Gravidade + Colisão Vertical (Teto e Chão) (Y)
+      if (jumpPressed && pl.grounded) {
+        pl.vy = -10.2;
+        pl.grounded = false;
+      }
+      pl.vy = Math.min(14, pl.vy + 0.52);
+      pl.y += pl.vy;
+      pl.grounded = false;
+
+      if (rectCollidesWorld(pl.x, pl.y, pw, ph)) {
+        if (pl.vy > 0) {
+          const footRow = Math.floor((pl.y + ph - 1) / sz);
+          pl.y = footRow * sz - ph;
+          pl.vy = 0;
+          pl.grounded = true;
+        } else if (pl.vy < 0) {
+          const headRow = Math.floor(pl.y / sz);
+          pl.y = (headRow + 1) * sz;
+          pl.vy = 0;
+        }
+      }
+    };
+
+    const spawnY = (rows - 4) * sz - ph;
+    const p1 = { x: 60 + state.mySlot * 26, y: spawnY, vy: 0, grounded: false };
+    const p2 = { x: p1.x + 28, y: spawnY, vy: 0, grounded: false };
+
+    const loop = () => {
+      syncTick++;
+      ctx.fillStyle = '#0ea5e9';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Mantém o chão exatamente alinhado no fundo da tela visível
+      const visibleRows = Math.max(8, Math.floor(canvas.height / sz));
+      const rowOffset = Math.max(0, rows - visibleRows);
+      const offsetY = canvas.height - (rows * sz);
+
+      let vx1 = 0;
+      if (keys['KeyA'] || (!state.multiplayer && keys['ArrowLeft'])) vx1 -= 3.6;
+      if (keys['KeyD'] || (!state.multiplayer && keys['ArrowRight'])) vx1 += 3.6;
+      const jump1 = keys['KeyW'] || keys['Space'] || (!state.multiplayer && keys['ArrowUp']);
+      movePlayerPhysics(p1, vx1, jump1);
+
+      if (state.multiplayer) {
+        let vx2 = 0;
+        if (keys['ArrowLeft']) vx2 -= 3.6;
+        if (keys['ArrowRight']) vx2 += 3.6;
+        movePlayerPhysics(p2, vx2, keys['ArrowUp']);
+      }
+
+      // Colocar ou quebrar blocos (sincronizado com toda a sala!)
+      if (mouse.clicked) {
+        mouse.clicked = false;
+        const bx = Math.floor(mouse.x / sz);
+        const by = Math.floor((mouse.y - offsetY) / sz);
+        if (state.mcWorld[by] && state.mcWorld[by][bx] !== undefined) {
+          const blockRectX = bx * sz, blockRectY = by * sz;
+          const overlapsP1 = p1.x + pw > blockRectX && p1.x < blockRectX + sz && p1.y + ph > blockRectY && p1.y < blockRectY + sz;
+          const overlapsP2 = state.multiplayer && p2.x + pw > blockRectX && p2.x < blockRectX + sz && p2.y + ph > blockRectY && p2.y < blockRectY + sz;
+
+          if (state.mcWorld[by][bx] > 0) {
+            state.mcWorld[by][bx] = 0;
+            sendNet({ type: 'mc_block', r: by, c: bx, val: 0 });
+          } else if (!overlapsP1 && !overlapsP2) {
+            state.mcWorld[by][bx] = curBlock;
+            sendNet({ type: 'mc_block', r: by, c: bx, val: curBlock });
+          }
+        }
+      }
+
+      // Desenha os blocos do mundo
+      for (let r = rowOffset; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const bId = state.mcWorld[r][c];
+          if (bId > 0) {
+            ctx.fillStyle = blocks.find(b => b.id === bId)?.c || '#64748b';
+            ctx.fillRect(c * sz, r * sz + offsetY, sz - 1, sz - 1);
+          }
+        }
+      }
+
+      // Desenha P1, P2 local e outros jogadores da sala na mesma altura do chão
+      ctx.fillStyle = myColor;
+      ctx.fillRect(p1.x, p1.y + offsetY, pw, ph);
+      drawHeadBadge(ctx, p1.x + pw/2, p1.y + offsetY - 4, myLabel, myColor);
+
+      if (state.multiplayer) {
+        ctx.fillStyle = state.p2Color;
+        ctx.fillRect(p2.x, p2.y + offsetY, pw, ph);
+        drawHeadBadge(ctx, p2.x + pw/2, p2.y + offsetY - 4, my2ndLabel, state.p2Color);
+      }
+
+      getOtherMembers().slice(0, 9).forEach(peer => {
+        const ox = peer.x ?? 100;
+        const oy = peer.y ?? spawnY;
+        ctx.fillStyle = peer.colorHex || '#facc15';
+        ctx.fillRect(ox, oy + offsetY, pw, ph);
+        drawHeadBadge(ctx, ox + pw/2, oy + offsetY - 4, `P${peer.slot}`, peer.colorHex || '#facc15');
+        if (peer.hasSecondPlayer) {
+          const ox2 = peer.p2x ?? (ox + 26);
+          const oy2 = peer.p2y ?? spawnY;
+          ctx.fillStyle = peer.p2ColorHex || '#ec4899';
+          ctx.fillRect(ox2, oy2 + offsetY, pw, ph);
+          drawHeadBadge(ctx, ox2 + pw/2, oy2 + offsetY - 4, `P${peer.slot}(2º)`, peer.p2ColorHex || '#ec4899');
+        }
+      });
+
+      if (tick % 3 === 0) {
+        sendNet({
+          type: 'pos', x: p1.x, y: p1.y, colorHex: myColor,
+          hasSecondPlayer: state.multiplayer, p2x: p2.x, p2y: p2.y, p2ColorHex: state.p2Color
+        });
+      }
+
+      document.getElementById('hud-info').textContent = `${myLabel} • Toque/Clique constrói ou quebra (visível para todos!)`;
+      raf = requestAnimationFrame(loop);
+    };
+    loop();
+  }
+
+  // =========================================================================
+  // 2) JOGO DA VELHA — COM SUPORTE COMPLETO AO MODO 2P LOCAL, 2P+2P, 2 PESSOAS (3P) E 3P+2P
+  // =========================================================================
+  else if (id === 'velha') {
+    const checkWin3 = b => [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]].some(([a,c,d]) => b[a] && b[a]===b[c] && b[a]===b[d]);
+
+    const checkWin4 = b => {
+      // Tabuleiro 4x4 (3 em linha vence para ficar dinâmico no modo 3 jogadores!)
+      const lines = [];
+      for (let r = 0; r < 4; r++) {
+        lines.push([r*4, r*4+1, r*4+2], [r*4+1, r*4+2, r*4+3]);
+      }
+      for (let c = 0; c < 4; c++) {
+        lines.push([c, c+4, c+8], [c+4, c+8, c+12]);
+      }
+      lines.push([0,5,10],[5,10,15],[1,6,11],[4,9,14],[2,5,8],[3,6,9],[6,9,12],[7,10,13]);
+      return lines.some(([a,c,d]) => b[a] && b[a]===b[c] && b[a]===b[d]);
+    };
+
+    const getBoardState = (match) => {
+      if (!state.tttBoards[match.id]) {
+        const isTri = match.mode === 'tri';
+        state.tttBoards[match.id] = {
+          board: Array(isTri ? 16 : 9).fill(''),
+          turnIdx: 0
+        };
+      }
+      return state.tttBoards[match.id];
+    };
+
+    const loop = () => {
+      ctx.fillStyle = '#0b0e1d';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const group = getGroupMembers('velha');
+      const myMatches = getMyMatches(group);
+      const activeMatches = myMatches.length ? myMatches : [{
+        id: `local_${state.mySlot}`,
+        mode: 'duo',
+        participants: state.multiplayer
+          ? [
+              { slot: state.mySlot, sub: 1, label: myLabel, color: myColor, symbol: 'X' },
+              { slot: state.mySlot, sub: 2, label: my2ndLabel, color: state.p2Color, symbol: 'O' }
+            ]
+          : [
+              { slot: state.mySlot, sub: 1, label: myLabel, color: myColor, symbol: 'X' },
+              { slot: 0, sub: 0, label: 'CPU', color: '#f43f5e', symbol: 'O' }
+            ]
+      }];
+
+      const count = activeMatches.length;
+      const paneW = canvas.width / count;
+      const hudSummaries = [];
+
+      activeMatches.forEach((match, mIdx) => {
+        const bs = getBoardState(match);
+        const dim = match.mode === 'tri' ? 4 : 3;
+        const sz = Math.min(paneW * 0.82, canvas.height * 0.62);
+        const cell = sz / dim;
+        const x0 = mIdx * paneW + (paneW - sz) / 2;
+        const y0 = (canvas.height - sz) / 2 + 12;
+
+        const currentPart = match.participants[bs.turnIdx % match.participants.length];
+        const canIClickThisTurn = currentPart.slot === state.mySlot;
+        const checkWin = dim === 4 ? checkWin4 : checkWin3;
+        const won = checkWin(bs.board);
+        const draw = !won && !bs.board.includes('');
+
+        // Título acima de cada tabuleiro
+        ctx.fillStyle = '#e2e8f0';
+        ctx.font = 'bold 12px sans-serif';
+        ctx.textAlign = 'center';
+        const titleTxt = match.participants.map(p => `${p.label}(${p.symbol})`).join(' vs ');
+        ctx.fillText(titleTxt, mIdx * paneW + paneW / 2, y0 - 16);
+
+        if (mouse.clicked && mouse.x >= mIdx * paneW && mouse.x < (mIdx + 1) * paneW) {
+          const c = Math.floor((mouse.x - x0) / cell);
+          const r = Math.floor((mouse.y - y0) / cell);
+          const idx = r * dim + c;
+
+          if (c >= 0 && c < dim && r >= 0 && r < dim) {
+            mouse.clicked = false;
+            if (won || draw) {
+              bs.board = Array(dim * dim).fill('');
+              bs.turnIdx = 0;
+              sendNet({ type: 'ttt_move', matchId: match.id, boardState: bs });
+            } else if (!bs.board[idx] && canIClickThisTurn) {
+              bs.board[idx] = currentPart.symbol;
+              if (!checkWin(bs.board) && bs.board.includes('')) {
+                bs.turnIdx = (bs.turnIdx + 1) % match.participants.length;
+                const nextPart = match.participants[bs.turnIdx];
+                if (nextPart.slot === 0) {
+                  const empty = bs.board.map((v, i) => v === '' ? i : -1).filter(i => i >= 0);
+                  if (empty.length) bs.board[empty[Math.floor(Math.random() * empty.length)]] = nextPart.symbol;
+                  bs.turnIdx = 0;
+                }
+              }
+              sendNet({ type: 'ttt_move', matchId: match.id, boardState: bs });
+            }
+          }
+        }
+
+        // Desenha grade 3x3 ou 4x4
+        ctx.strokeStyle = '#6366f1';
+        ctx.lineWidth = 3.5;
+        for (let i = 1; i < dim; i++) {
+          ctx.beginPath(); ctx.moveTo(x0 + i * cell, y0); ctx.lineTo(x0 + i * cell, y0 + sz); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x0, y0 + i * cell); ctx.lineTo(x0 + sz, y0 + i * cell); ctx.stroke();
+        }
+
+        // Desenha símbolos nas cores exatas de cada jogador
+        ctx.font = `bold ${Math.floor(cell * 0.54)}px sans-serif`;
+        ctx.textAlign = 'center';
+        bs.board.forEach((sym, i) => {
+          if (!sym) return;
+          const owner = match.participants.find(p => p.symbol === sym);
+          ctx.fillStyle = owner?.color || '#fff';
+          ctx.fillText(sym, x0 + (i % dim + 0.5) * cell, y0 + (Math.floor(i / dim) + 0.68) * cell);
+        });
+
+        if (mIdx > 0) {
+          ctx.fillStyle = '#334155';
+          ctx.fillRect(mIdx * paneW - 1, 0, 2, canvas.height);
+        }
+
+        if (won) hudSummaries.push(`Vitória ${currentPart.label}!`);
+        else if (draw) hudSummaries.push(`Empate!`);
+        else hudSummaries.push(`Vez: ${currentPart.label} (${currentPart.symbol})`);
+      });
+
+      if (mouse.clicked) mouse.clicked = false;
+      document.getElementById('hud-info').textContent = hudSummaries.join('  |  ');
+      raf = requestAnimationFrame(loop);
+    };
+    loop();
+  }
+
+  // =========================================================================
+  // 3) DINO RUN 360
+  // =========================================================================
+  else if (id === 'dino') {
     const isVS = state.multiplayer && state.vsMode === 'vs';
     const makeRunner = (dir) => ({ y: 0, vy: 0, grounded: true, ducking: false, score: 0, obs: [], spawnTimer: 0, wins: 0, dir });
     const p1 = makeRunner(1), p2 = makeRunner(-1);
@@ -1581,6 +2044,9 @@ function startGame(id) {
     loop();
   }
 
+  // =========================================================================
+  // 4) N+ STICKMAN (20 FASES + ELEVADOR)
+  // =========================================================================
   else if (id === 'ninja') {
     const sel = document.getElementById('stage-sel');
     sel.style.display = 'inline-block';
@@ -1745,6 +2211,9 @@ function startGame(id) {
     loop();
   }
 
+  // =========================================================================
+  // 5) FRIDAY NIGHT FUNKIN'
+  // =========================================================================
   else if (id === 'fnf') {
     const sel = document.getElementById('stage-sel');
     sel.style.display = 'inline-block';
@@ -1804,6 +2273,9 @@ function startGame(id) {
     loop();
   }
 
+  // =========================================================================
+  // 6) GEOMETRY DASH
+  // =========================================================================
   else if (id === 'gdash') {
     let py = 0, vy = 0, grounded = true, rot = 0, dist = 0, obs = [], tick = 0;
     const loop = () => {
@@ -1850,64 +2322,9 @@ function startGame(id) {
     loop();
   }
 
-  else if (id === 'minecraft') {
-    const sel = document.getElementById('stage-sel');
-    sel.style.display = 'inline-block';
-    const blocks = [{ id: 1, name: 'Grama', c: '#22c55e' }, { id: 2, name: 'Terra', c: '#78350f' }, { id: 3, name: 'Pedra', c: '#64748b' }, { id: 4, name: 'Madeira', c: '#b45309' }, { id: 5, name: 'Diamante', c: '#38bdf8' }];
-    sel.innerHTML = blocks.map(b => `<option value="${b.id}">Bloco: ${b.name}</option>`).join('');
-    let curBlock = 1; sel.onchange = () => curBlock = Number(sel.value);
-
-    const cols = 30, rows = 15, sz = 28;
-    const world = Array.from({length: rows}, (_, r) => Array.from({length: cols}, () => r === 9 ? 1 : r > 9 ? 2 : 0));
-    let px = 80 + state.mySlot * 24, py = 160, vy = 0, grounded = false;
-    let p2x = px + 26, p2y = 160, p2vy = 0, p2g = false, tick = 0;
-
-    const loop = () => {
-      tick++;
-      ctx.fillStyle = '#0ea5e9'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      if (keys['KeyA'] || (!state.multiplayer && keys['ArrowLeft'])) px -= 3.5;
-      if (keys['KeyD'] || (!state.multiplayer && keys['ArrowRight'])) px += 3.5;
-      if ((keys['KeyW'] || keys['Space'] || (!state.multiplayer && keys['ArrowUp'])) && grounded) { vy = -9.5; grounded = false; }
-      vy += 0.5; py += vy;
-      const gx = Math.max(0, Math.min(cols - 1, Math.floor((px + 10) / sz)));
-      const gyFoot = Math.max(0, Math.min(rows - 1, Math.floor((py + 26) / sz)));
-      if (world[gyFoot] && world[gyFoot][gx] > 0 && vy >= 0) { py = gyFoot * sz - 26; vy = 0; grounded = true; } else grounded = false;
-
-      if (state.multiplayer) {
-        if (keys['ArrowLeft']) p2x -= 3.5; if (keys['ArrowRight']) p2x += 3.5;
-        if (keys['ArrowUp'] && p2g) { p2vy = -9.5; p2g = false; }
-        p2vy += 0.5; p2y += p2vy;
-        const gx2 = Math.max(0, Math.min(cols - 1, Math.floor((p2x + 10) / sz)));
-        const gy2 = Math.max(0, Math.min(rows - 1, Math.floor((p2y + 26) / sz)));
-        if (world[gy2] && world[gy2][gx2] > 0 && p2vy >= 0) { p2y = gy2 * sz - 26; p2vy = 0; p2g = true; } else p2g = false;
-      }
-
-      if (mouse.clicked) {
-        mouse.clicked = false;
-        const bx = Math.floor(mouse.x / sz), by = Math.floor(mouse.y / sz);
-        if (world[by] && world[by][bx] !== undefined) world[by][bx] = world[by][bx] > 0 ? 0 : curBlock;
-      }
-
-      for (let r = 0; r < rows; r++) for (let c = 0; c < cols; c++) if (world[r][c] > 0) { ctx.fillStyle = blocks.find(b => b.id === world[r][c]).c; ctx.fillRect(c * sz, r * sz, sz - 1, sz - 1); }
-
-      ctx.fillStyle = myColor; ctx.fillRect(px, py, 20, 26); drawHeadBadge(ctx, px + 10, py - 4, myLabel, myColor);
-      if (state.multiplayer) { ctx.fillStyle = state.p2Color; ctx.fillRect(p2x, p2y, 20, 26); drawHeadBadge(ctx, p2x + 10, p2y - 4, my2ndLabel, state.p2Color); }
-      getOtherMembers().slice(0, 9).forEach(peer => {
-        ctx.fillStyle = peer.colorHex || '#facc15'; ctx.fillRect(peer.x || 120, peer.y || 160, 20, 26);
-        drawHeadBadge(ctx, (peer.x || 120) + 10, (peer.y || 160) - 4, `P${peer.slot}`, peer.colorHex || '#facc15');
-        if (peer.hasSecondPlayer) {
-          ctx.fillStyle = peer.p2ColorHex || '#ec4899'; ctx.fillRect(peer.p2x || 145, peer.p2y || 160, 20, 26);
-          drawHeadBadge(ctx, (peer.p2x || 145) + 10, (peer.p2y || 160) - 4, `P${peer.slot}(2º)`, peer.p2ColorHex || '#ec4899');
-        }
-      });
-      if (tick % 3 === 0) sendNet({ type: 'pos', x: px, y: py, colorHex: myColor, hasSecondPlayer: state.multiplayer, p2x, p2y, p2ColorHex: state.p2Color });
-
-      document.getElementById('hud-info').textContent = `${myLabel} • Toque/Clique constrói ou quebra blocos`;
-      raf = requestAnimationFrame(loop);
-    };
-    loop();
-  }
-
+  // =========================================================================
+  // 7) ROBLOX 270
+  // =========================================================================
   else if (id === 'roblox') {
     let px = 35 + state.mySlot * 16, py = 180, vy = 0, grounded = false;
     let p2x = px + 24, p2y = 180, p2vy = 0, p2g = false, stage = 1, tick = 0;
@@ -1966,69 +2383,9 @@ function startGame(id) {
     loop();
   }
 
-  else if (id === 'velha') {
-    const checkWin = b => [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]].some(([a,c,d]) => b[a] && b[a]===b[c] && b[a]===b[d]);
-
-    const loop = () => {
-      ctx.fillStyle = '#0b0e1d'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-      const sz = Math.min(canvas.width, canvas.height) * 0.62, cell = sz / 3;
-      const x0 = (canvas.width - sz) / 2, y0 = (canvas.height - sz) / 2;
-      const ttt = state.tttState;
-      const others = getOtherMembers();
-      const oppMember = others[0];
-      const xColor = state.members.find(m => m.slot === ttt.xSlot)?.colorHex || myColor;
-      const oColor = oppMember?.colorHex || state.p2Color;
-
-      const isOnline2P = Boolean(state.roomCode && oppMember);
-      const isMyTurnOnline = !isOnline2P || (ttt.turn === 'X' && ttt.xSlot === state.mySlot) || (ttt.turn === 'O' && oppMember.slot === state.mySlot);
-
-      if (mouse.clicked) {
-        mouse.clicked = false;
-        const c = Math.floor((mouse.x - x0) / cell), r = Math.floor((mouse.y - y0) / cell), idx = r * 3 + c;
-        if (c >= 0 && c < 3 && r >= 0 && r < 3) {
-          if (checkWin(ttt.board) || !ttt.board.includes('')) {
-            ttt.board = Array(9).fill(''); ttt.turn = 'X';
-            sendNet({ type: 'ttt_move', tttState: ttt });
-          } else if (!ttt.board[idx] && isMyTurnOnline) {
-            ttt.board[idx] = ttt.turn;
-            if (!checkWin(ttt.board) && ttt.board.includes('')) {
-              ttt.turn = ttt.turn === 'X' ? 'O' : 'X';
-              if (!isOnline2P && !state.multiplayer && ttt.turn === 'O') {
-                const empty = ttt.board.map((v,i)=>v===''?i:-1).filter(i=>i>=0);
-                if (empty.length) ttt.board[empty[Math.floor(Math.random()*empty.length)]] = 'O';
-                ttt.turn = 'X';
-              }
-            }
-            sendNet({ type: 'ttt_move', tttState: ttt });
-          }
-        }
-      }
-
-      ctx.strokeStyle = '#6366f1'; ctx.lineWidth = 4;
-      for (let i = 1; i <= 2; i++) {
-        ctx.beginPath(); ctx.moveTo(x0 + i*cell, y0); ctx.lineTo(x0 + i*cell, y0 + sz); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(x0, y0 + i*cell); ctx.lineTo(x0 + sz, y0 + i*cell); ctx.stroke();
-      }
-      ctx.font = `bold ${Math.floor(cell*0.55)}px sans-serif`; ctx.textAlign = 'center';
-      ttt.board.forEach((v, i) => {
-        if (!v) return;
-        ctx.fillStyle = v === 'X' ? xColor : oColor;
-        ctx.fillText(v, x0 + (i%3 + 0.5)*cell, y0 + (Math.floor(i/3) + 0.68)*cell);
-      });
-
-      const won = checkWin(ttt.board);
-      const draw = !won && !ttt.board.includes('');
-      document.getElementById('hud-info').textContent = won
-        ? `Vitória de ${ttt.turn}! Toque para reiniciar`
-        : draw ? `Empate! Toque para reiniciar`
-        : isOnline2P
-          ? (isMyTurnOnline ? `SUA VEZ (${ttt.turn})` : `Aguardando P${oppMember.slot} jogar (${ttt.turn})...`)
-          : `Vez de ${ttt.turn}`;
-      raf = requestAnimationFrame(loop);
-    };
-    loop();
-  }
-
+  // =========================================================================
+  // 8) SNAKE 360
+  // =========================================================================
   else if (id === 'snake') {
     const grid = 18, isVS = state.multiplayer && state.vsMode === 'vs';
     const makeSnake = (sx, sy, dx) => ({ body: [{x:sx,y:sy},{x:sx-dx,y:sy},{x:sx-dx*2,y:sy}], dx, dy: 0, apple: {x: sx+dx*5, y: sy}, wins: 0 });
@@ -2092,6 +2449,9 @@ function startGame(id) {
     loop();
   }
 
+  // =========================================================================
+  // 9) GEOMETRY WARS
+  // =========================================================================
   else if (id === 'geo') {
     document.getElementById('btn-upgrade').style.display = 'inline-block';
     const isVS = state.multiplayer && state.vsMode === 'vs';
@@ -2199,6 +2559,9 @@ function startGame(id) {
     loop();
   }
 
+  // =========================================================================
+  // 10) HEXIC 360
+  // =========================================================================
   else if (id === 'hexic') {
     const colors = ['#7c3aed', '#2563eb', '#22c55e', '#facc15', '#f43f5e'];
     const makeBoard = () => Array.from({length: 5}, () => Array.from({length: 6}, () => colors[Math.floor(Math.random()*colors.length)]));
@@ -2265,4 +2628,8 @@ function startGame(id) {
 renderMain();
 </script>
 </body>
-</html>
+</html>'''
+
+with open('index.html', 'w', encoding='utf-8') as f:
+    f.write(html_code)
+print("V2.3 gerada com sucesso:", len(html_code), "bytes")
