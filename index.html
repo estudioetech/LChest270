@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LChest Live Arcade - V2.4</title>
+  <title>LChest Live Arcade - V2.5 Complete Edition (10 Jogos)</title>
   <style>
     * {
       box-sizing: border-box;
@@ -17,7 +17,6 @@
       background: radial-gradient(circle at top, #171a33 0%, #0b0d1c 100%);
       color: #ffffff;
       min-height: 100vh;
-      overflow-x: hidden;
       display: flex;
       flex-direction: column;
     }
@@ -27,10 +26,19 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 18px 32px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      background: rgba(11, 13, 28, 0.8);
-      backdrop-filter: blur(8px);
+      padding: 16px 32px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(11, 13, 28, 0.9);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
     .logo-badge {
@@ -50,8 +58,9 @@
 
     nav {
       display: flex;
-      gap: 24px;
+      gap: 16px;
       align-items: center;
+      flex-wrap: wrap;
     }
 
     nav button {
@@ -86,34 +95,39 @@
       background: #1c213e;
       color: #cbd5e1;
     }
-
     .pill.purple { background: #3b2d71; color: #c4b5fd; }
     .pill.blue { background: #2563eb; color: #ffffff; }
-    .pill.gold { background: #1e293b; color: #93c5fd; }
+    .pill.gold { background: #1e293b; color: #facc15; }
 
-    /* CARROSSEL DE JOGOS */
+    /* GRADE DE JOGOS */
     main {
       flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
+      padding: 32px;
+      max-width: 1400px;
+      margin: 0 auto;
+      width: 100%;
     }
 
-    .cards-container {
-      display: flex;
-      gap: 24px;
-      max-width: 1280px;
-      width: 100%;
-      justify-content: center;
-      flex-wrap: wrap;
+    .section-title {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #818cf8;
+      margin-bottom: 18px;
+      font-weight: 800;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(245px, 1fr));
+      gap: 22px;
+      margin-bottom: 40px;
     }
 
     .game-card {
       background: #13172e;
       border: 1px solid rgba(255, 255, 255, 0.07);
       border-radius: 20px;
-      width: 240px;
       padding: 18px;
       display: flex;
       flex-direction: column;
@@ -124,29 +138,20 @@
     .game-card:hover {
       transform: translateY(-6px);
       border-color: #6366f1;
-      box-shadow: 0 12px 30px rgba(79, 70, 229, 0.25);
+      box-shadow: 0 12px 30px rgba(79, 70, 229, 0.28);
     }
 
     .preview-box {
-      height: 125px;
+      height: 115px;
       background: #0b0e1e;
       border-radius: 14px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 36px;
       position: relative;
       overflow: hidden;
-    }
-
-    /* Mini arte do Minecraft 270 */
-    .mc-blocks {
-      display: flex;
-    }
-    .mc-blocks span {
-      width: 22px;
-      height: 22px;
-      display: inline-block;
     }
 
     .tag-cat {
@@ -161,15 +166,15 @@
     .game-title {
       font-size: 18px;
       font-weight: 700;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .game-desc {
       font-size: 12px;
       color: #94a3b8;
       line-height: 1.4;
-      margin-bottom: 18px;
-      min-height: 50px;
+      margin-bottom: 16px;
+      min-height: 48px;
     }
 
     .card-footer {
@@ -193,22 +198,22 @@
 
     .btn-play:hover {
       background: #2563eb;
-      transform: scale(1.04);
+      transform: scale(1.05);
     }
 
     .badge-info {
       font-size: 11px;
       background: #1e2442;
       color: #94a3b8;
-      padding: 6px 10px;
+      padding: 5px 10px;
       border-radius: 14px;
     }
 
-    /* TELA DO JOGO ATIVO (OVERLAY) */
+    /* OVERLAY UNIVERSAL DOS JOGOS */
     #game-overlay {
       position: fixed;
       inset: 0;
-      background: #080a16;
+      background: #070913;
       z-index: 9999;
       display: none;
       flex-direction: column;
@@ -220,16 +225,13 @@
       align-items: center;
       padding: 12px 24px;
       background: #12162d;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     }
 
     .controls-hint {
       font-size: 13px;
       color: #cbd5e1;
-    }
-
-    .controls-hint strong {
-      color: #60a5fa;
+      margin-left: 12px;
     }
 
     .btn-exit {
@@ -248,423 +250,1001 @@
       background: #dc2626;
     }
 
-    .canvas-wrapper {
+    .stage-area {
       flex: 1;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: #0b0e1d;
       position: relative;
+      padding: 16px;
     }
 
     canvas {
       border: 2px solid #2e3764;
-      border-radius: 8px;
-      background: #87ceeb;
-      box-shadow: 0 0 40px rgba(0, 0, 0, 0.7);
+      border-radius: 10px;
+      background: #000;
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.85);
       outline: none;
+      max-width: 100%;
+      max-height: 78vh;
     }
 
-    .hotbar {
-      position: absolute;
-      bottom: 20px;
+    /* UI EXTRA PARA MINECRAFT E FNAF */
+    .sub-controls {
+      margin-top: 12px;
       display: flex;
-      gap: 8px;
-      background: rgba(15, 23, 42, 0.85);
-      padding: 8px 12px;
-      border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-    }
-
-    .slot {
-      width: 38px;
-      height: 38px;
-      border-radius: 6px;
-      border: 2px solid #475569;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
       justify-content: center;
-      font-size: 11px;
-      font-weight: bold;
-      color: white;
-      text-shadow: 1px 1px 2px black;
     }
 
-    .slot.selected {
-      border-color: #facc15;
-      transform: scale(1.1);
+    .sub-btn {
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid #475569;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .sub-btn.active {
+      background: #eab308;
+      color: #000;
+      border-color: #fde047;
     }
   </style>
 </head>
 <body>
 
-  <!-- CABEÇALHO -->
   <header>
-    <div class="logo-badge">LChest<br>270</div>
-    <nav>
-      <button class="active">LChest Live Arcade</button>
-      <button onclick="alert('Sala 1 ativa!')">Tabela da Sala (1)</button>
-      <button onclick="alert('8 Conquistas desbloqueadas!')">Conquistas (8)</button>
-      <button onclick="alert('Sistema OK - Sem erros de script!')">Sistema</button>
-    </nav>
+    <div class="logo-area">
+      <div class="logo-badge">LChest<br>270</div>
+      <nav>
+        <button class="active">LChest Live Arcade</button>
+        <button onclick="alert('Tabela da Sala: 10 Jogos Ativos Online!')">Tabela da Sala (1)</button>
+        <button onclick="alert('12 Conquistas Desbloqueadas!')">Conquistas (12)</button>
+        <button onclick="alert('Sistema V2.5: Bugs corrigidos e 10 jogos prontos!')">Sistema</button>
+      </nav>
+    </div>
     <div class="status-pills">
-      <span class="pill purple">Sala: OFF</span>
+      <span class="pill purple">Sala: ON</span>
       <span class="pill blue">2P Ativo</span>
-      <span class="pill gold">15.050 G</span>
-      <span class="pill">V2.4</span>
+      <span class="pill gold" id="gold-display">15.050 G</span>
+      <span class="pill">V2.5</span>
     </div>
   </header>
 
-  <!-- LISTA DE JOGOS -->
   <main>
-    <div class="cards-container">
-      <!-- CARD 1: MINECRAFT 270 -->
+    <div class="section-title">Clássicos LChest Arcade (Corrigidos)</div>
+    <div class="cards-grid">
+      <!-- 1. MINECRAFT 270 -->
       <div class="game-card">
         <div>
-          <div class="preview-box">
-            <div class="mc-blocks">
-              <span style="background:#22c55e"></span>
-              <span style="background:#854d0e"></span>
-              <span style="background:#64748b"></span>
-              <span style="background:#38bdf8"></span>
-            </div>
-          </div>
+          <div class="preview-box">🟩🟫🪨💎</div>
           <div class="tag-cat">SANDBOX MULTIPLAYER</div>
           <div class="game-title">Minecraft 270</div>
-          <div class="game-desc">Chão no fim da tela, colisão lateral sólida e blocos sincronizados entre todos!</div>
+          <div class="game-desc">Movimento destravado, colisão sólida, construir e quebrar blocos com o mouse.</div>
         </div>
         <div class="card-footer">
-          <button class="btn-play" onclick="openMinecraft270()">Iniciar Jogo</button>
+          <button class="btn-play" onclick="launchGame('minecraft')">Iniciar Jogo</button>
           <span class="badge-info">Até 10 Players</span>
         </div>
       </div>
 
-      <!-- CARD 2: JOGO DA VELHA -->
+      <!-- 2. JOGO DA VELHA -->
       <div class="game-card">
         <div>
-          <div class="preview-box">
-            <span style="font-size:44px; color:#64748b;">#</span>
-          </div>
-          <div class="tag-cat">2P / 2P+2P / 3P</div>
+          <div class="preview-box">#️⃣⭕❌</div>
+          <div class="tag-cat">2P / ESTRATÉGIA</div>
           <div class="game-title">Jogo da Velha</div>
-          <div class="game-desc">Suporta 2P local, 2º Player vs 2º Player, 2 pessoas (3 jogadores) e 3P + 2P!</div>
+          <div class="game-desc">Clique no tabuleiro para jogar 2P local com placar automático.</div>
         </div>
         <div class="card-footer">
-          <button class="btn-play" onclick="alert('Selecione Minecraft 270 para testar a correção!')">Iniciar Jogo</button>
-          <span class="badge-info">Online + 2P</span>
+          <button class="btn-play" onclick="launchGame('tictactoe')">Iniciar Jogo</button>
+          <span class="badge-info">2P Local</span>
         </div>
       </div>
 
-      <!-- CARD 3: DINO RUN 360 -->
+      <!-- 3. DINO RUN 360 -->
       <div class="game-card">
         <div>
-          <div class="preview-box">
-            <span style="font-size:34px;">🦖 🌵</span>
-          </div>
+          <div class="preview-box">🦖🌵☁️</div>
           <div class="tag-cat">ARCADE RUNNER</div>
           <div class="game-title">Dino Run 360</div>
-          <div class="game-desc">Sprites pixel-art (0.10s), pulo 35ms, abaixar (↓/S/B) e 1-4 cactos.</div>
+          <div class="game-desc">Pule os cactos com Espaço/W e abaixe com Seta Baixo/S.</div>
         </div>
         <div class="card-footer">
-          <button class="btn-play" onclick="alert('Selecione Minecraft 270 para testar a correção!')">Iniciar Jogo</button>
-          <span class="badge-info">2P / Sala</span>
+          <button class="btn-play" onclick="launchGame('dino')">Iniciar Jogo</button>
+          <span class="badge-info">Recorde</span>
         </div>
       </div>
 
-      <!-- CARD 4: N+ STICKMAN -->
+      <!-- 4. N+ STICKMAN -->
       <div class="game-card">
         <div>
-          <div class="preview-box">
-            <span style="font-size:36px;">🏃‍♂️ 🟩</span>
-          </div>
+          <div class="preview-box">🏃‍♂️🟩🚪</div>
           <div class="tag-cat">20 FASES + ELEVADOR</div>
           <div class="game-title">N+ Stickman (20 Fases)</div>
-          <div class="game-desc">20 fases totalmente diferentes com elevador móvel (sobe e desce) e parkour.</div>
+          <div class="game-desc">Use o elevador móvel para alcançar a porta dourada e avançar de fase.</div>
         </div>
         <div class="card-footer">
-          <button class="btn-play" onclick="alert('Selecione Minecraft 270 para testar a correção!')">Iniciar Jogo</button>
-          <span class="badge-info">20 Fases Únicas</span>
+          <button class="btn-play" onclick="launchGame('stickman')">Iniciar Jogo</button>
+          <span class="badge-info">20 Fases</span>
+        </div>
+      </div>
+
+      <!-- 5. FRIDAY NIGHT FUNKIN -->
+      <div class="game-card">
+        <div>
+          <div class="preview-box">⬅️⬇️⬆️➡️</div>
+          <div class="tag-cat">RITMO 7 SEMANAS</div>
+          <div class="game-title">Friday Night Funkin’</div>
+          <div class="game-desc">Acerte as setas no tempo certo usando WASD ou as Setas do teclado!</div>
+        </div>
+        <div class="card-footer">
+          <button class="btn-play" onclick="launchGame('fnf')">Iniciar Jogo</button>
+          <span class="badge-info">Ritmo</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Novos Jogos Adicionados (Seus 3 Pedidos + 2 Escolhas Arcade)</div>
+    <div class="cards-grid">
+      <!-- 6. CELESTE -->
+      <div class="game-card">
+        <div>
+          <div class="preview-box">🍓🏔️Dash</div>
+          <div class="tag-cat">PLATAFORMA HARDCORE</div>
+          <div class="game-title">Celeste</div>
+          <div class="game-desc">Escale a montanha usando pulo e Dash Aéreo (Shift ou X) para pegar o morango!</div>
+        </div>
+        <div class="card-footer">
+          <button class="btn-play" onclick="launchGame('celeste')">Iniciar Jogo</button>
+          <span class="badge-info">Novo • Pedido</span>
+        </div>
+      </div>
+
+      <!-- 7. UNDERTALE -->
+      <div class="game-card">
+        <div>
+          <div class="preview-box">❤️🦴⚔️</div>
+          <div class="tag-cat">RPG BULLET HELL</div>
+          <div class="game-title">Undertale</div>
+          <div class="game-desc">Controle sua ALMA (coração vermelho) na caixa de batalha e desvie dos ossos!</div>
+        </div>
+        <div class="card-footer">
+          <button class="btn-play" onclick="launchGame('undertale')">Iniciar Jogo</button>
+          <span class="badge-info">Novo • Pedido</span>
+        </div>
+      </div>
+
+      <!-- 8. FNAF -->
+      <div class="game-card">
+        <div>
+          <div class="preview-box">🐻🚪🔦</div>
+          <div class="tag-cat">SURVIVAL HORROR</div>
+          <div class="game-title">FNAF Arcade</div>
+          <div class="game-desc">Sobreviva até às 6 AM! Feche as portas (A / D) e economize bateria.</div>
+        </div>
+        <div class="card-footer">
+          <button class="btn-play" onclick="launchGame('fnaf')">Iniciar Jogo</button>
+          <span class="badge-info">Novo • Pedido</span>
+        </div>
+      </div>
+
+      <!-- 9. TETRIS ARCADE -->
+      <div class="game-card">
+        <div>
+          <div class="preview-box">🟦🟨🟪🟥</div>
+          <div class="tag-cat">PUZZLE CLÁSSICO</div>
+          <div class="game-title">Tetris Arcade</div>
+          <div class="game-desc">Encaixe as peças, gire com Seta Cima/W e limpe linhas para ganhar ouro!</div>
+        </div>
+        <div class="card-footer">
+          <button class="btn-play" onclick="launchGame('tetris')">Iniciar Jogo</button>
+          <span class="badge-info">Bônus 1</span>
+        </div>
+      </div>
+
+      <!-- 10. SPACE INVADERS -->
+      <div class="game-card">
+        <div>
+          <div class="preview-box">👾🚀激光</div>
+          <div class="tag-cat">SHOOTER ESPACIAL</div>
+          <div class="game-title">Space Invaders 360</div>
+          <div class="game-desc">Mova a nave (A/D) e atire (Espaço) para derrotar toda a frota alienígena!</div>
+        </div>
+        <div class="card-footer">
+          <button class="btn-play" onclick="launchGame('invaders')">Iniciar Jogo</button>
+          <span class="badge-info">Bônus 2</span>
         </div>
       </div>
     </div>
   </main>
 
-  <!-- TELA DO MINECRAFT 270 -->
+  <!-- TELA UNIVERSAL DE JOGO -->
   <div id="game-overlay">
     <div class="game-topbar">
       <div>
-        <strong>Minecraft 270</strong> &nbsp;|&nbsp;
-        <span class="controls-hint">
-          Mover: <strong>A / D</strong> ou <strong>Setas</strong> &nbsp;•&nbsp;
-          Pular: <strong>W / Espaço</strong> &nbsp;•&nbsp;
-          Quebrar: <strong>Clique Esq.</strong> &nbsp;•&nbsp;
-          Colocar: <strong>Clique Dir.</strong> &nbsp;•&nbsp;
-          Trocar Bloco: <strong>1 - 4</strong>
-        </span>
+        <strong id="active-game-title" style="color:#60a5fa; font-size:16px;">Jogo</strong>
+        <span class="controls-hint" id="active-game-hint">Controles</span>
       </div>
-      <button class="btn-exit" onclick="closeGame()">✖ Sair do Jogo (ESC)</button>
+      <button class="btn-exit" onclick="exitCurrentGame()">✖ Sair do Jogo (ESC)</button>
     </div>
-
-    <div class="canvas-wrapper">
-      <canvas id="mcCanvas" width="960" height="540" tabindex="0"></canvas>
-      <div class="hotbar" id="hotbar">
-        <div class="slot selected" style="background:#22c55e" onclick="selectBlock(1)">1</div>
-        <div class="slot" style="background:#854d0e" onclick="selectBlock(2)">2</div>
-        <div class="slot" style="background:#64748b" onclick="selectBlock(3)">3</div>
-        <div class="slot" style="background:#38bdf8" onclick="selectBlock(4)">4</div>
-      </div>
+    <div class="stage-area">
+      <canvas id="gameCanvas" width="900" height="520" tabindex="0"></canvas>
+      <div class="sub-controls" id="sub-controls"></div>
     </div>
   </div>
 
   <script>
     const overlay = document.getElementById('game-overlay');
-    const canvas = document.getElementById('mcCanvas');
+    const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
+    const titleEl = document.getElementById('active-game-title');
+    const hintEl = document.getElementById('active-game-hint');
+    const subControls = document.getElementById('sub-controls');
+    const goldDisplay = document.getElementById('gold-display');
 
-    const TILE = 30;
-    const COLS = canvas.width / TILE;  // 32 colunas
-    const ROWS = canvas.height / TILE; // 18 linhas
-
-    let gameRunning = false;
-    let animationId = null;
-    let world = [];
-    let selectedBlock = 1;
-
-    const BLOCK_COLORS = {
-      1: '#22c55e', // Grama
-      2: '#854d0e', // Terra
-      3: '#64748b', // Pedra
-      4: '#38bdf8'  // Diamante/Vidro
-    };
-
-    // Estado do Jogador
-    const player = {
-      x: 120,
-      y: 200,
-      w: 22,
-      h: 44,
-      vx: 0,
-      vy: 0,
-      speed: 4.2,
-      jumpPower: -10.5,
-      grounded: false
-    };
-
-    // Controles de Teclado
+    let gold = 15050;
+    let currentGame = null;
+    let loopId = null;
     const keys = {};
 
-    window.addEventListener('keydown', (e) => {
-      if (!gameRunning) return;
+    function addGold(amount) {
+      gold += amount;
+      goldDisplay.textContent = gold.toLocaleString('pt-BR') + ' G';
+    }
 
-      // Impede a página de rolar com setas ou espaço
-      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', ' '].includes(e.key)) {
+    // Controle global de teclado sem travar
+    window.addEventListener('keydown', (e) => {
+      if (!currentGame) return;
+      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(e.key)) {
         e.preventDefault();
       }
-
       if (e.key === 'Escape') {
-        closeGame();
+        exitCurrentGame();
         return;
       }
-
-      if (['1', '2', '3', '4'].includes(e.key)) {
-        selectBlock(Number(e.key));
-      }
-
       keys[e.key.toLowerCase()] = true;
+      if (currentGame && currentGame.onKeyDown) currentGame.onKeyDown(e);
     });
 
     window.addEventListener('keyup', (e) => {
       keys[e.key.toLowerCase()] = false;
     });
 
-    // Zera teclas se o usuário mudar de aba (evita boneco travado)
     window.addEventListener('blur', () => {
       for (let k in keys) keys[k] = false;
     });
 
-    function selectBlock(id) {
-      selectedBlock = id;
-      const slots = document.querySelectorAll('.slot');
-      slots.forEach((s, index) => {
-        s.classList.toggle('selected', index + 1 === id);
-      });
-    }
-
-    function initWorld() {
-      world = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
-      // Gera terreno no fundo da tela
-      for (let c = 0; c < COLS; c++) {
-        world[ROWS - 4][c] = 1; // Grama
-        world[ROWS - 3][c] = 2; // Terra
-        world[ROWS - 2][c] = 3; // Pedra
-        world[ROWS - 1][c] = 3; // Pedra base
-      }
-      // Alguns blocos extras no mapa
-      world[ROWS - 5][10] = 1;
-      world[ROWS - 5][11] = 2;
-      world[ROWS - 6][11] = 1;
-    }
-
-    function openMinecraft270() {
-      // Limpa qualquer tecla presa antes de iniciar
-      for (let k in keys) keys[k] = false;
-
-      initWorld();
-      player.x = 120;
-      player.y = 200;
-      player.vx = 0;
-      player.vy = 0;
-
-      overlay.style.display = 'flex';
-      gameRunning = true;
-      canvas.focus();
-
-      if (animationId) cancelAnimationFrame(animationId);
-      gameLoop();
-    }
-
-    function closeGame() {
-      gameRunning = false;
-      if (animationId) cancelAnimationFrame(animationId);
-      overlay.style.display = 'none';
-      for (let k in keys) keys[k] = false;
-    }
-
-    // Interação com Blocos (Mouse)
     canvas.addEventListener('contextmenu', (e) => e.preventDefault());
-
     canvas.addEventListener('mousedown', (e) => {
-      if (!gameRunning) return;
-      const rect = canvas.getBoundingClientRect();
-      const mx = e.clientX - rect.left;
-      const my = e.clientY - rect.top;
-
-      const col = Math.floor(mx / TILE);
-      const row = Math.floor(my / TILE);
-
-      if (row < 0 || row >= ROWS || col < 0 || col >= COLS) return;
-
-      if (e.button === 0) {
-        // Botão esquerdo: Quebrar bloco
-        world[row][col] = 0;
-      } else if (e.button === 2) {
-        // Botão direito: Colocar bloco (não permite colocar em cima do jogador)
-        const blockRect = { x: col * TILE, y: row * TILE, w: TILE, h: TILE };
-        if (!rectIntersect(player, blockRect) && world[row][col] === 0) {
-          world[row][col] = selectedBlock;
-        }
+      if (currentGame && currentGame.onMouseDown) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const x = (e.clientX - rect.left) * scaleX;
+        const y = (e.clientY - rect.top) * scaleY;
+        currentGame.onMouseDown(e, x, y);
       }
     });
 
-    function rectIntersect(r1, r2) {
-      return !(
-        r2.x >= r1.x + r1.w ||
-        r2.x + r2.w <= r1.x ||
-        r2.y >= r1.y + r1.h ||
-        r2.y + r2.h <= r1.y
-      );
+    function exitCurrentGame() {
+      if (loopId) cancelAnimationFrame(loopId);
+      loopId = null;
+      currentGame = null;
+      overlay.style.display = 'none';
+      subControls.innerHTML = '';
+      for (let k in keys) keys[k] = false;
     }
 
-    function checkCollisions(axis) {
-      for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-          if (world[r][c] !== 0) {
-            const block = { x: c * TILE, y: r * TILE, w: TILE, h: TILE };
-            if (rectIntersect(player, block)) {
-              if (axis === 'x') {
-                if (player.vx > 0) player.x = block.x - player.w;
-                if (player.vx < 0) player.x = block.x + block.w;
-                player.vx = 0;
-              } else if (axis === 'y') {
-                if (player.vy > 0) {
-                  player.y = block.y - player.h;
-                  player.grounded = true;
-                } else if (player.vy < 0) {
-                  player.y = block.y + block.h;
+    function launchGame(type) {
+      exitCurrentGame();
+      overlay.style.display = 'flex';
+      canvas.width = 900;
+      canvas.height = 520;
+      canvas.focus();
+
+      const factories = {
+        minecraft: createMinecraft,
+        tictactoe: createTicTacToe,
+        dino: createDino,
+        stickman: createStickman,
+        fnf: createFNF,
+        celeste: createCeleste,
+        undertale: createUndertale,
+        fnaf: createFNAF,
+        tetris: createTetris,
+        invaders: createInvaders
+      };
+
+      currentGame = factories[type]();
+      titleEl.textContent = currentGame.title;
+      hintEl.textContent = currentGame.hint;
+
+      function tick() {
+        if (!currentGame) return;
+        currentGame.update();
+        currentGame.draw();
+        loopId = requestAnimationFrame(tick);
+      }
+      tick();
+    }
+
+    /* ==========================================================
+       1. MINECRAFT 270 (CORRIGIDO)
+    ========================================================== */
+    function createMinecraft() {
+      const TILE = 30, COLS = 30, ROWS = 17;
+      canvas.height = 510;
+      let selected = 1;
+      const colors = { 1: '#22c55e', 2: '#854d0e', 3: '#64748b', 4: '#38bdf8' };
+      const world = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+      for (let c = 0; c < COLS; c++) {
+        world[13][c] = 1; world[14][c] = 2; world[15][c] = 3; world[16][c] = 3;
+      }
+      const p = { x: 100, y: 200, w: 22, h: 42, vx: 0, vy: 0, grounded: false };
+
+      subControls.innerHTML = `
+        <button class="sub-btn active" onclick="this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active');currentGame.setBlock(1)">1: Grama</button>
+        <button class="sub-btn" onclick="this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active');currentGame.setBlock(2)">2: Terra</button>
+        <button class="sub-btn" onclick="this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active');currentGame.setBlock(3)">3: Pedra</button>
+        <button class="sub-btn" onclick="this.parentNode.querySelectorAll('button').forEach(b=>b.classList.remove('active'));this.classList.add('active');currentGame.setBlock(4)">4: Diamante</button>
+      `;
+
+      function collide(axis) {
+        for (let r = 0; r < ROWS; r++) {
+          for (let c = 0; c < COLS; c++) {
+            if (world[r][c]) {
+              const bx = c * TILE, by = r * TILE;
+              if (p.x < bx + TILE && p.x + p.w > bx && p.y < by + TILE && p.y + p.h > by) {
+                if (axis === 'x') {
+                  if (p.vx > 0) p.x = bx - p.w;
+                  if (p.vx < 0) p.x = bx + TILE;
+                  p.vx = 0;
+                } else {
+                  if (p.vy > 0) { p.y = by - p.h; p.grounded = true; }
+                  if (p.vy < 0) p.y = by + TILE;
+                  p.vy = 0;
                 }
-                player.vy = 0;
               }
             }
           }
         }
       }
+
+      return {
+        title: 'Minecraft 270',
+        hint: 'Andar: A/D ou Setas | Pular: W/Espaço | Quebrar: Clique Esq | Colocar: Clique Dir',
+        setBlock(b) { selected = b; },
+        onKeyDown(e) {
+          if (['1','2','3','4'].includes(e.key)) selected = Number(e.key);
+        },
+        onMouseDown(e, x, y) {
+          const c = Math.floor(x / TILE), r = Math.floor(y / TILE);
+          if (r >= 0 && r < ROWS && c >= 0 && c < COLS) {
+            if (e.button === 0) world[r][c] = 0;
+            if (e.button === 2 && !world[r][c]) world[r][c] = selected;
+          }
+        },
+        update() {
+          p.vx = (keys['a'] || keys['arrowleft']) ? -4.2 : (keys['d'] || keys['arrowright']) ? 4.2 : 0;
+          if ((keys['w'] || keys['arrowup'] || keys[' ']) && p.grounded) { p.vy = -10.5; p.grounded = false; }
+          p.x = Math.max(0, Math.min(canvas.width - p.w, p.x + p.vx));
+          collide('x');
+          p.vy += 0.55;
+          p.y += p.vy;
+          p.grounded = false;
+          collide('y');
+          if (p.y + p.h > canvas.height) { p.y = canvas.height - p.h; p.vy = 0; p.grounded = true; }
+        },
+        draw() {
+          ctx.fillStyle = '#7dd3fc';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+          for (let r = 0; r < ROWS; r++) {
+            for (let c = 0; c < COLS; c++) {
+              if (world[r][c]) {
+                ctx.fillStyle = colors[world[r][c]];
+                ctx.fillRect(c * TILE, r * TILE, TILE, TILE);
+                ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+                ctx.strokeRect(c * TILE, r * TILE, TILE, TILE);
+              }
+            }
+          }
+          ctx.fillStyle = '#0284c7'; ctx.fillRect(p.x, p.y + 12, p.w, 18);
+          ctx.fillStyle = '#1e3a8a'; ctx.fillRect(p.x, p.y + 30, p.w, 12);
+          ctx.fillStyle = '#fed7aa'; ctx.fillRect(p.x + 2, p.y, p.w - 4, 12);
+        }
+      };
     }
 
-    function update() {
-      // Movimento Horizontal
-      if (keys['a'] || keys['arrowleft']) {
-        player.vx = -player.speed;
-      } else if (keys['d'] || keys['arrowright']) {
-        player.vx = player.speed;
-      } else {
-        player.vx = 0;
-      }
-
-      // Pulo
-      if ((keys['w'] || keys['arrowup'] || keys[' ']) && player.grounded) {
-        player.vy = player.jumpPower;
-        player.grounded = false;
-      }
-
-      // Aplica eixo X e colisão lateral
-      player.x += player.vx;
-      if (player.x < 0) player.x = 0;
-      if (player.x + player.w > canvas.width) player.x = canvas.width - player.w;
-      checkCollisions('x');
-
-      // Gravidade e eixo Y
-      player.vy += 0.55;
-      player.y += player.vy;
-      player.grounded = false;
-      checkCollisions('y');
-
-      // Chão no fim da tela (segurança)
-      if (player.y + player.h > canvas.height) {
-        player.y = canvas.height - player.h;
-        player.vy = 0;
-        player.grounded = true;
-      }
+    /* ==========================================================
+       2. JOGO DA VELHA
+    ========================================================== */
+    function createTicTacToe() {
+      let board = Array(9).fill('');
+      let turn = 'X', msg = 'Vez do Jogador X';
+      subControls.innerHTML = `<button class="sub-btn" onclick="currentGame.reset()">Reiniciar Partida</button>`;
+      return {
+        title: 'Jogo da Velha (2P)',
+        hint: 'Clique nas casas para marcar X ou O',
+        reset() { board.fill(''); turn = 'X'; msg = 'Vez do Jogador X'; },
+        onMouseDown(e, x, y) {
+          const sx = 300, sy = 110, size = 100;
+          const c = Math.floor((x - sx) / size), r = Math.floor((y - sy) / size);
+          if (c >= 0 && c < 3 && r >= 0 && r < 3) {
+            const idx = r * 3 + c;
+            if (!board[idx] && msg.startsWith('Vez')) {
+              board[idx] = turn;
+              const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+              if (wins.some(w => w.every(i => board[i] === turn))) {
+                msg = `Jogador ${turn} Venceu! (+50 G)`; addGold(50);
+              } else if (!board.includes('')) {
+                msg = 'Empate!';
+              } else {
+                turn = turn === 'X' ? 'O' : 'X';
+                msg = `Vez do Jogador ${turn}`;
+              }
+            }
+          }
+        },
+        update() {},
+        draw() {
+          ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 24px sans-serif'; ctx.textAlign = 'center';
+          ctx.fillText(msg, 450, 65);
+          ctx.strokeStyle = '#6366f1'; ctx.lineWidth = 4;
+          for (let i = 1; i < 3; i++) {
+            ctx.beginPath(); ctx.moveTo(300 + i * 100, 110); ctx.lineTo(300 + i * 100, 410); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(300, 110 + i * 100); ctx.lineTo(600, 110 + i * 100); ctx.stroke();
+          }
+          ctx.font = 'bold 56px sans-serif';
+          board.forEach((v, i) => {
+            if (v) {
+              ctx.fillStyle = v === 'X' ? '#38bdf8' : '#f43f5e';
+              ctx.fillText(v, 350 + (i % 3) * 100, 180 + Math.floor(i / 3) * 100);
+            }
+          });
+        }
+      };
     }
 
-    function draw() {
-      // Céu
-      ctx.fillStyle = '#7dd3fc';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Blocos do mundo
-      for (let r = 0; r < ROWS; r++) {
-        for (let c = 0; c < COLS; c++) {
-          const type = world[r][c];
-          if (type !== 0) {
-            ctx.fillStyle = BLOCK_COLORS[type];
-            ctx.fillRect(c * TILE, r * TILE, TILE, TILE);
-            ctx.strokeStyle = 'rgba(0,0,0,0.25)';
-            ctx.strokeRect(c * TILE, r * TILE, TILE, TILE);
+    /* ==========================================================
+       3. DINO RUN 360
+    ========================================================== */
+    function createDino() {
+      let y = 360, vy = 0, score = 0, alive = true;
+      let cacti = [{ x: 900, w: 26, h: 48 }];
+      return {
+        title: 'Dino Run 360',
+        hint: 'Pular: Espaço/W | Abaixar: S/Seta Baixo | Reiniciar: R',
+        onKeyDown(e) {
+          if (e.key.toLowerCase() === 'r' && !alive) {
+            y = 360; vy = 0; score = 0; alive = true; cacti = [{ x: 900, w: 26, h: 48 }];
+          }
+        },
+        update() {
+          if (!alive) return;
+          const duck = keys['s'] || keys['arrowdown'];
+          const h = duck ? 26 : 48;
+          if ((keys[' '] || keys['w'] || keys['arrowup']) && y >= 408 - h) vy = -12.5;
+          vy += 0.65; y += vy;
+          if (y > 408 - h) { y = 408 - h; vy = 0; }
+          score += 0.15;
+          cacti.forEach(c => {
+            c.x -= 6.5;
+            if (c.x < -30) { c.x = 900 + Math.random() * 250; c.h = 35 + Math.random() * 25; }
+            if (100 < c.x + c.w && 136 > c.x && y + h > 408 - c.h) alive = false;
+          });
+        },
+        draw() {
+          ctx.fillStyle = '#0b1120'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = '#334155'; ctx.fillRect(0, 408, 900, 4);
+          const duck = keys['s'] || keys['arrowdown'];
+          const h = duck ? 26 : 48;
+          ctx.fillStyle = '#22c55e'; ctx.fillRect(100, y, 36, h);
+          ctx.fillStyle = '#ef4444';
+          cacti.forEach(c => ctx.fillRect(c.x, 408 - c.h, c.w, c.h));
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'left';
+          ctx.fillText('Pontos: ' + Math.floor(score), 30, 40);
+          if (!alive) {
+            ctx.textAlign = 'center'; ctx.fillText('GAME OVER! Aperte R para reiniciar', 450, 240);
           }
         }
-      }
-
-      // Jogador (estilo Steve minimalista)
-      // Corpo
-      ctx.fillStyle = '#0284c7';
-      ctx.fillRect(player.x, player.y + 14, player.w, 18);
-      // Calça
-      ctx.fillStyle = '#1e3a8a';
-      ctx.fillRect(player.x, player.y + 32, player.w, 12);
-      // Cabeça
-      ctx.fillStyle = '#fed7aa';
-      ctx.fillRect(player.x + 2, player.y, player.w - 4, 14);
-      // Cabelo
-      ctx.fillStyle = '#451a03';
-      ctx.fillRect(player.x + 2, player.y, player.w - 4, 4);
+      };
     }
 
-    function gameLoop() {
-      if (!gameRunning) return;
-      update();
-      draw();
-      animationId = requestAnimationFrame(gameLoop);
+    /* ==========================================================
+       4. N+ STICKMAN (20 FASES + ELEVADOR)
+    ========================================================== */
+    function createStickman() {
+      let stage = 1, elevY = 380, elevDir = -2;
+      const p = { x: 80, y: 400, vx: 0, vy: 0, grounded: false };
+      return {
+        title: 'N+ Stickman (20 Fases)',
+        hint: 'Mover: A/D | Pular: W/Espaço | Suba no elevador azul até a porta dourada!',
+        update() {
+          elevY += elevDir;
+          if (elevY < 160 || elevY > 400) elevDir *= -1;
+          p.vx = (keys['a'] || keys['arrowleft']) ? -4.5 : (keys['d'] || keys['arrowright']) ? 4.5 : 0;
+          if ((keys['w'] || keys['arrowup'] || keys[' ']) && p.grounded) { p.vy = -10.5; p.grounded = false; }
+          p.x = Math.max(20, Math.min(860, p.x + p.vx));
+          p.vy += 0.5; p.y += p.vy; p.grounded = false;
+
+          // Chão
+          if (p.y >= 420) { p.y = 420; p.vy = 0; p.grounded = true; }
+          // Plataforma elevada direita
+          if (p.x > 600 && p.y >= 150 && p.y <= 170 && p.vy >= 0) { p.y = 150; p.vy = 0; p.grounded = true; }
+          // Elevador móvel
+          if (p.x > 360 && p.x < 500 && Math.abs(p.y + 30 - elevY) < 12 && p.vy >= 0) {
+            p.y = elevY - 30; p.vy = 0; p.grounded = true;
+          }
+          // Porta dourada
+          if (p.x > 780 && p.y < 160) {
+            stage = stage < 20 ? stage + 1 : 1;
+            addGold(25);
+            p.x = 80; p.y = 400;
+          }
+        },
+        draw() {
+          ctx.fillStyle = '#111827'; ctx.fillRect(0, 0, 900, 520);
+          ctx.fillStyle = '#475569'; ctx.fillRect(0, 450, 900, 70);
+          ctx.fillRect(600, 180, 300, 20);
+          ctx.fillStyle = '#38bdf8'; ctx.fillRect(370, elevY, 130, 14);
+          ctx.fillStyle = '#facc15'; ctx.fillRect(790, 120, 34, 60);
+          // Stickman
+          ctx.fillStyle = '#fff'; ctx.fillRect(p.x, p.y, 16, 30);
+          ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'left';
+          ctx.fillText(`Fase ${stage} / 20`, 30, 40);
+        }
+      };
+    }
+
+    /* ==========================================================
+       5. FRIDAY NIGHT FUNKIN'
+    ========================================================== */
+    function createFNF() {
+      const lanes = [270, 370, 470, 570];
+      const labels = ['←', '↓', '↑', '→'];
+      const colors = ['#c026d3', '#06b6d4', '#22c55e', '#ef4444'];
+      let notes = [], timer = 0, score = 0;
+      return {
+        title: 'Friday Night Funkin’',
+        hint: 'Aperte Setas ou WASD quando as setas passarem pelos alvos no topo!',
+        onKeyDown(e) {
+          const map = { 'arrowleft':0,'a':0, 'arrowdown':1,'s':1, 'arrowup':2,'w':2, 'arrowright':3,'d':3 };
+          const lane = map[e.key.toLowerCase()];
+          if (lane !== undefined) {
+            const hit = notes.findIndex(n => n.lane === lane && Math.abs(n.y - 80) < 42);
+            if (hit !== -1) { notes.splice(hit, 1); score += 100; }
+          }
+        },
+        update() {
+          timer++;
+          if (timer % 28 === 0) notes.push({ lane: Math.floor(Math.random() * 4), y: 520 });
+          notes.forEach(n => n.y -= 5.2);
+          notes = notes.filter(n => n.y > -30);
+        },
+        draw() {
+          ctx.fillStyle = '#181028'; ctx.fillRect(0, 0, 900, 520);
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 22px sans-serif'; ctx.textAlign = 'left';
+          ctx.fillText('Score: ' + score, 30, 45);
+          ctx.font = 'bold 34px sans-serif'; ctx.textAlign = 'center';
+          lanes.forEach((lx, i) => {
+            ctx.strokeStyle = colors[i]; ctx.lineWidth = 3;
+            ctx.strokeRect(lx - 25, 50, 50, 50);
+            ctx.fillStyle = '#64748b'; ctx.fillText(labels[i], lx, 87);
+          });
+          notes.forEach(n => {
+            ctx.fillStyle = colors[n.lane];
+            ctx.fillRect(lanes[n.lane] - 22, n.y - 22, 44, 44);
+            ctx.fillStyle = '#fff'; ctx.fillText(labels[n.lane], lanes[n.lane], n.y + 12);
+          });
+        }
+      };
+    }
+
+    /* ==========================================================
+       6. CELESTE (PEDIDO 1)
+    ========================================================== */
+    function createCeleste() {
+      const m = { x: 70, y: 400, w: 22, h: 28, vx: 0, vy: 0, grounded: false, canDash: true, dashTimer: 0 };
+      const plats = [
+        { x: 0, y: 460, w: 260, h: 60 },
+        { x: 320, y: 370, w: 150, h: 20 },
+        { x: 540, y: 280, w: 150, h: 20 },
+        { x: 710, y: 170, w: 170, h: 25 }
+      ];
+      let berries = 0;
+      return {
+        title: 'Celeste - Montanha Celeste',
+        hint: 'Mover: A/D | Pular: W/Espaço | Dash Aéreo: Shift ou X (cabelo azul recarrega no chão)',
+        onKeyDown(e) {
+          const k = e.key.toLowerCase();
+          if ((k === 'shift' || k === 'x') && m.canDash) {
+            m.canDash = false;
+            m.dashTimer = 10;
+            const dirX = (keys['a'] || keys['arrowleft']) ? -1 : (keys['d'] || keys['arrowright']) ? 1 : 1;
+            const dirY = (keys['w'] || keys['arrowup']) ? -1 : 0;
+            m.vx = dirX * 12;
+            m.vy = dirY !== 0 ? dirY * 10 : -3;
+          }
+        },
+        update() {
+          if (m.dashTimer > 0) {
+            m.dashTimer--;
+          } else {
+            m.vx = (keys['a'] || keys['arrowleft']) ? -4.5 : (keys['d'] || keys['arrowright']) ? 4.5 : 0;
+            if ((keys['w'] || keys['arrowup'] || keys[' ']) && m.grounded) { m.vy = -10.5; m.grounded = false; }
+            m.vy += 0.52;
+          }
+          m.x += m.vx; m.y += m.vy; m.grounded = false;
+
+          plats.forEach(pl => {
+            if (m.x + m.w > pl.x && m.x < pl.x + pl.w && m.y + m.h >= pl.y && m.y + m.h <= pl.y + 22 && m.vy >= 0) {
+              m.y = pl.y - m.h; m.vy = 0; m.grounded = true; m.canDash = true;
+            }
+          });
+
+          // Caiu no abismo
+          if (m.y > 530) { m.x = 70; m.y = 400; m.vx = 0; m.vy = 0; m.canDash = true; }
+
+          // Pegou o morango no topo
+          if (Math.hypot(m.x - 790, m.y - 135) < 35) {
+            berries++; addGold(40);
+            m.x = 70; m.y = 400; m.canDash = true;
+          }
+        },
+        draw() {
+          ctx.fillStyle = '#0f172a'; ctx.fillRect(0, 0, 900, 520);
+          // Neve de fundo
+          ctx.fillStyle = 'rgba(255,255,255,0.2)';
+          for (let i = 0; i < 30; i++) ctx.fillRect((i * 73) % 900, (i * 41 + Date.now() * 0.05) % 520, 4, 4);
+
+          ctx.fillStyle = '#38bdf8';
+          plats.forEach(pl => ctx.fillRect(pl.x, pl.y, pl.w, pl.h));
+
+          // Morango
+          ctx.fillStyle = '#f43f5e';
+          ctx.beginPath(); ctx.arc(795, 140, 12, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#22c55e'; ctx.fillRect(790, 124, 10, 5);
+
+          // Madeline (cabelo vermelho com dash, azul sem dash)
+          ctx.fillStyle = '#3b82f6'; ctx.fillRect(m.x, m.y + 10, m.w, 18);
+          ctx.fillStyle = m.canDash ? '#ef4444' : '#38bdf8'; ctx.fillRect(m.x - 2, m.y, m.w + 4, 12);
+
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'left';
+          ctx.fillText(`Morangos Coletados: ${berries}`, 30, 40);
+        }
+      };
+    }
+
+    /* ==========================================================
+       7. UNDERTALE (PEDIDO 2)
+    ========================================================== */
+    function createUndertale() {
+      const box = { x: 310, y: 210, w: 280, h: 230 };
+      const soul = { x: 442, y: 315, size: 16, hp: 20 };
+      let bones = [], timer = 0, survived = 0;
+      return {
+        title: 'Undertale - Batalha de Alma',
+        hint: 'Mova o coração vermelho com WASD ou Setas dentro da caixa e desvie dos ossos!',
+        onKeyDown(e) {
+          if (e.key.toLowerCase() === 'r' && soul.hp <= 0) {
+            soul.hp = 20; soul.x = 442; soul.y = 315; bones = []; survived = 0;
+          }
+        },
+        update() {
+          if (soul.hp <= 0) return;
+          survived += 0.02;
+          const sp = 4.5;
+          if (keys['a'] || keys['arrowleft']) soul.x -= sp;
+          if (keys['d'] || keys['arrowright']) soul.x += sp;
+          if (keys['w'] || keys['arrowup']) soul.y -= sp;
+          if (keys['s'] || keys['arrowdown']) soul.y += sp;
+
+          soul.x = Math.max(box.x + 6, Math.min(box.x + box.w - soul.size - 6, soul.x));
+          soul.y = Math.max(box.y + 6, Math.min(box.y + box.h - soul.size - 6, soul.y));
+
+          timer++;
+          if (timer % 32 === 0) {
+            const fromLeft = Math.random() > 0.5;
+            bones.push({
+              x: fromLeft ? box.x - 20 : box.x + box.w + 20,
+              y: box.y + 20 + Math.random() * (box.h - 60),
+              w: 14, h: 48,
+              vx: fromLeft ? 4.2 : -4.2
+            });
+          }
+
+          bones.forEach(b => {
+            b.x += b.vx;
+            if (soul.x < b.x + b.w && soul.x + soul.size > b.x && soul.y < b.y + b.h && soul.y + soul.size > b.y) {
+              soul.hp = Math.max(0, soul.hp - 0.35);
+            }
+          });
+          bones = bones.filter(b => b.x > box.x - 50 && b.x < box.x + box.w + 50);
+        },
+        draw() {
+          ctx.fillStyle = '#000'; ctx.fillRect(0, 0, 900, 520);
+          // Esqueleto Boss simples
+          ctx.fillStyle = '#fff';
+          ctx.beginPath(); ctx.arc(450, 110, 36, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#000'; ctx.fillRect(435, 100, 10, 10); ctx.fillStyle = '#38bdf8'; ctx.fillRect(457, 100, 10, 10);
+
+          // Caixa branca
+          ctx.strokeStyle = '#fff'; ctx.lineWidth = 5;
+          ctx.strokeRect(box.x, box.y, box.w, box.h);
+
+          // Ossos
+          ctx.fillStyle = '#fff';
+          bones.forEach(b => ctx.fillRect(b.x, b.y, b.w, b.h));
+
+          // Alma (Coração)
+          ctx.fillStyle = '#ef4444';
+          ctx.fillRect(soul.x, soul.y, soul.size, soul.size);
+
+          // Barra de HP
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 20px monospace'; ctx.textAlign = 'center';
+          ctx.fillText(`LV 1   HP ${Math.ceil(soul.hp)} / 20   Tempo: ${Math.floor(survived)}s`, 450, 485);
+          ctx.fillStyle = '#ef4444'; ctx.fillRect(350, 452, 200, 16);
+          ctx.fillStyle = '#facc15'; ctx.fillRect(350, 452, (soul.hp / 20) * 200, 16);
+
+          if (soul.hp <= 0) {
+            ctx.fillStyle = '#ef4444'; ctx.font = 'bold 32px monospace';
+            ctx.fillText('GAME OVER - Aperte R', 450, 330);
+          }
+        }
+      };
+    }
+
+    /* ==========================================================
+       8. FNAF ARCADE (PEDIDO 3)
+    ========================================================== */
+    function createFNAF() {
+      let leftDoor = false, rightDoor = false, light = false;
+      let power = 100, time = 0, enemySide = null, enemyTimer = 0, state = 'playing';
+
+      subControls.innerHTML = `
+        <button class="sub-btn" onclick="currentGame.toggleLeft()">Porta Esquerda (A)</button>
+        <button class="sub-btn" onclick="currentGame.toggleLight()">Lanterna Corredor (Espaço)</button>
+        <button class="sub-btn" onclick="currentGame.toggleRight()">Porta Direita (D)</button>
+      `;
+
+      return {
+        title: 'FNAF - Five Nights Arcade',
+        hint: 'Feche as portas (A = Esq, D = Dir) quando ouvir/ver o animatrônico! Sobreviva até 6 AM.',
+        toggleLeft() { if (power > 0) leftDoor = !leftDoor; },
+        toggleRight() { if (power > 0) rightDoor = !rightDoor; },
+        toggleLight() { if (power > 0) light = !light; },
+        onKeyDown(e) {
+          const k = e.key.toLowerCase();
+          if (k === 'a' || k === 'arrowleft') this.toggleLeft();
+          if (k === 'd' || k === 'arrowright') this.toggleRight();
+          if (k === ' ') this.toggleLight();
+          if (k === 'r' && state !== 'playing') {
+            power = 100; time = 0; leftDoor = false; rightDoor = false; enemySide = null; state = 'playing';
+          }
+        },
+        update() {
+          if (state !== 'playing') return;
+          time += 0.025; // ~24 segundos = 6 AM
+          if (time >= 6) { state = 'win'; addGold(100); return; }
+
+          const drain = 0.03 + (leftDoor ? 0.08 : 0) + (rightDoor ? 0.08 : 0) + (light ? 0.06 : 0);
+          power = Math.max(0, power - drain);
+          if (power === 0) { leftDoor = false; rightDoor = false; light = false; }
+
+          enemyTimer++;
+          if (!enemySide && enemyTimer > 140) {
+            enemySide = Math.random() > 0.5 ? 'left' : 'right';
+            enemyTimer = 0;
+          } else if (enemySide && enemyTimer > 130) {
+            if ((enemySide === 'left' && !leftDoor) || (enemySide === 'right' && !rightDoor)) {
+              state = 'jumpscare';
+            } else {
+              enemySide = null; enemyTimer = 0;
+            }
+          }
+        },
+        draw() {
+          ctx.fillStyle = '#090d16'; ctx.fillRect(0, 0, 900, 520);
+          // Escritório
+          ctx.fillStyle = '#1e293b'; ctx.fillRect(180, 70, 540, 360);
+          // Mesa e ventilador
+          ctx.fillStyle = '#334155'; ctx.fillRect(250, 340, 400, 90);
+
+          // Porta Esquerda
+          ctx.fillStyle = leftDoor ? '#475569' : '#020617';
+          ctx.fillRect(60, 90, 110, 340);
+          if (enemySide === 'left' && (!leftDoor || light)) {
+            ctx.fillStyle = '#a855f7'; ctx.fillRect(85, 190, 60, 120); // Bonnie
+            ctx.fillStyle = '#ef4444'; ctx.fillRect(98, 210, 10, 10); ctx.fillRect(122, 210, 10, 10);
+          }
+
+          // Porta Direita
+          ctx.fillStyle = rightDoor ? '#475569' : '#020617';
+          ctx.fillRect(730, 90, 110, 340);
+          if (enemySide === 'right' && (!rightDoor || light)) {
+            ctx.fillStyle = '#eab308'; ctx.fillRect(755, 190, 60, 120); // Chica
+            ctx.fillStyle = '#ef4444'; ctx.fillRect(768, 210, 10, 10); ctx.fillRect(792, 210, 10, 10);
+          }
+
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 22px monospace'; ctx.textAlign = 'left';
+          ctx.fillText(`Bateria: ${Math.ceil(power)}%`, 40, 45);
+          ctx.textAlign = 'right';
+          const hour = Math.floor(time) === 0 ? 12 : Math.floor(time);
+          ctx.fillText(`${hour} AM`, 860, 45);
+
+          if (state === 'win') {
+            ctx.fillStyle = '#22c55e'; ctx.font = 'bold 42px monospace'; ctx.textAlign = 'center';
+            ctx.fillText('6:00 AM - VOCÊ SOBREVIVEU! (+100 G)', 450, 260);
+          } else if (state === 'jumpscare') {
+            ctx.fillStyle = '#7f1d1d'; ctx.fillRect(0, 0, 900, 520);
+            ctx.fillStyle = '#fff'; ctx.font = 'bold 40px monospace'; ctx.textAlign = 'center';
+            ctx.fillText('JUMPSCARE! Aperte R para tentar de novo', 450, 260);
+          }
+        }
+      };
+    }
+
+    /* ==========================================================
+       9. TETRIS ARCADE (ESCOLHA BÔNUS 1)
+    ========================================================== */
+    function createTetris() {
+      const COLS = 10, ROWS = 18, S = 26;
+      const grid = Array.from({ length: ROWS }, () => Array(COLS).fill(0));
+      const shapes = [
+        [[1,1,1,1]],
+        [[1,1],[1,1]],
+        [[0,1,0],[1,1,1]],
+        [[1,0,0],[1,1,1]],
+        [[0,0,1],[1,1,1]]
+      ];
+      const colors = ['', '#38bdf8', '#facc15', '#a855f7', '#f97316', '#22c55e'];
+      let piece = { shape: shapes[2], color: 3, x: 3, y: 0 };
+      let dropTimer = 0, score = 0;
+
+      function valid(sh, ox, oy) {
+        return sh.every((row, r) => row.every((v, c) => {
+          if (!v) return true;
+          const nx = ox + c, ny = oy + r;
+          return nx >= 0 && nx < COLS && ny < ROWS && (!grid[ny] || !grid[ny][nx]);
+        }));
+      }
+
+      function merge() {
+        piece.shape.forEach((row, r) => row.forEach((v, c) => {
+          if (v && piece.y + r >= 0) grid[piece.y + r][piece.x + c] = piece.color;
+        }));
+        for (let r = ROWS - 1; r >= 0; r--) {
+          if (grid[r].every(v => v !== 0)) {
+            grid.splice(r, 1);
+            grid.unshift(Array(COLS).fill(0));
+            score += 100; addGold(20); r++;
+          }
+        }
+        const idx = Math.floor(Math.random() * shapes.length);
+        piece = { shape: shapes[idx], color: idx + 1, x: 3, y: 0 };
+        if (!valid(piece.shape, piece.x, piece.y)) grid.forEach(row => row.fill(0));
+      }
+
+      return {
+        title: 'Tetris Arcade',
+        hint: 'Mover: A/D ou Setas | Girar: W ou Seta Cima | Descer rápido: S ou Seta Baixo',
+        onKeyDown(e) {
+          const k = e.key.toLowerCase();
+          if ((k === 'a' || k === 'arrowleft') && valid(piece.shape, piece.x - 1, piece.y)) piece.x--;
+          if ((k === 'd' || k === 'arrowright') && valid(piece.shape, piece.x + 1, piece.y)) piece.x++;
+          if (k === 's' || k === 'arrowdown') {
+            if (valid(piece.shape, piece.x, piece.y + 1)) piece.y++;
+          }
+          if (k === 'w' || k === 'arrowup') {
+            const rot = piece.shape[0].map((_, i) => piece.shape.map(row => row[i]).reverse());
+            if (valid(rot, piece.x, piece.y)) piece.shape = rot;
+          }
+        },
+        update() {
+          dropTimer++;
+          if (dropTimer > 25) {
+            dropTimer = 0;
+            if (valid(piece.shape, piece.x, piece.y + 1)) piece.y++;
+            else merge();
+          }
+        },
+        draw() {
+          ctx.fillStyle = '#090d16'; ctx.fillRect(0, 0, 900, 520);
+          const ox = 320, oy = 25;
+          ctx.strokeStyle = '#334155'; ctx.strokeRect(ox, oy, COLS * S, ROWS * S);
+          for (let r = 0; r < ROWS; r++) {
+            for (let c = 0; c < COLS; c++) {
+              if (grid[r][c]) {
+                ctx.fillStyle = colors[grid[r][c]];
+                ctx.fillRect(ox + c * S, oy + r * S, S - 1, S - 1);
+              }
+            }
+          }
+          piece.shape.forEach((row, r) => row.forEach((v, c) => {
+            if (v) {
+              ctx.fillStyle = colors[piece.color];
+              ctx.fillRect(ox + (piece.x + c) * S, oy + (piece.y + r) * S, S - 1, S - 1);
+            }
+          }));
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'left';
+          ctx.fillText('Pontos: ' + score, 40, 50);
+        }
+      };
+    }
+
+    /* ==========================================================
+       10. SPACE INVADERS 360 (ESCOLHA BÔNUS 2)
+    ========================================================== */
+    function createInvaders() {
+      let shipX = 430, bullets = [], aliens = [], dir = 2, score = 0;
+      function spawn() {
+        aliens = [];
+        for (let r = 0; r < 4; r++)
+          for (let c = 0; c < 10; c++)
+            aliens.push({ x: 140 + c * 62, y: 60 + r * 42, w: 36, h: 24 });
+      }
+      spawn();
+      return {
+        title: 'Space Invaders 360',
+        hint: 'Mover Nave: A/D ou Setas | Atirar: Espaço ou W',
+        onKeyDown(e) {
+          if (e.key === ' ' || e.key.toLowerCase() === 'w') {
+            bullets.push({ x: shipX + 18, y: 455 });
+          }
+        },
+        update() {
+          if (keys['a'] || keys['arrowleft']) shipX = Math.max(20, shipX - 6);
+          if (keys['d'] || keys['arrowright']) shipX = Math.min(840, shipX + 6);
+
+          bullets.forEach(b => b.y -= 9);
+          bullets = bullets.filter(b => b.y > 0);
+
+          let edge = false;
+          aliens.forEach(a => {
+            a.x += dir;
+            if (a.x < 20 || a.x + a.w > 880) edge = true;
+          });
+          if (edge) { dir *= -1; aliens.forEach(a => a.y += 14); }
+
+          bullets.forEach((b, bi) => {
+            aliens.forEach((a, ai) => {
+              if (b.x > a.x && b.x < a.x + a.w && b.y > a.y && b.y < a.y + a.h) {
+                aliens.splice(ai, 1);
+                bullets.splice(bi, 1);
+                score += 50;
+              }
+            });
+          });
+
+          if (aliens.length === 0) { addGold(60); spawn(); }
+        },
+        draw() {
+          ctx.fillStyle = '#030712'; ctx.fillRect(0, 0, 900, 520);
+          // Nave
+          ctx.fillStyle = '#38bdf8';
+          ctx.fillRect(shipX, 465, 40, 18);
+          ctx.fillRect(shipX + 15, 455, 10, 10);
+
+          // Tiros
+          ctx.fillStyle = '#facc15';
+          bullets.forEach(b => ctx.fillRect(b.x, b.y, 4, 12));
+
+          // Aliens
+          ctx.fillStyle = '#22c55e';
+          aliens.forEach(a => ctx.fillRect(a.x, a.y, a.w, a.h));
+
+          ctx.fillStyle = '#fff'; ctx.font = 'bold 20px sans-serif'; ctx.textAlign = 'left';
+          ctx.fillText('Score: ' + score, 30, 38);
+        }
+      };
     }
   </script>
 </body>
